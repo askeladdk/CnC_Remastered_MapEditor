@@ -1,1 +1,1 @@
-# CnC_Remastered_Collection
+# CnC_Remastered_MapEditor
