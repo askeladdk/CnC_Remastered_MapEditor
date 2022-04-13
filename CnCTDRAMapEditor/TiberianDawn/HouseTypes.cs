@@ -17,10 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.TiberianDawn
-{
-    public static class HouseTypes
-    {
+namespace MobiusEditor.TiberianDawn {
+    public static class HouseTypes {
         public static readonly HouseType Good = new HouseType(0, "GoodGuy", "GOOD");
         public static readonly HouseType Bad = new HouseType(1, "BadGuy", "BAD_UNIT", "BAD_STRUCTURE", ("harv", "BAD_STRUCTURE"), ("mcv", "BAD_STRUCTURE"));
         public static readonly HouseType Neutral = new HouseType(2, "Neutral");
@@ -34,22 +32,13 @@ namespace MobiusEditor.TiberianDawn
 
         private static readonly HouseType[] Types;
 
-        static HouseTypes()
-        {
-            Types =
+        static HouseTypes() => Types =
                 (from field in typeof(HouseTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsInitOnly && typeof(HouseType).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as HouseType).ToArray();
-        }
 
-        public static IEnumerable<HouseType> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<HouseType> GetTypes() => Types;
 
-        public static string GetBasePlayer(string player)
-        {
-            return Bad.Equals(player) ? Good.Name : Bad.Name;
-        }
+        public static string GetBasePlayer(string player) => Bad.Equals(player) ? Good.Name : Bad.Name;
     }
 }

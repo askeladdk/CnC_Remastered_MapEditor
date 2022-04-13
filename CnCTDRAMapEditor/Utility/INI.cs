@@ -23,272 +23,207 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace MobiusEditor.Utility
-{
-    static class INIHelpers
-    {
+namespace MobiusEditor.Utility {
+    internal static class INIHelpers {
         public static readonly Regex SectionRegex = new Regex(@"^\s*\[([^\]]*)\]", RegexOptions.Compiled);
         public static readonly Regex KeyValueRegex = new Regex(@"^\s*(.*?)\s*=([^;]*)", RegexOptions.Compiled);
         public static readonly Regex CommentRegex = new Regex(@"^\s*(#|;)", RegexOptions.Compiled);
 
-        public static readonly Func<INIDiffType, string> DiffPrefix = t =>
-        {
-            switch (t)
-            {
-                case INIDiffType.Added:
-                    return "+";
-                case INIDiffType.Removed:
-                    return "-";
-                case INIDiffType.Updated:
-                    return "@";
+        public static readonly Func<INIDiffType, string> DiffPrefix = t => {
+            switch(t) {
+            case INIDiffType.Added:
+                return "+";
+            case INIDiffType.Removed:
+                return "-";
+            case INIDiffType.Updated:
+                return "@";
             }
             return string.Empty;
         };
     }
 
-    public class INIKeyValueCollection : IEnumerable<(string Key, string Value)>, IEnumerable
-    {
+    public class INIKeyValueCollection : IEnumerable<(string Key, string Value)>, IEnumerable {
         private readonly OrderedDictionary KeyValues;
 
-        public string this[string key]
-        {
-            get
-            {
-                if (!KeyValues.Contains(key))
-                {
+        public string this[string key] {
+            get {
+                if(!this.KeyValues.Contains(key)) {
                     throw new KeyNotFoundException(key);
                 }
-                return KeyValues[key] as string;
+                return this.KeyValues[key] as string;
             }
-            set
-            {
-                if (key == null)
-                {
+            set {
+                if(key == null) {
                     throw new ArgumentNullException("key");
                 }
-                KeyValues[key] = value;
+                this.KeyValues[key] = value;
             }
         }
 
-        public INIKeyValueCollection()
-        {
-            KeyValues = new OrderedDictionary(StringComparer.OrdinalIgnoreCase);
-        }
+        public INIKeyValueCollection() => this.KeyValues = new OrderedDictionary(StringComparer.OrdinalIgnoreCase);
 
-        public int Count => KeyValues.Count;
+        public int Count => this.KeyValues.Count;
 
-        public bool Contains(string key) => KeyValues.Contains(key);
+        public bool Contains(string key) => this.KeyValues.Contains(key);
 
-        public T Get<T>(string key) where T : struct
-        {
+        public T Get<T>(string key) where T : struct {
             var converter = TypeDescriptor.GetConverter(typeof(T));
             return (T)converter.ConvertFromString(this[key]);
         }
 
-        public void Set<T>(string key, T value) where T : struct
-        {
+        public void Set<T>(string key, T value) where T : struct {
             var converter = TypeDescriptor.GetConverter(typeof(T));
             this[key] = converter.ConvertToString(value);
         }
 
-        public bool Remove(string key)
-        {
-            if (!KeyValues.Contains(key))
-            {
+        public bool Remove(string key) {
+            if(!this.KeyValues.Contains(key)) {
                 return false;
             }
-            KeyValues.Remove(key);
+            this.KeyValues.Remove(key);
             return true;
         }
 
-        public IEnumerator<(string Key, string Value)> GetEnumerator()
-        {
-            foreach (DictionaryEntry entry in KeyValues)
-            {
+        public IEnumerator<(string Key, string Value)> GetEnumerator() {
+            foreach(DictionaryEntry entry in this.KeyValues) {
                 yield return (entry.Key as string, entry.Value as string);
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 
-    public class INISection : IEnumerable<(string Key, string Value)>, IEnumerable
-    {
+    public class INISection : IEnumerable<(string Key, string Value)>, IEnumerable {
         public readonly INIKeyValueCollection Keys;
 
-        public string Name { get; private set; }
-
-        public string this[string key] { get => Keys[key]; set => Keys[key] = value; }
-
-        public bool Empty => Keys.Count == 0;
-
-        public INISection(string name)
-        {
-            Keys = new INIKeyValueCollection();
-            Name = name;
+        public string Name {
+            get; private set;
         }
 
-        public void Parse(TextReader reader)
-        {
-            while (true)
-            {
+        public string this[string key] { get => this.Keys[key]; set => this.Keys[key] = value; }
+
+        public bool Empty => this.Keys.Count == 0;
+
+        public INISection(string name) {
+            this.Keys = new INIKeyValueCollection();
+            this.Name = name;
+        }
+
+        public void Parse(TextReader reader) {
+            while(true) {
                 var line = reader.ReadLine();
-                if (line == null)
-                {
+                if(line == null) {
                     break;
                 }
 
                 var m = INIHelpers.KeyValueRegex.Match(line);
-                if (m.Success)
-                {
-                    Keys[m.Groups[1].Value] = m.Groups[2].Value;
+                if(m.Success) {
+                    this.Keys[m.Groups[1].Value] = m.Groups[2].Value;
                 }
             }
         }
 
-        public void Parse(string iniText)
-        {
-            using (var reader = new StringReader(iniText))
-            {
-                Parse(reader);
+        public void Parse(string iniText) {
+            using(var reader = new StringReader(iniText)) {
+                this.Parse(reader);
             }
         }
 
-        public IEnumerator<(string Key, string Value)> GetEnumerator()
-        {
-            return Keys.GetEnumerator();
-        }
+        public IEnumerator<(string Key, string Value)> GetEnumerator() => this.Keys.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-        public override string ToString()
-        {
-            var lines = new List<string>(Keys.Count);
-            foreach (var item in Keys)
-            {
+        public override string ToString() {
+            var lines = new List<string>(this.Keys.Count);
+            foreach(var item in this.Keys) {
                 lines.Add(string.Format("{0}={1}", item.Key, item.Value));
             }
             return string.Join(Environment.NewLine, lines);
         }
     }
 
-    public class INISectionCollection : IEnumerable<INISection>, IEnumerable
-    {
+    public class INISectionCollection : IEnumerable<INISection>, IEnumerable {
         private readonly OrderedDictionary Sections;
 
-        public INISection this[string name] => Sections.Contains(name) ? (Sections[name] as INISection) : null;
+        public INISection this[string name] => this.Sections.Contains(name) ? (this.Sections[name] as INISection) : null;
 
-        public INISectionCollection()
-        {
-            Sections = new OrderedDictionary(StringComparer.OrdinalIgnoreCase);
-        }
+        public INISectionCollection() => this.Sections = new OrderedDictionary(StringComparer.OrdinalIgnoreCase);
 
-        public int Count => Sections.Count;
+        public int Count => this.Sections.Count;
 
-        public bool Contains(string section) => Sections.Contains(section);
+        public bool Contains(string section) => this.Sections.Contains(section);
 
-        public INISection Add(string name)
-        {
-            if (!Sections.Contains(name))
-            {
+        public INISection Add(string name) {
+            if(!this.Sections.Contains(name)) {
                 var section = new INISection(name);
-                Sections[name] = section;
+                this.Sections[name] = section;
             }
             return this[name];
         }
 
-        public bool Add(INISection section)
-        {
-            if ((section == null) || Sections.Contains(section.Name))
-            {
+        public bool Add(INISection section) {
+            if((section == null) || this.Sections.Contains(section.Name)) {
                 return false;
             }
-            Sections[section.Name] = section;
+            this.Sections[section.Name] = section;
             return true;
         }
 
-        public void AddRange(IEnumerable<INISection> sections)
-        {
-            foreach (var section in sections)
-            {
-                Add(section);
+        public void AddRange(IEnumerable<INISection> sections) {
+            foreach(var section in sections) {
+                this.Add(section);
             }
         }
 
-        public bool Remove(string name)
-        {
-            if (!Sections.Contains(name))
-            {
+        public bool Remove(string name) {
+            if(!this.Sections.Contains(name)) {
                 return false;
             }
-            Sections.Remove(name);
+            this.Sections.Remove(name);
             return true;
         }
 
-        public INISection Extract(string name)
-        {
-            if (!Sections.Contains(name))
-            {
+        public INISection Extract(string name) {
+            if(!this.Sections.Contains(name)) {
                 return null;
             }
             var section = this[name];
-            Sections.Remove(name);
+            this.Sections.Remove(name);
             return section;
         }
 
-        public IEnumerator<INISection> GetEnumerator()
-        {
-            foreach (DictionaryEntry entry in Sections)
-            {
+        public IEnumerator<INISection> GetEnumerator() {
+            foreach(DictionaryEntry entry in this.Sections) {
                 yield return entry.Value as INISection;
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 
-    public partial class INI : IEnumerable<INISection>, IEnumerable
-    {
+    public partial class INI : IEnumerable<INISection>, IEnumerable {
         public readonly INISectionCollection Sections;
 
-        public INISection this[string name] { get => Sections[name]; }
+        public INISection this[string name] => this.Sections[name];
 
-        public INI()
-        {
-            Sections = new INISectionCollection();
-        }
+        public INI() => this.Sections = new INISectionCollection();
 
-        public void Parse(TextReader reader)
-        {
+        public void Parse(TextReader reader) {
             INISection currentSection = null;
 
-            while (true)
-            {
+            while(true) {
                 var line = reader.ReadLine();
-                if (line == null)
-                {
+                if(line == null) {
                     break;
                 }
 
                 var m = INIHelpers.SectionRegex.Match(line);
-                if (m.Success)
-                {
-                    currentSection = Sections.Add(m.Groups[1].Value);
+                if(m.Success) {
+                    currentSection = this.Sections.Add(m.Groups[1].Value);
                 }
 
-                if (currentSection != null)
-                {
-                    if (INIHelpers.CommentRegex.Match(line).Success)
-                    {
+                if(currentSection != null) {
+                    if(INIHelpers.CommentRegex.Match(line).Success) {
                         continue;
                     }
 
@@ -297,38 +232,28 @@ namespace MobiusEditor.Utility
             }
         }
 
-        public void Parse(string iniText)
-        {
-            using (var reader = new StringReader(iniText))
-            {
-                Parse(reader);
+        public void Parse(string iniText) {
+            using(var reader = new StringReader(iniText)) {
+                this.Parse(reader);
             }
         }
 
-        public IEnumerator<INISection> GetEnumerator()
-        {
-            foreach (var section in Sections)
-            {
+        public IEnumerator<INISection> GetEnumerator() {
+            foreach(var section in this.Sections) {
                 yield return section;
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-        public override string ToString()
-        {
-            var sections = new List<string>(Sections.Count);
-            foreach (var item in Sections)
-            {
+        public override string ToString() {
+            var sections = new List<string>(this.Sections.Count);
+            foreach(var item in this.Sections) {
                 var lines = new List<string>
                 {
                     string.Format("[{0}]", item.Name)
                 };
-                if (!item.Empty)
-                {
+                if(!item.Empty) {
                     lines.Add(item.ToString());
                 }
                 sections.Add(string.Join(Environment.NewLine, lines));
@@ -338,8 +263,7 @@ namespace MobiusEditor.Utility
     }
 
     [Flags]
-    public enum INIDiffType
-    {
+    public enum INIDiffType {
         None = 0,
         Added = 1,
         Removed = 2,
@@ -347,158 +271,112 @@ namespace MobiusEditor.Utility
         AddedOrUpdated = 5
     }
 
-    public class INISectionDiff : IEnumerable<string>, IEnumerable
-    {
+    public class INISectionDiff : IEnumerable<string>, IEnumerable {
         public readonly INIDiffType Type;
 
         private readonly Dictionary<string, INIDiffType> keyDiff;
 
-        public INIDiffType this[string key]
-        {
-            get
-            {
-                INIDiffType diffType;
-                if (!keyDiff.TryGetValue(key, out diffType))
-                {
+        public INIDiffType this[string key] {
+            get {
+                if(!this.keyDiff.TryGetValue(key, out var diffType)) {
                     return INIDiffType.None;
                 }
                 return diffType;
             }
         }
 
-        private INISectionDiff()
-        {
-            keyDiff = new Dictionary<string, INIDiffType>();
-            Type = INIDiffType.None;
+        private INISectionDiff() {
+            this.keyDiff = new Dictionary<string, INIDiffType>();
+            this.Type = INIDiffType.None;
         }
 
         internal INISectionDiff(INIDiffType type, INISection section)
-            : this()
-        {
-            foreach (var keyValue in section.Keys)
-            {
-                keyDiff[keyValue.Key] = type;
+            : this() {
+            foreach(var keyValue in section.Keys) {
+                this.keyDiff[keyValue.Key] = type;
             }
 
-            Type = type;
+            this.Type = type;
         }
 
         internal INISectionDiff(INISection leftSection, INISection rightSection)
-            : this(INIDiffType.Removed, leftSection)
-        {
-            foreach (var keyValue in rightSection.Keys)
-            {
+            : this(INIDiffType.Removed, leftSection) {
+            foreach(var keyValue in rightSection.Keys) {
                 var key = keyValue.Key;
-                if (keyDiff.ContainsKey(key))
-                {
-                    if (leftSection[key] == rightSection[key])
-                    {
-                        keyDiff.Remove(key);
+                if(this.keyDiff.ContainsKey(key)) {
+                    if(leftSection[key] == rightSection[key]) {
+                        this.keyDiff.Remove(key);
+                    } else {
+                        this.keyDiff[key] = INIDiffType.Updated;
+                        this.Type = INIDiffType.Updated;
                     }
-                    else
-                    {
-                        keyDiff[key] = INIDiffType.Updated;
-                        Type = INIDiffType.Updated;
-                    }
-                }
-                else
-                {
-                    keyDiff[key] = INIDiffType.Added;
-                    Type = INIDiffType.Updated;
+                } else {
+                    this.keyDiff[key] = INIDiffType.Added;
+                    this.Type = INIDiffType.Updated;
                 }
             }
 
-            Type = (keyDiff.Count > 0) ? INIDiffType.Updated : INIDiffType.None;
+            this.Type = (this.keyDiff.Count > 0) ? INIDiffType.Updated : INIDiffType.None;
         }
 
-        public IEnumerator<string> GetEnumerator()
-        {
-            return keyDiff.Keys.GetEnumerator();
-        }
+        public IEnumerator<string> GetEnumerator() => this.keyDiff.Keys.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-        public override string ToString()
-        {
+        public override string ToString() {
             var sb = new StringBuilder();
-            foreach (var item in keyDiff)
-            {
+            foreach(var item in this.keyDiff) {
                 sb.AppendLine(string.Format("{0} {1}", INIHelpers.DiffPrefix(item.Value), item.Key));
             }
             return sb.ToString();
         }
     }
 
-    public class INIDiff : IEnumerable<string>, IEnumerable
-    {
+    public class INIDiff : IEnumerable<string>, IEnumerable {
         private readonly Dictionary<string, INISectionDiff> sectionDiffs;
 
-        public INISectionDiff this[string key]
-        {
-            get
-            {
-                if (!sectionDiffs.TryGetValue(key, out INISectionDiff sectionDiff))
-                {
+        public INISectionDiff this[string key] {
+            get {
+                if(!this.sectionDiffs.TryGetValue(key, out var sectionDiff)) {
                     return null;
                 }
                 return sectionDiff;
             }
         }
 
-        private INIDiff()
-        {
-            sectionDiffs = new Dictionary<string, INISectionDiff>(StringComparer.OrdinalIgnoreCase);
-        }
+        private INIDiff() => this.sectionDiffs = new Dictionary<string, INISectionDiff>(StringComparer.OrdinalIgnoreCase);
 
         public INIDiff(INI leftIni, INI rightIni)
-            : this()
-        {
-            foreach (var leftSection in leftIni)
-            {
-                sectionDiffs[leftSection.Name] = rightIni.Sections.Contains(leftSection.Name) ?
+            : this() {
+            foreach(var leftSection in leftIni) {
+                this.sectionDiffs[leftSection.Name] = rightIni.Sections.Contains(leftSection.Name) ?
                     new INISectionDiff(leftSection, rightIni[leftSection.Name]) :
                     new INISectionDiff(INIDiffType.Removed, leftSection);
             }
 
-            foreach (var rightSection in rightIni)
-            {
-                if (!leftIni.Sections.Contains(rightSection.Name))
-                {
-                    sectionDiffs[rightSection.Name] = new INISectionDiff(INIDiffType.Added, rightSection);
+            foreach(var rightSection in rightIni) {
+                if(!leftIni.Sections.Contains(rightSection.Name)) {
+                    this.sectionDiffs[rightSection.Name] = new INISectionDiff(INIDiffType.Added, rightSection);
                 }
             }
 
-            sectionDiffs = sectionDiffs.Where(x => x.Value.Type != INIDiffType.None).ToDictionary(x => x.Key, x => x.Value);
+            this.sectionDiffs = this.sectionDiffs.Where(x => x.Value.Type != INIDiffType.None).ToDictionary(x => x.Key, x => x.Value);
         }
 
-        public bool Contains(string key) => sectionDiffs.ContainsKey(key);
+        public bool Contains(string key) => this.sectionDiffs.ContainsKey(key);
 
-        public IEnumerator<string> GetEnumerator()
-        {
-            return sectionDiffs.Keys.GetEnumerator();
-        }
+        public IEnumerator<string> GetEnumerator() => this.sectionDiffs.Keys.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-        public override string ToString()
-        {
+        public override string ToString() {
             var sb = new StringBuilder();
-            foreach (var item in sectionDiffs)
-            {
+            foreach(var item in this.sectionDiffs) {
                 sb.AppendLine(string.Format("{0} {1}", INIHelpers.DiffPrefix(item.Value.Type), item.Key));
-                using (var reader = new StringReader(item.Value.ToString()))
-                {
-                    while (true)
-                    {
+                using(var reader = new StringReader(item.Value.ToString())) {
+                    while(true) {
                         var line = reader.ReadLine();
-                        if (line == null)
-                        {
+                        if(line == null) {
                             break;
                         }
 
@@ -511,52 +389,34 @@ namespace MobiusEditor.Utility
     }
 
     [AttributeUsage(AttributeTargets.Property)]
-    public class NonSerializedINIKeyAttribute : Attribute
-    {
+    public class NonSerializedINIKeyAttribute : Attribute {
     }
 
-    public partial class INI
-    {
-        public static void ParseSection<T>(ITypeDescriptorContext context, INISection section, T data)
-        {
+    public partial class INI {
+        public static void ParseSection<T>(ITypeDescriptorContext context, INISection section, T data) {
             var propertyDescriptors = TypeDescriptor.GetProperties(data);
             var properties = data.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.GetSetMethod() != null);
-            foreach (var property in properties)
-            {
-                if (property.GetCustomAttribute<NonSerializedINIKeyAttribute>() != null)
-                {
+            foreach(var property in properties) {
+                if(property.GetCustomAttribute<NonSerializedINIKeyAttribute>() != null) {
                     continue;
                 }
 
-                if (section.Keys.Contains(property.Name))
-                {
+                if(section.Keys.Contains(property.Name)) {
                     var converter = propertyDescriptors.Find(property.Name, false)?.Converter ?? TypeDescriptor.GetConverter(property.PropertyType);
-                    if (converter.CanConvertFrom(context, typeof(string)))
-                    {
-                        try
-                        {
+                    if(converter.CanConvertFrom(context, typeof(string))) {
+                        try {
                             property.SetValue(data, converter.ConvertFromString(context, section[property.Name]));
-                        }
-                        catch (FormatException)
-                        {
-                            if (property.PropertyType == typeof(bool))
-                            {
+                        } catch(FormatException) {
+                            if(property.PropertyType == typeof(bool)) {
                                 var value = section[property.Name].ToLower();
-                                if (value == "no")
-                                {
+                                if(value == "no") {
                                     property.SetValue(data, false);
-                                }
-                                else if (value == "yes")
-                                {
+                                } else if(value == "yes") {
                                     property.SetValue(data, true);
-                                }
-                                else
-                                {
+                                } else {
                                     throw;
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 throw;
                             }
                         }
@@ -565,23 +425,18 @@ namespace MobiusEditor.Utility
             }
         }
 
-        public static void WriteSection<T>(ITypeDescriptorContext context, INISection section, T data)
-        {
+        public static void WriteSection<T>(ITypeDescriptorContext context, INISection section, T data) {
             var propertyDescriptors = TypeDescriptor.GetProperties(data);
             var properties = data.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.GetGetMethod() != null);
-            foreach (var property in properties)
-            {
-                if (property.GetCustomAttribute<NonSerializedINIKeyAttribute>() != null)
-                {
+            foreach(var property in properties) {
+                if(property.GetCustomAttribute<NonSerializedINIKeyAttribute>() != null) {
                     continue;
                 }
 
                 var value = property.GetValue(data);
-                if (property.PropertyType.IsValueType || (value != null))
-                {
+                if(property.PropertyType.IsValueType || (value != null)) {
                     var converter = propertyDescriptors.Find(property.Name, false)?.Converter ?? TypeDescriptor.GetConverter(property.PropertyType);
-                    if (converter.CanConvertTo(context, typeof(string)))
-                    {
+                    if(converter.CanConvertTo(context, typeof(string))) {
                         section[property.Name] = converter.ConvertToString(context, value);
                     }
                 }

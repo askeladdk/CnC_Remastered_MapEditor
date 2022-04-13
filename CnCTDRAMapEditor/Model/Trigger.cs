@@ -15,87 +15,85 @@
 using MobiusEditor.Interface;
 using System;
 
-namespace MobiusEditor.Model
-{
-    public enum TriggerPersistantType
-    {
+namespace MobiusEditor.Model {
+    public enum TriggerPersistantType {
         Volatile = 0,
         SemiPersistant = 1,
         Persistant = 2
     }
 
-    public enum TriggerMultiStyleType
-    {
+    public enum TriggerMultiStyleType {
         Only = 0,
         And = 1,
         Or = 2,
         Linked = 3
     }
 
-    public class TriggerEvent : ICloneable
-    {
+    public class TriggerEvent : ICloneable {
         public static readonly string None = "None";
 
-        public string EventType { get; set; }
-
-        public string Team { get; set; }
-
-        public long Data { get; set; }
-
-        public TriggerEvent Clone()
-        {
-            return new TriggerEvent()
-            {
-                EventType = EventType,
-                Team = Team,
-                Data = Data
-            };
+        public string EventType {
+            get; set;
         }
 
-        object ICloneable.Clone()
-        {
-            return Clone();
+        public string Team {
+            get; set;
         }
+
+        public long Data {
+            get; set;
+        }
+
+        public TriggerEvent Clone() => new TriggerEvent() {
+            EventType = EventType,
+            Team = Team,
+            Data = Data
+        };
+
+        object ICloneable.Clone() => this.Clone();
     }
 
-    public class TriggerAction : ICloneable
-    {
+    public class TriggerAction : ICloneable {
         public static readonly string None = "None";
 
-        public string ActionType { get; set; }
-
-        public string Trigger { get; set; }
-
-        public string Team { get; set; }
-
-        public long Data { get; set; }
-
-        public TriggerAction Clone()
-        {
-            return new TriggerAction()
-            {
-                ActionType = ActionType,
-                Trigger = Trigger,
-                Team = Team,
-                Data = Data
-            };
+        public string ActionType {
+            get; set;
         }
 
-        object ICloneable.Clone()
-        {
-            return Clone();
+        public string Trigger {
+            get; set;
         }
+
+        public string Team {
+            get; set;
+        }
+
+        public long Data {
+            get; set;
+        }
+
+        public TriggerAction Clone() => new TriggerAction() {
+            ActionType = ActionType,
+            Trigger = Trigger,
+            Team = Team,
+            Data = Data
+        };
+
+        object ICloneable.Clone() => this.Clone();
     }
 
-    public class Trigger : INamedType, ICloneable
-    {
+    public class Trigger : INamedType, ICloneable {
         public static readonly string None = "None";
 
-        public string Name { get; set; }
+        public string Name {
+            get; set;
+        }
 
         public TriggerPersistantType PersistantType { get; set; } = TriggerPersistantType.Volatile;
 
-        public string House { get; set; }
+        public string House {
+            get; set;
+        }
 
         public TriggerMultiStyleType EventControl { get; set; } = TriggerMultiStyleType.Only;
 
@@ -107,48 +105,31 @@ namespace MobiusEditor.Model
 
         public TriggerAction Action2 { get; private set; } = new TriggerAction { ActionType = TriggerEvent.None };
 
-        public Trigger Clone()
-        {
-            return new Trigger()
-            {
-                Name = Name,
-                PersistantType = PersistantType,
-                House = House,
-                EventControl = EventControl,
-                Event1 = Event1.Clone(),
-                Event2 = Event2.Clone(),
-                Action1 = Action1.Clone(),
-                Action2 = Action2.Clone()
-            };
-        }
+        public Trigger Clone() => new Trigger() {
+            Name = Name,
+            PersistantType = PersistantType,
+            House = House,
+            EventControl = EventControl,
+            Event1 = this.Event1.Clone(),
+            Event2 = this.Event2.Clone(),
+            Action1 = this.Action1.Clone(),
+            Action2 = this.Action2.Clone()
+        };
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Trigger)
-            {
+        public override bool Equals(object obj) {
+            if(obj is Trigger) {
                 return this == obj;
-            }
-            else if (obj is string)
-            {
-                return string.Equals(Name, obj as string, StringComparison.OrdinalIgnoreCase);
+            } else if(obj is string) {
+                return string.Equals(this.Name, obj as string, StringComparison.OrdinalIgnoreCase);
             }
 
             return base.Equals(obj);
         }
 
-        public override int GetHashCode()
-        {
-            return Name.GetHashCode();
-        }
+        public override int GetHashCode() => this.Name.GetHashCode();
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => this.Name;
 
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
     }
 }

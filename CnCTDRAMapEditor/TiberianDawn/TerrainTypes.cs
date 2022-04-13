@@ -17,10 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.TiberianDawn
-{
-    public static class TerrainTypes
-    {
+namespace MobiusEditor.TiberianDawn {
+    public static class TerrainTypes {
         public static readonly TerrainType Tree1 = new TerrainType(0, "t01", new TheaterType[] { TheaterTypes.Winter, TheaterTypes.Temperate }, new bool[2, 2] { { false, false }, { true, false } });
         public static readonly TerrainType Tree2 = new TerrainType(1, "t02", new TheaterType[] { TheaterTypes.Winter, TheaterTypes.Temperate }, new bool[2, 2] { { false, false }, { true, false } });
         public static readonly TerrainType Tree3 = new TerrainType(2, "t03", new TheaterType[] { TheaterTypes.Winter, TheaterTypes.Temperate }, new bool[2, 2] { { false, false }, { true, false } });
@@ -54,19 +52,13 @@ namespace MobiusEditor.TiberianDawn
         public static readonly TerrainType Rock6 = new TerrainType(30, "rock6", new TheaterType[] { TheaterTypes.Desert }, new bool[2, 3] { { false, false, false }, { true, true, true } });
         public static readonly TerrainType Rock7 = new TerrainType(31, "rock7", new TheaterType[] { TheaterTypes.Desert }, new bool[1, 5] { { true, true, true, true, false } });
 
-        private static TerrainType[] Types;
+        private static readonly TerrainType[] Types;
 
-        static TerrainTypes()
-        {
-            Types =
+        static TerrainTypes() => Types =
                 (from field in typeof(TerrainTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsInitOnly && typeof(TerrainType).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as TerrainType).ToArray();
-        }
 
-        public static IEnumerable<TerrainType> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<TerrainType> GetTypes() => Types;
     }
 }

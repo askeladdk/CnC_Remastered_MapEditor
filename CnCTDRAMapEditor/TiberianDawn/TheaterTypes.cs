@@ -18,29 +18,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.TiberianDawn
-{
-    public static class TheaterTypes
-    {
+namespace MobiusEditor.TiberianDawn {
+    public static class TheaterTypes {
         private static readonly IEnumerable<string> commonTilesets = new string[] { "TD_Units", "TD_Structures", "TD_VFX", "Common_VFX" };
 
         public static readonly TheaterType Desert = new TheaterType(0, "desert", "TD_Terrain_Desert".Yield().Concat(commonTilesets));
         public static readonly TheaterType Temperate = new TheaterType(2, "temperate", "TD_Terrain_Temperate".Yield().Concat(commonTilesets));
         public static readonly TheaterType Winter = new TheaterType(2, "winter", "TD_Terrain_Winter".Yield().Concat(commonTilesets));
 
-        private static TheaterType[] Types;
+        private static readonly TheaterType[] Types;
 
-        static TheaterTypes()
-        {
-            Types =
+        static TheaterTypes() => Types =
                 (from field in typeof(TheaterTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsInitOnly && typeof(TheaterType).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as TheaterType).ToArray();
-        }
 
-        public static IEnumerable<TheaterType> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<TheaterType> GetTypes() => Types;
     }
 }

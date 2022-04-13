@@ -19,23 +19,23 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Widgets
-{
-    public class MouseCellChangedEventArgs : EventArgs
-    {
-        public Point OldCell { get; private set; }
+namespace MobiusEditor.Widgets {
+    public class MouseCellChangedEventArgs : EventArgs {
+        public Point OldCell {
+            get; private set;
+        }
 
-        public Point NewCell { get; private set; }
+        public Point NewCell {
+            get; private set;
+        }
 
-        public MouseCellChangedEventArgs(Point oldCell, Point newCell)
-        {
-            OldCell = oldCell;
-            NewCell = newCell;
+        public MouseCellChangedEventArgs(Point oldCell, Point newCell) {
+            this.OldCell = oldCell;
+            this.NewCell = newCell;
         }
     }
 
-    public class NavigationWidget : IWidget
-    {
+    public class NavigationWidget : IWidget {
         private static readonly Pen defaultMouseoverPen = new Pen(Color.Yellow, 4);
 
         private readonly MapPanel mapPanel;
@@ -44,99 +44,85 @@ namespace MobiusEditor.Widgets
         private bool dragging = false;
         private Point lastMouseLocation;
 
-        public CellMetrics Metrics { get; private set; }
+        public CellMetrics Metrics {
+            get; private set;
+        }
 
-        public Point MouseCell { get; private set; }
-        public Point MouseSubPixel { get; private set; }
+        public Point MouseCell {
+            get; private set;
+        }
+        public Point MouseSubPixel {
+            get; private set;
+        }
 
         private Size mouseoverSize = new Size(1, 1);
-        public Size MouseoverSize
-        {
-            get => mouseoverSize;
-            set => mouseoverSize = !value.IsEmpty ? new Size(value.Width | 1, value.Height | 1) : Size.Empty;
+        public Size MouseoverSize {
+            get => this.mouseoverSize;
+            set => this.mouseoverSize = !value.IsEmpty ? new Size(value.Width | 1, value.Height | 1) : Size.Empty;
         }
 
         public event EventHandler<MouseCellChangedEventArgs> MouseCellChanged;
 
-        public NavigationWidget(MapPanel mapPanel, CellMetrics metrics, Size cellSize)
-        {
+        public NavigationWidget(MapPanel mapPanel, CellMetrics metrics, Size cellSize) {
             this.mapPanel = mapPanel;
-            this.mapPanel.MouseDown += MapPanel_MouseDown;
-            this.mapPanel.MouseMove += MapPanel_MouseMove;
-            Metrics = metrics;
+            this.mapPanel.MouseDown += this.MapPanel_MouseDown;
+            this.mapPanel.MouseMove += this.MapPanel_MouseMove;
+            this.Metrics = metrics;
             this.cellSize = cellSize;
         }
 
-        public void Refresh()
-        {
-            OnMouseMove(mapPanel.PointToClient(Control.MousePosition));
-        }
+        public void Refresh() => this.OnMouseMove(this.mapPanel.PointToClient(Control.MousePosition));
 
-        private void MapPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if ((e.Button & MouseButtons.Middle) != MouseButtons.None)
-            {
-                lastMouseLocation = e.Location;
-                dragging = true;
+        private void MapPanel_MouseDown(object sender, MouseEventArgs e) {
+            if((e.Button & MouseButtons.Middle) != MouseButtons.None) {
+                this.lastMouseLocation = e.Location;
+                this.dragging = true;
             }
         }
 
-        private void MapPanel_MouseMove(object sender, MouseEventArgs e)
-        {
-            OnMouseMove(e.Location);
-        }
+        private void MapPanel_MouseMove(object sender, MouseEventArgs e) => this.OnMouseMove(e.Location);
 
-        private void OnMouseMove(Point location)
-        {
-            if (dragging)
-            {
-                if ((Control.MouseButtons & MouseButtons.Middle) == MouseButtons.None)
-                {
-                    dragging = false;
-                }
-                else
-                {
-                    var delta = location - (Size)lastMouseLocation;
-                    if (!delta.IsEmpty)
-                    {
-                        mapPanel.AutoScrollPosition = new Point(-mapPanel.AutoScrollPosition.X - delta.X, -mapPanel.AutoScrollPosition.Y - delta.Y);
+        private void OnMouseMove(Point location) {
+            if(this.dragging) {
+                if((Control.MouseButtons & MouseButtons.Middle) == MouseButtons.None) {
+                    this.dragging = false;
+                } else {
+                    var delta = location - (Size)this.lastMouseLocation;
+                    if(!delta.IsEmpty) {
+                        this.mapPanel.AutoScrollPosition = new Point(-this.mapPanel.AutoScrollPosition.X - delta.X, -this.mapPanel.AutoScrollPosition.Y - delta.Y);
                     }
                 }
             }
 
-            lastMouseLocation = location;
+            this.lastMouseLocation = location;
 
-            var newMousePosition = mapPanel.ClientToMap(location);
-            MouseSubPixel = new Point(
-                (newMousePosition.X * Globals.PixelWidth / cellSize.Width) % Globals.PixelWidth,
-                (newMousePosition.Y * Globals.PixelHeight / cellSize.Height) % Globals.PixelHeight
+            var newMousePosition = this.mapPanel.ClientToMap(location);
+            this.MouseSubPixel = new Point(
+                (newMousePosition.X * Globals.PixelWidth / this.cellSize.Width) % Globals.PixelWidth,
+                (newMousePosition.Y * Globals.PixelHeight / this.cellSize.Height) % Globals.PixelHeight
             );
 
-            var newMouseCell = new Point(newMousePosition.X / cellSize.Width, newMousePosition.Y / cellSize.Height);
-            if (MouseCell == newMouseCell)
-            {
+            var newMouseCell = new Point(newMousePosition.X / this.cellSize.Width, newMousePosition.Y / this.cellSize.Height);
+            if(this.MouseCell == newMouseCell) {
                 return;
             }
 
-            if (!Metrics.Contains(newMouseCell))
-            {
+            if(!this.Metrics.Contains(newMouseCell)) {
                 return;
             }
 
-            var oldCell = MouseCell;
-            MouseCell = newMouseCell;
+            var oldCell = this.MouseCell;
+            this.MouseCell = newMouseCell;
 
-            MouseCellChanged?.Invoke(this, new MouseCellChangedEventArgs(oldCell, MouseCell));
+            MouseCellChanged?.Invoke(this, new MouseCellChangedEventArgs(oldCell, this.MouseCell));
 
-            mapPanel.Invalidate();
+            this.mapPanel.Invalidate();
         }
 
-        public void Render(Graphics graphics)
-        {
-            if (!MouseoverSize.IsEmpty)
-            {
-                var rect = new Rectangle(new Point(MouseCell.X * cellSize.Width, MouseCell.Y * cellSize.Height), cellSize);
-                rect.Inflate(cellSize.Width * (MouseoverSize.Width / 2), cellSize.Height * (MouseoverSize.Height / 2));
+        public void Render(Graphics graphics) {
+            if(!this.MouseoverSize.IsEmpty) {
+                var rect = new Rectangle(new Point(this.MouseCell.X * this.cellSize.Width, this.MouseCell.Y * this.cellSize.Height), this.cellSize);
+                rect.Inflate(this.cellSize.Width * (this.MouseoverSize.Width / 2), this.cellSize.Height * (this.MouseoverSize.Height / 2));
                 graphics.DrawRectangle(defaultMouseoverPen, rect);
             }
         }
@@ -144,23 +130,17 @@ namespace MobiusEditor.Widgets
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    mapPanel.MouseDown -= MapPanel_MouseDown;
-                    mapPanel.MouseMove -= MapPanel_MouseMove;
+        protected virtual void Dispose(bool disposing) {
+            if(!this.disposedValue) {
+                if(disposing) {
+                    this.mapPanel.MouseDown -= this.MapPanel_MouseDown;
+                    this.mapPanel.MouseMove -= this.MapPanel_MouseMove;
                 }
-                disposedValue = true;
+                this.disposedValue = true;
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        public void Dispose() => this.Dispose(true);
         #endregion
     }
 }

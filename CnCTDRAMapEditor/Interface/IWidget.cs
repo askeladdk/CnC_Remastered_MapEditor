@@ -13,16 +13,10 @@
 // GNU General Public License along with permitted additional restrictions 
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MobiusEditor.Interface
-{
-    public interface IWidget : IDisposable
-    {
+namespace MobiusEditor.Interface {
+    public interface IWidget : IDisposable {
         void Render(Graphics graphics);
     }
 }

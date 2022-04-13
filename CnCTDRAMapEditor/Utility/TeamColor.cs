@@ -16,63 +16,62 @@ using System.Drawing;
 using System.Numerics;
 using System.Xml;
 
-namespace MobiusEditor.Utility
-{
-    public class TeamColor
-    {
+namespace MobiusEditor.Utility {
+    public class TeamColor {
         private readonly TeamColorManager teamColorManager;
         private readonly MegafileManager megafileManager;
 
-        public string Variant { get; private set; }
+        public string Variant {
+            get; private set;
+        }
 
-        public string Name { get; private set; }
+        public string Name {
+            get; private set;
+        }
 
         private Color? lowerBounds;
-        public Color LowerBounds => lowerBounds.HasValue ? lowerBounds.Value : ((Variant != null) ? teamColorManager[Variant].LowerBounds : default);
+        public Color LowerBounds => this.lowerBounds.HasValue ? this.lowerBounds.Value : ((this.Variant != null) ? this.teamColorManager[this.Variant].LowerBounds : default);
 
         private Color? upperBounds;
-        public Color UpperBounds => upperBounds.HasValue ? upperBounds.Value : ((Variant != null) ? teamColorManager[Variant].UpperBounds : default);
+        public Color UpperBounds => this.upperBounds.HasValue ? this.upperBounds.Value : ((this.Variant != null) ? this.teamColorManager[this.Variant].UpperBounds : default);
 
         private float? fudge;
-        public float Fudge => fudge.HasValue ? fudge.Value : ((Variant != null) ? teamColorManager[Variant].Fudge : default);
+        public float Fudge => this.fudge.HasValue ? this.fudge.Value : ((this.Variant != null) ? this.teamColorManager[this.Variant].Fudge : default);
 
         private Vector3? hsvShift;
-        public Vector3 HSVShift => hsvShift.HasValue ? hsvShift.Value : ((Variant != null) ? teamColorManager[Variant].HSVShift : default);
+        public Vector3 HSVShift => this.hsvShift.HasValue ? this.hsvShift.Value : ((this.Variant != null) ? this.teamColorManager[this.Variant].HSVShift : default);
 
         private Vector3? inputLevels;
-        public Vector3 InputLevels => inputLevels.HasValue ? inputLevels.Value : ((Variant != null) ? teamColorManager[Variant].InputLevels : default);
+        public Vector3 InputLevels => this.inputLevels.HasValue ? this.inputLevels.Value : ((this.Variant != null) ? this.teamColorManager[this.Variant].InputLevels : default);
 
         private Vector2? outputLevels;
-        public Vector2 OutputLevels => outputLevels.HasValue ? outputLevels.Value : ((Variant != null) ? teamColorManager[Variant].OutputLevels : default);
+        public Vector2 OutputLevels => this.outputLevels.HasValue ? this.outputLevels.Value : ((this.Variant != null) ? this.teamColorManager[this.Variant].OutputLevels : default);
 
         private Vector3? overallInputLevels;
-        public Vector3 OverallInputLevels => overallInputLevels.HasValue ? overallInputLevels.Value : ((Variant != null) ? teamColorManager[Variant].OverallInputLevels : default);
+        public Vector3 OverallInputLevels => this.overallInputLevels.HasValue ? this.overallInputLevels.Value : ((this.Variant != null) ? this.teamColorManager[this.Variant].OverallInputLevels : default);
 
         private Vector2? overallOutputLevels;
-        public Vector2 OverallOutputLevels => overallOutputLevels.HasValue ? overallOutputLevels.Value : ((Variant != null) ? teamColorManager[Variant].OverallOutputLevels : default);
+        public Vector2 OverallOutputLevels => this.overallOutputLevels.HasValue ? this.overallOutputLevels.Value : ((this.Variant != null) ? this.teamColorManager[this.Variant].OverallOutputLevels : default);
 
         private Color? radarMapColor;
-        public Color RadarMapColor => radarMapColor.HasValue ? radarMapColor.Value : ((Variant != null) ? teamColorManager[Variant].RadarMapColor : default);
+        public Color RadarMapColor => this.radarMapColor.HasValue ? this.radarMapColor.Value : ((this.Variant != null) ? this.teamColorManager[this.Variant].RadarMapColor : default);
 
-        public TeamColor(TeamColorManager teamColorManager, MegafileManager megafileManager)
-        {
+        public TeamColor(TeamColorManager teamColorManager, MegafileManager megafileManager) {
             this.teamColorManager = teamColorManager;
             this.megafileManager = megafileManager;
         }
 
-        public void Load(string xml)
-        {
-            XmlDocument xmlDoc = new XmlDocument();
+        public void Load(string xml) {
+            var xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xml);
 
             var node = xmlDoc.FirstChild;
-            Name = node.Attributes["Name"].Value;
-            Variant = node.Attributes["Variant"]?.Value;
+            this.Name = node.Attributes["Name"].Value;
+            this.Variant = node.Attributes["Variant"]?.Value;
 
             var lowerBoundsNode = node.SelectSingleNode("LowerBounds");
-            if (lowerBoundsNode != null)
-            {
-                lowerBounds = Color.FromArgb(
+            if(lowerBoundsNode != null) {
+                this.lowerBounds = Color.FromArgb(
                     (int)(float.Parse(lowerBoundsNode.SelectSingleNode("R").InnerText) * 255),
                     (int)(float.Parse(lowerBoundsNode.SelectSingleNode("G").InnerText) * 255),
                     (int)(float.Parse(lowerBoundsNode.SelectSingleNode("B").InnerText) * 255)
@@ -80,9 +79,8 @@ namespace MobiusEditor.Utility
             }
 
             var upperBoundsNode = node.SelectSingleNode("UpperBounds");
-            if (upperBoundsNode != null)
-            {
-                upperBounds = Color.FromArgb(
+            if(upperBoundsNode != null) {
+                this.upperBounds = Color.FromArgb(
                     (int)(float.Parse(upperBoundsNode.SelectSingleNode("R").InnerText) * 255),
                     (int)(float.Parse(upperBoundsNode.SelectSingleNode("G").InnerText) * 255),
                     (int)(float.Parse(upperBoundsNode.SelectSingleNode("B").InnerText) * 255)
@@ -90,15 +88,13 @@ namespace MobiusEditor.Utility
             }
 
             var fudgeNode = node.SelectSingleNode("Fudge");
-            if (fudgeNode != null)
-            {
-                fudge = float.Parse(fudgeNode.InnerText);
+            if(fudgeNode != null) {
+                this.fudge = float.Parse(fudgeNode.InnerText);
             }
 
             var hsvShiftNode = node.SelectSingleNode("HSVShift");
-            if (hsvShiftNode != null)
-            {
-                hsvShift = new Vector3(
+            if(hsvShiftNode != null) {
+                this.hsvShift = new Vector3(
                     float.Parse(hsvShiftNode.SelectSingleNode("X").InnerText),
                     float.Parse(hsvShiftNode.SelectSingleNode("Y").InnerText),
                     float.Parse(hsvShiftNode.SelectSingleNode("Z").InnerText)
@@ -106,9 +102,8 @@ namespace MobiusEditor.Utility
             }
 
             var inputLevelsNode = node.SelectSingleNode("InputLevels");
-            if (inputLevelsNode != null)
-            {
-                inputLevels = new Vector3(
+            if(inputLevelsNode != null) {
+                this.inputLevels = new Vector3(
                     float.Parse(inputLevelsNode.SelectSingleNode("X").InnerText),
                     float.Parse(inputLevelsNode.SelectSingleNode("Y").InnerText),
                     float.Parse(inputLevelsNode.SelectSingleNode("Z").InnerText)
@@ -116,18 +111,16 @@ namespace MobiusEditor.Utility
             }
 
             var outputLevelsNode = node.SelectSingleNode("OutputLevels");
-            if (outputLevelsNode != null)
-            {
-                outputLevels = new Vector2(
+            if(outputLevelsNode != null) {
+                this.outputLevels = new Vector2(
                     float.Parse(outputLevelsNode.SelectSingleNode("X").InnerText),
                     float.Parse(outputLevelsNode.SelectSingleNode("Y").InnerText)
                 );
             }
 
             var overallInputLevelsNode = node.SelectSingleNode("OverallInputLevels");
-            if (overallInputLevelsNode != null)
-            {
-                overallInputLevels = new Vector3(
+            if(overallInputLevelsNode != null) {
+                this.overallInputLevels = new Vector3(
                     float.Parse(overallInputLevelsNode.SelectSingleNode("X").InnerText),
                     float.Parse(overallInputLevelsNode.SelectSingleNode("Y").InnerText),
                     float.Parse(overallInputLevelsNode.SelectSingleNode("Z").InnerText)
@@ -135,18 +128,16 @@ namespace MobiusEditor.Utility
             }
 
             var overallOutputLevelsNode = node.SelectSingleNode("OverallOutputLevels");
-            if (outputLevelsNode != null)
-            {
-                overallOutputLevels = new Vector2(
+            if(outputLevelsNode != null) {
+                this.overallOutputLevels = new Vector2(
                     float.Parse(overallOutputLevelsNode.SelectSingleNode("X").InnerText),
                     float.Parse(overallOutputLevelsNode.SelectSingleNode("Y").InnerText)
                 );
             }
 
             var radarMapColorNode = node.SelectSingleNode("RadarMapColor");
-            if (radarMapColorNode != null)
-            {
-                radarMapColor = Color.FromArgb(
+            if(radarMapColorNode != null) {
+                this.radarMapColor = Color.FromArgb(
                     (int)(float.Parse(radarMapColorNode.SelectSingleNode("R").InnerText) * 255),
                     (int)(float.Parse(radarMapColorNode.SelectSingleNode("G").InnerText) * 255),
                     (int)(float.Parse(radarMapColorNode.SelectSingleNode("B").InnerText) * 255)
@@ -154,17 +145,16 @@ namespace MobiusEditor.Utility
             }
         }
 
-        public void Flatten()
-        {
-            lowerBounds = LowerBounds;
-            upperBounds = UpperBounds;
-            fudge = Fudge;
-            hsvShift = HSVShift;
-            inputLevels = InputLevels;
-            outputLevels = OutputLevels;
-            overallInputLevels = OverallInputLevels;
-            overallOutputLevels = OverallOutputLevels;
-            radarMapColor = RadarMapColor;
+        public void Flatten() {
+            this.lowerBounds = this.LowerBounds;
+            this.upperBounds = this.UpperBounds;
+            this.fudge = this.Fudge;
+            this.hsvShift = this.HSVShift;
+            this.inputLevels = this.InputLevels;
+            this.outputLevels = this.OutputLevels;
+            this.overallInputLevels = this.OverallInputLevels;
+            this.overallOutputLevels = this.OverallOutputLevels;
+            this.radarMapColor = this.RadarMapColor;
         }
     }
 }

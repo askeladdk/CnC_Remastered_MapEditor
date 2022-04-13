@@ -6,28 +6,26 @@
 // Changes to this file will be reverted when you update Steamworks.NET
 
 #if UNITY_ANDROID || UNITY_IOS || UNITY_TIZEN || UNITY_TVOS || UNITY_WEBGL || UNITY_WSA || UNITY_PS4 || UNITY_WII || UNITY_XBOXONE || UNITY_SWITCH
-	#define DISABLESTEAMWORKS
+#define DISABLESTEAMWORKS
 #endif
 
 #if !DISABLESTEAMWORKS
 
-using System.Runtime.InteropServices;
-using IntPtr = System.IntPtr;
 
 namespace Steamworks {
-	// servernetadr_t is all the addressing info the serverbrowser needs to know about a game server,
-	// namely: its IP, its connection port, and its query port.
-	[System.Serializable]
-	public struct servernetadr_t {
-		private ushort m_usConnectionPort;	// (in HOST byte order)
-		private ushort m_usQueryPort;
-		private uint m_unIP;
+    // servernetadr_t is all the addressing info the serverbrowser needs to know about a game server,
+    // namely: its IP, its connection port, and its query port.
+    [System.Serializable]
+    public struct servernetadr_t {
+        private ushort m_usConnectionPort;  // (in HOST byte order)
+        private ushort m_usQueryPort;
+        private uint m_unIP;
 
-		public void Init(uint ip, ushort usQueryPort, ushort usConnectionPort) {
-			m_unIP = ip;
-			m_usQueryPort = usQueryPort;
-			m_usConnectionPort = usConnectionPort;
-		}
+        public void Init(uint ip, ushort usQueryPort, ushort usConnectionPort) {
+            this.m_unIP = ip;
+            this.m_usQueryPort = usQueryPort;
+            this.m_usConnectionPort = usConnectionPort;
+        }
 
 #if NETADR_H
 		public netadr_t GetIPAndQueryPort() {
@@ -35,82 +33,50 @@ namespace Steamworks {
 		}
 #endif
 
-		// Access the query port.
-		public ushort GetQueryPort() {
-			return m_usQueryPort;
-		}
+        // Access the query port.
+        public ushort GetQueryPort() => this.m_usQueryPort;
 
-		public void SetQueryPort(ushort usPort) {
-			m_usQueryPort = usPort;
-		}
+        public void SetQueryPort(ushort usPort) => this.m_usQueryPort = usPort;
 
-		// Access the connection port.
-		public ushort GetConnectionPort() {
-			return m_usConnectionPort;
-		}
+        // Access the connection port.
+        public ushort GetConnectionPort() => this.m_usConnectionPort;
 
-		public void SetConnectionPort(ushort usPort) {
-			m_usConnectionPort = usPort;
-		}
+        public void SetConnectionPort(ushort usPort) => this.m_usConnectionPort = usPort;
 
-		// Access the IP
-		public uint GetIP() {
-			return m_unIP;
-		}
+        // Access the IP
+        public uint GetIP() => this.m_unIP;
 
-		public void SetIP(uint unIP) {
-			m_unIP = unIP;
-		}
+        public void SetIP(uint unIP) => this.m_unIP = unIP;
 
-		// This gets the 'a.b.c.d:port' string with the connection port (instead of the query port).
-		public string GetConnectionAddressString() {
-			return ToString(m_unIP, m_usConnectionPort);
-		}
+        // This gets the 'a.b.c.d:port' string with the connection port (instead of the query port).
+        public string GetConnectionAddressString() => ToString(this.m_unIP, this.m_usConnectionPort);
 
-		public string GetQueryAddressString() {
-			return ToString(m_unIP, m_usQueryPort);
-		}
+        public string GetQueryAddressString() => ToString(this.m_unIP, this.m_usQueryPort);
 
-		public static string ToString(uint unIP, ushort usPort) {
+        public static string ToString(uint unIP, ushort usPort) =>
 #if VALVE_BIG_ENDIAN
 		return string.Format("{0}.{1}.{2}.{3}:{4}", unIP & 0xFFul, (unIP >> 8) & 0xFFul, (unIP >> 16) & 0xFFul, (unIP >> 24) & 0xFFul, usPort);
 #else
-		return string.Format("{0}.{1}.{2}.{3}:{4}", (unIP >> 24) & 0xFFul, (unIP >> 16) & 0xFFul, (unIP >> 8) & 0xFFul, unIP & 0xFFul, usPort);
+        string.Format("{0}.{1}.{2}.{3}:{4}", (unIP >> 24) & 0xFFul, (unIP >> 16) & 0xFFul, (unIP >> 8) & 0xFFul, unIP & 0xFFul, usPort);
 #endif
-		}
 
-		public static bool operator <(servernetadr_t x, servernetadr_t y) {
-			return (x.m_unIP < y.m_unIP) || (x.m_unIP == y.m_unIP && x.m_usQueryPort < y.m_usQueryPort);
-		}
 
-		public static bool operator >(servernetadr_t x, servernetadr_t y) {
-			return (x.m_unIP > y.m_unIP) || (x.m_unIP == y.m_unIP && x.m_usQueryPort > y.m_usQueryPort);
-		}
+        public static bool operator <(servernetadr_t x, servernetadr_t y) => (x.m_unIP < y.m_unIP) || (x.m_unIP == y.m_unIP && x.m_usQueryPort < y.m_usQueryPort);
 
-		public override bool Equals(object other) {
-			return other is servernetadr_t && this == (servernetadr_t)other;
-		}
+        public static bool operator >(servernetadr_t x, servernetadr_t y) => (x.m_unIP > y.m_unIP) || (x.m_unIP == y.m_unIP && x.m_usQueryPort > y.m_usQueryPort);
 
-		public override int GetHashCode() {
-			return m_unIP.GetHashCode() + m_usQueryPort.GetHashCode() + m_usConnectionPort.GetHashCode();
-		}
+        public override bool Equals(object other) => other is servernetadr_t && this == (servernetadr_t)other;
 
-		public static bool operator ==(servernetadr_t x, servernetadr_t y) {
-			return (x.m_unIP == y.m_unIP) && (x.m_usQueryPort == y.m_usQueryPort) && (x.m_usConnectionPort == y.m_usConnectionPort);
-		}
+        public override int GetHashCode() => this.m_unIP.GetHashCode() + this.m_usQueryPort.GetHashCode() + this.m_usConnectionPort.GetHashCode();
 
-		public static bool operator !=(servernetadr_t x, servernetadr_t y) {
-			return !(x == y);
-		}
+        public static bool operator ==(servernetadr_t x, servernetadr_t y) => (x.m_unIP == y.m_unIP) && (x.m_usQueryPort == y.m_usQueryPort) && (x.m_usConnectionPort == y.m_usConnectionPort);
 
-		public bool Equals(servernetadr_t other) {
-			return (m_unIP == other.m_unIP) && (m_usQueryPort == other.m_usQueryPort) && (m_usConnectionPort == other.m_usConnectionPort);
-		}
+        public static bool operator !=(servernetadr_t x, servernetadr_t y) => !(x == y);
 
-		public int CompareTo(servernetadr_t other) {
-			return m_unIP.CompareTo(other.m_unIP) + m_usQueryPort.CompareTo(other.m_usQueryPort) + m_usConnectionPort.CompareTo(other.m_usConnectionPort);
-		}
-	}
+        public bool Equals(servernetadr_t other) => (this.m_unIP == other.m_unIP) && (this.m_usQueryPort == other.m_usQueryPort) && (this.m_usConnectionPort == other.m_usConnectionPort);
+
+        public int CompareTo(servernetadr_t other) => this.m_unIP.CompareTo(other.m_unIP) + this.m_usQueryPort.CompareTo(other.m_usQueryPort) + this.m_usConnectionPort.CompareTo(other.m_usConnectionPort);
+    }
 }
 
 #endif // !DISABLESTEAMWORKS

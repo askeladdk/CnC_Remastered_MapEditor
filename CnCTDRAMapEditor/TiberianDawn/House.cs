@@ -12,13 +12,10 @@
 // distributed with this program. You should have received a copy of the 
 // GNU General Public License along with permitted additional restrictions 
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
-namespace MobiusEditor.TiberianDawn
-{
-    public class House : Model.House
-    {
+namespace MobiusEditor.TiberianDawn {
+    public class House : Model.House {
         public House(Model.HouseType type)
-            : base(type)
-        {
+            : base(type) {
         }
     }
 }

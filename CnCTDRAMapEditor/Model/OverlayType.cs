@@ -17,111 +17,101 @@ using MobiusEditor.Utility;
 using System;
 using System.Drawing;
 
-namespace MobiusEditor.Model
-{
+namespace MobiusEditor.Model {
     [Flags]
-    public enum OverlayTypeFlag
-    {
-        None            = 0,
-        TiberiumOrGold  = (1 << 0),
-        Gems            = (1 << 1),
-        Wall            = (1 << 2),
-        Crate           = (1 << 3),
-        Flag            = (1 << 4),
+    public enum OverlayTypeFlag {
+        None = 0,
+        TiberiumOrGold = (1 << 0),
+        Gems = (1 << 1),
+        Wall = (1 << 2),
+        Crate = (1 << 3),
+        Flag = (1 << 4),
     }
 
-    public class OverlayType : ICellOccupier, IBrowsableType
-    {
-        public sbyte ID { get; private set; }
+    public class OverlayType : ICellOccupier, IBrowsableType {
+        public sbyte ID {
+            get; private set;
+        }
 
-        public string Name { get; private set; }
+        public string Name {
+            get; private set;
+        }
 
-        public string DisplayName { get; private set; }
+        public string DisplayName {
+            get; private set;
+        }
 
-        public TheaterType[] Theaters { get; private set; }
+        public TheaterType[] Theaters {
+            get; private set;
+        }
 
-        public OverlayTypeFlag Flag { get; private set; }
+        public OverlayTypeFlag Flag {
+            get; private set;
+        }
 
-        public Image Thumbnail { get; set; }
+        public Image Thumbnail {
+            get; set;
+        }
 
         public bool[,] OccupyMask => new bool[1, 1] { { true } };
 
-        public bool IsResource => (Flag & (OverlayTypeFlag.TiberiumOrGold | OverlayTypeFlag.Gems)) != OverlayTypeFlag.None;
+        public bool IsResource => (this.Flag & (OverlayTypeFlag.TiberiumOrGold | OverlayTypeFlag.Gems)) != OverlayTypeFlag.None;
 
-        public bool IsTiberiumOrGold => (Flag & OverlayTypeFlag.TiberiumOrGold) != OverlayTypeFlag.None;
+        public bool IsTiberiumOrGold => (this.Flag & OverlayTypeFlag.TiberiumOrGold) != OverlayTypeFlag.None;
 
-        public bool IsGem => (Flag & OverlayTypeFlag.Gems) != OverlayTypeFlag.None;
+        public bool IsGem => (this.Flag & OverlayTypeFlag.Gems) != OverlayTypeFlag.None;
 
-        public bool IsWall => (Flag & OverlayTypeFlag.Wall) != OverlayTypeFlag.None;
+        public bool IsWall => (this.Flag & OverlayTypeFlag.Wall) != OverlayTypeFlag.None;
 
-        public bool IsCrate => (Flag & OverlayTypeFlag.Crate) != OverlayTypeFlag.None;
+        public bool IsCrate => (this.Flag & OverlayTypeFlag.Crate) != OverlayTypeFlag.None;
 
-        public bool IsFlag => (Flag & OverlayTypeFlag.Flag) != OverlayTypeFlag.None;
+        public bool IsFlag => (this.Flag & OverlayTypeFlag.Flag) != OverlayTypeFlag.None;
 
-        public bool IsPlaceable => (Flag & ~OverlayTypeFlag.Crate) == OverlayTypeFlag.None;
+        public bool IsPlaceable => (this.Flag & ~OverlayTypeFlag.Crate) == OverlayTypeFlag.None;
 
-        public OverlayType(sbyte id, string name, string textId, TheaterType[] theaters, OverlayTypeFlag flag)
-        {
-            ID = id;
-            Name = name;
-            DisplayName = Globals.TheGameTextManager[textId];
-            Theaters = theaters;
-            Flag = flag;
+        public OverlayType(sbyte id, string name, string textId, TheaterType[] theaters, OverlayTypeFlag flag) {
+            this.ID = id;
+            this.Name = name;
+            this.DisplayName = Globals.TheGameTextManager[textId];
+            this.Theaters = theaters;
+            this.Flag = flag;
         }
 
         public OverlayType(sbyte id, string name, string textId, OverlayTypeFlag flag)
-            : this(id, name, textId, null, flag)
-        {
+            : this(id, name, textId, null, flag) {
         }
 
         public OverlayType(sbyte id, string name, string textId, TheaterType[] theaters)
-            : this(id, name, textId, theaters, OverlayTypeFlag.None)
-        {
+            : this(id, name, textId, theaters, OverlayTypeFlag.None) {
         }
 
         public OverlayType(sbyte id, string name, OverlayTypeFlag flag)
-            : this(id, name, name, null, flag)
-        {
+            : this(id, name, name, null, flag) {
         }
 
         public OverlayType(sbyte id, string name, string textId)
-            : this(id, name, textId, null, OverlayTypeFlag.None)
-        {
+            : this(id, name, textId, null, OverlayTypeFlag.None) {
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is OverlayType)
-            {
+        public override bool Equals(object obj) {
+            if(obj is OverlayType) {
                 return this == obj;
-            }
-            else if (obj is sbyte)
-            {
-                return ID == (sbyte)obj;
-            }
-            else if (obj is string)
-            {
-                return string.Equals(Name, obj as string, StringComparison.OrdinalIgnoreCase);
+            } else if(obj is sbyte) {
+                return this.ID == (sbyte)obj;
+            } else if(obj is string) {
+                return string.Equals(this.Name, obj as string, StringComparison.OrdinalIgnoreCase);
             }
 
             return base.Equals(obj);
         }
 
-        public override int GetHashCode()
-        {
-            return ID.GetHashCode();
-        }
+        public override int GetHashCode() => this.ID.GetHashCode();
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => this.Name;
 
-        public void Init(TheaterType theater)
-        {
-            if (Globals.TheTilesetManager.GetTileData(theater.Tilesets, Name, 0, out Tile tile))
-            {
-                Thumbnail = new Bitmap(tile.Image, tile.Image.Width, tile.Image.Height);
+        public void Init(TheaterType theater) {
+            if(Globals.TheTilesetManager.GetTileData(theater.Tilesets, this.Name, 0, out Tile tile)) {
+                this.Thumbnail = new Bitmap(tile.Image, tile.Image.Width, tile.Image.Height);
             }
         }
     }

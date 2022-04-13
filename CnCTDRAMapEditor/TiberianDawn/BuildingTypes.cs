@@ -14,14 +14,11 @@
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using MobiusEditor.Model;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.TiberianDawn
-{
-    public static class BuildingTypes
-    {
+namespace MobiusEditor.TiberianDawn {
+    public static class BuildingTypes {
         public static readonly BuildingType Weapon = new BuildingType(0, "weap", "TEXT_STRUCTURE_TITLE_GDI_WEAPONS_FACTORY", new bool[3, 3] { { false, false, false }, { true, true, true }, { true, true, true } }, true, "Goodguy", false, false, "weap2");
         public static readonly BuildingType GTower = new BuildingType(1, "gtwr", "TEXT_STRUCTURE_TITLE_GDI_GUARD_TOWER", new bool[1, 1] { { true } }, false, "Goodguy");
         public static readonly BuildingType ATower = new BuildingType(2, "atwr", "TEXT_STRUCTURE_TITLE_GDI_ADV_GUARD_TOWER", new bool[2, 1] { { false }, { true } }, false, "Goodguy");
@@ -39,7 +36,7 @@ namespace MobiusEditor.TiberianDawn
         public static readonly BuildingType Hospital = new BuildingType(14, "hosp", "TEXT_UNIT_TITLE_HOSP", new bool[2, 2] { { true, true }, { true, true } }, true, "Goodguy");
         public static readonly BuildingType Barracks = new BuildingType(15, "pyle", "TEXT_STRUCTURE_TITLE_GDI_BARRACKS", new bool[2, 2] { { true, true }, { false, false } }, true, "Goodguy");
         public static readonly BuildingType Tanker = new BuildingType(16, "arco", "TEXT_UNIT_TITLE_ARCO", new bool[1, 2] { { true, true } }, false, "Goodguy");
-        public static readonly BuildingType Repair = new BuildingType(17, "fix", "TEXT_STRUCTURE_TITLE_GDI_REPAIR_FACILITY", new bool[3, 3] { { false, true, false }, { true, true, true }, { false, true, false} }, true, "Goodguy");
+        public static readonly BuildingType Repair = new BuildingType(17, "fix", "TEXT_STRUCTURE_TITLE_GDI_REPAIR_FACILITY", new bool[3, 3] { { false, true, false }, { true, true, true }, { false, true, false } }, true, "Goodguy");
         public static readonly BuildingType BioLab = new BuildingType(18, "bio", "TEXT_UNIT_TITLE_BIO", new bool[2, 2] { { true, true }, { true, true } }, true, "Goodguy");
         public static readonly BuildingType Hand = new BuildingType(19, "hand", "TEXT_STRUCTURE_TITLE_NOD_HAND_OF_NOD", new bool[3, 2] { { false, false }, { true, true }, { false, true } }, true, "Badguy");
         public static readonly BuildingType Temple = new BuildingType(20, "tmpl", "TEXT_STRUCTURE_TITLE_NOD_TEMPLE_OF_NOD", new bool[3, 3] { { false, false, false }, { true, true, true }, { true, true, true } }, true, "Badguy");
@@ -85,17 +82,11 @@ namespace MobiusEditor.TiberianDawn
 
         private static readonly BuildingType[] Types;
 
-        static BuildingTypes()
-        {
-            Types =
+        static BuildingTypes() => Types =
                 (from field in typeof(BuildingTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsInitOnly && typeof(BuildingType).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as BuildingType).ToArray();
-        }
 
-        public static IEnumerable<BuildingType> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<BuildingType> GetTypes() => Types;
     }
 }

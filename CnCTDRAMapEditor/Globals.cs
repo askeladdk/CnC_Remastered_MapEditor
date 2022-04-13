@@ -17,14 +17,9 @@ using System;
 using System.Drawing;
 using System.IO;
 
-namespace MobiusEditor
-{
-    public static class Globals
-    {
-        static Globals()
-        {
-            TileScale = Properties.Settings.Default.Quality;
-        }
+namespace MobiusEditor {
+    public static class Globals {
+        static Globals() => TileScale = Properties.Settings.Default.Quality;
 
         public const string TilesetsXMLPath = @"DATA\XML\TILESETS.XML";
         public const string TexturesPath = @"DATA\ART\TEXTURES\SRGB";
@@ -35,7 +30,9 @@ namespace MobiusEditor
         public const int OriginalTileHeight = 128;
         public static readonly Size OriginalTileSize = new Size(OriginalTileWidth, OriginalTileHeight);
 
-        public static int TileScale { get; set; }
+        public static int TileScale {
+            get; set;
+        }
         public static int TileWidth => OriginalTileWidth / TileScale;
         public static int TileHeight => OriginalTileHeight / TileScale;
         public static Size TileSize => new Size(TileWidth, TileHeight);
@@ -63,8 +60,7 @@ namespace MobiusEditor
         public static readonly string RootSaveDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"CnCRemastered\Local_Custom_Maps");
 
 #if DEVELOPER
-        public static class Developer
-        {
+        public static class Developer {
             public static bool ShowOverlapCells = false;
         }
 #endif

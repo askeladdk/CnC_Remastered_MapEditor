@@ -27,10 +27,8 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools
-{
-    public abstract class ViewTool : ITool
-    {
+namespace MobiusEditor.Tools {
+    public abstract class ViewTool : ITool {
         protected readonly IGamePlugin plugin;
         protected readonly Map map;
 
@@ -39,103 +37,84 @@ namespace MobiusEditor.Tools
         protected readonly UndoRedoList<UndoRedoEventArgs> url;
         protected readonly NavigationWidget navigationWidget;
 
-        protected virtual Map RenderMap => map;
+        protected virtual Map RenderMap => this.map;
 
         private MapLayerFlag layers;
-        public MapLayerFlag Layers
-        {
-            get => layers;
-            set
-            {
-                if (layers != value)
-                {
-                    layers = value;
-                    Invalidate();
+        public MapLayerFlag Layers {
+            get => this.layers;
+            set {
+                if(this.layers != value) {
+                    this.layers = value;
+                    this.Invalidate();
                 }
             }
         }
 
-        public ViewTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
-        {
+        public ViewTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url) {
             this.layers = layers;
             this.plugin = plugin;
             this.url = url;
 
             this.mapPanel = mapPanel;
-            this.mapPanel.PreRender += MapPanel_PreRender;
-            this.mapPanel.PostRender += MapPanel_PostRender;
+            this.mapPanel.PreRender += this.MapPanel_PreRender;
+            this.mapPanel.PostRender += this.MapPanel_PostRender;
 
             this.statusLbl = statusLbl;
 
-            map = plugin.Map;
-            map.BasicSection.PropertyChanged += BasicSection_PropertyChanged;
+            this.map = plugin.Map;
+            this.map.BasicSection.PropertyChanged += this.BasicSection_PropertyChanged;
 
-            navigationWidget = new NavigationWidget(mapPanel, map.Metrics, Globals.TileSize);
+            this.navigationWidget = new NavigationWidget(mapPanel, this.map.Metrics, Globals.TileSize);
         }
 
-        protected void Invalidate()
-        {
-            mapPanel.Invalidate(RenderMap);
-        }
+        protected void Invalidate() => this.mapPanel.Invalidate(this.RenderMap);
 
-        private void BasicSection_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "BasePlayer":
-                    {
-                        foreach (var baseBuilding in map.Buildings.OfType<Building>().Select(x => x.Occupier).Where(x => x.BasePriority >= 0))
-                        {
-                            mapPanel.Invalidate(map, baseBuilding);
-                        }
-                    }
-                    break;
+        private void BasicSection_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            switch(e.PropertyName) {
+            case "BasePlayer": {
+                foreach(var baseBuilding in this.map.Buildings.OfType<Building>().Select(x => x.Occupier).Where(x => x.BasePriority >= 0)) {
+                    this.mapPanel.Invalidate(this.map, baseBuilding);
+                }
+            }
+            break;
             }
         }
 
-        private void MapPanel_PreRender(object sender, RenderEventArgs e)
-        {
-            if ((e.Cells != null) && (e.Cells.Count == 0))
-            {
+        private void MapPanel_PreRender(object sender, RenderEventArgs e) {
+            if((e.Cells != null) && (e.Cells.Count == 0)) {
                 return;
             }
 
-            PreRenderMap();
+            this.PreRenderMap();
 
-            using (var g = Graphics.FromImage(mapPanel.MapImage))
-            {
-                if (Properties.Settings.Default.Quality > 1)
-                {
+            using(var g = Graphics.FromImage(this.mapPanel.MapImage)) {
+                if(Properties.Settings.Default.Quality > 1) {
                     g.InterpolationMode = InterpolationMode.NearestNeighbor;
                     g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
                 }
 
-                MapRenderer.Render(plugin.GameType, RenderMap, g, e.Cells?.Where(p => map.Metrics.Contains(p)).ToHashSet(), Layers);
+                MapRenderer.Render(this.plugin.GameType, this.RenderMap, g, e.Cells?.Where(p => this.map.Metrics.Contains(p)).ToHashSet(), this.Layers);
             }
         }
 
-        private void MapPanel_PostRender(object sender, RenderEventArgs e)
-        {
-            PostRenderMap(e.Graphics);
-            navigationWidget.Render(e.Graphics);
+        private void MapPanel_PostRender(object sender, RenderEventArgs e) {
+            this.PostRenderMap(e.Graphics);
+            this.navigationWidget.Render(e.Graphics);
         }
 
-        protected virtual void PreRenderMap() { }
+        protected virtual void PreRenderMap() {
+        }
 
-        protected virtual void PostRenderMap(Graphics graphics)
-        {
-            if ((Layers & MapLayerFlag.Waypoints) != MapLayerFlag.None)
-            {
+        protected virtual void PostRenderMap(Graphics graphics) {
+            if((this.Layers & MapLayerFlag.Waypoints) != MapLayerFlag.None) {
                 var waypointBackgroundBrush = new SolidBrush(Color.FromArgb(96, Color.Black));
                 var waypointBrush = new SolidBrush(Color.FromArgb(128, Color.DarkOrange));
                 var waypointPen = new Pen(Color.DarkOrange);
 
-                foreach (var waypoint in map.Waypoints)
-                {
-                    if (waypoint.Cell.HasValue)
-                    {
-                        var x = waypoint.Cell.Value % map.Metrics.Width;
-                        var y = waypoint.Cell.Value / map.Metrics.Width;
+                foreach(var waypoint in this.map.Waypoints) {
+                    if(waypoint.Cell.HasValue) {
+                        var x = waypoint.Cell.Value % this.map.Metrics.Width;
+                        var y = waypoint.Cell.Value / this.map.Metrics.Width;
 
                         var location = new Point(x * Globals.TileWidth, y * Globals.TileHeight);
                         var textBounds = new Rectangle(location, Globals.TileSize);
@@ -143,8 +122,7 @@ namespace MobiusEditor.Tools
                         graphics.FillRectangle(waypointBackgroundBrush, textBounds);
                         graphics.DrawRectangle(waypointPen, textBounds);
 
-                        StringFormat stringFormat = new StringFormat
-                        {
+                        var stringFormat = new StringFormat {
                             Alignment = StringAlignment.Center,
                             LineAlignment = StringAlignment.Center
                         };
@@ -156,61 +134,49 @@ namespace MobiusEditor.Tools
                 }
             }
 
-            if ((Layers & MapLayerFlag.TechnoTriggers) != MapLayerFlag.None)
-            {
+            if((this.Layers & MapLayerFlag.TechnoTriggers) != MapLayerFlag.None) {
                 var technoTriggerBackgroundBrush = new SolidBrush(Color.FromArgb(96, Color.Black));
                 var technoTriggerBrush = new SolidBrush(Color.LimeGreen);
                 var technoTriggerPen = new Pen(Color.LimeGreen);
 
-                foreach (var (cell, techno) in map.Technos)
-                {
+                foreach(var (cell, techno) in this.map.Technos) {
                     var location = new Point(cell.X * Globals.TileWidth, cell.Y * Globals.TileHeight);
 
                     (string trigger, Rectangle bounds)[] triggers = null;
-                    if (techno is Terrain terrain)
-                    {
+                    if(techno is Terrain terrain) {
                         triggers = new (string, Rectangle)[] { (terrain.Trigger, new Rectangle(location, terrain.Type.RenderSize)) };
-                    }
-                    else if (techno is Building building)
-                    {
+                    } else if(techno is Building building) {
                         var size = new Size(building.Type.Size.Width * Globals.TileWidth, building.Type.Size.Height * Globals.TileHeight);
                         triggers = new (string, Rectangle)[] { (building.Trigger, new Rectangle(location, size)) };
-                    }
-                    else if (techno is Unit unit)
-                    {
+                    } else if(techno is Unit unit) {
                         triggers = new (string, Rectangle)[] { (unit.Trigger, new Rectangle(location, Globals.TileSize)) };
-                    }
-                    else if (techno is InfantryGroup infantryGroup)
-                    {
-                        List<(string, Rectangle)> infantryTriggers = new List<(string, Rectangle)>();
-                        for (var i = 0; i < infantryGroup.Infantry.Length; ++i)
-                        {
+                    } else if(techno is InfantryGroup infantryGroup) {
+                        var infantryTriggers = new List<(string, Rectangle)>();
+                        for(var i = 0; i < infantryGroup.Infantry.Length; ++i) {
                             var infantry = infantryGroup.Infantry[i];
-                            if (infantry == null)
-                            {
+                            if(infantry == null) {
                                 continue;
                             }
 
                             var size = Globals.TileSize;
                             var offset = Size.Empty;
-                            switch ((InfantryStoppingType)i)
-                            {
-                                case InfantryStoppingType.UpperLeft:
-                                    offset.Width = -size.Width / 4;
-                                    offset.Height = -size.Height / 4;
-                                    break;
-                                case InfantryStoppingType.UpperRight:
-                                    offset.Width = size.Width / 4;
-                                    offset.Height = -size.Height / 4;
-                                    break;
-                                case InfantryStoppingType.LowerLeft:
-                                    offset.Width = -size.Width / 4;
-                                    offset.Height = size.Height / 4;
-                                    break;
-                                case InfantryStoppingType.LowerRight:
-                                    offset.Width = size.Width / 4;
-                                    offset.Height = size.Height / 4;
-                                    break;
+                            switch((InfantryStoppingType)i) {
+                            case InfantryStoppingType.UpperLeft:
+                                offset.Width = -size.Width / 4;
+                                offset.Height = -size.Height / 4;
+                                break;
+                            case InfantryStoppingType.UpperRight:
+                                offset.Width = size.Width / 4;
+                                offset.Height = -size.Height / 4;
+                                break;
+                            case InfantryStoppingType.LowerLeft:
+                                offset.Width = -size.Width / 4;
+                                offset.Height = size.Height / 4;
+                                break;
+                            case InfantryStoppingType.LowerRight:
+                                offset.Width = size.Width / 4;
+                                offset.Height = size.Height / 4;
+                                break;
                             }
 
                             var bounds = new Rectangle(location + offset, size);
@@ -220,16 +186,13 @@ namespace MobiusEditor.Tools
                         triggers = infantryTriggers.ToArray();
                     }
 
-                    if (triggers != null)
-                    {
-                        StringFormat stringFormat = new StringFormat
-                        {
+                    if(triggers != null) {
+                        var stringFormat = new StringFormat {
                             Alignment = StringAlignment.Center,
                             LineAlignment = StringAlignment.Center
                         };
 
-                        foreach (var (trigger, bounds) in triggers.Where(x => !x.trigger.Equals("None", StringComparison.OrdinalIgnoreCase)))
-                        {
+                        foreach(var (trigger, bounds) in triggers.Where(x => !x.trigger.Equals("None", StringComparison.OrdinalIgnoreCase))) {
                             var font = graphics.GetAdjustedFont(trigger, SystemFonts.DefaultFont, bounds.Width, 12 / Globals.TileScale, 24 / Globals.TileScale, true);
                             var textBounds = graphics.MeasureString(trigger, font, bounds.Width, stringFormat);
 
@@ -244,16 +207,14 @@ namespace MobiusEditor.Tools
                 }
             }
 
-            if ((Layers & MapLayerFlag.CellTriggers) != MapLayerFlag.None)
-            {
+            if((this.Layers & MapLayerFlag.CellTriggers) != MapLayerFlag.None) {
                 var cellTriggersBackgroundBrush = new SolidBrush(Color.FromArgb(96, Color.Black));
                 var cellTriggersBrush = new SolidBrush(Color.FromArgb(128, Color.White));
                 var cellTriggerPen = new Pen(Color.White);
 
-                foreach (var (cell, cellTrigger) in map.CellTriggers)
-                {
-                    var x = cell % map.Metrics.Width;
-                    var y = cell / map.Metrics.Width;
+                foreach(var (cell, cellTrigger) in this.map.CellTriggers) {
+                    var x = cell % this.map.Metrics.Width;
+                    var y = cell / this.map.Metrics.Width;
 
                     var location = new Point(x * Globals.TileWidth, y * Globals.TileHeight);
                     var textBounds = new Rectangle(location, Globals.TileSize);
@@ -261,8 +222,7 @@ namespace MobiusEditor.Tools
                     graphics.FillRectangle(cellTriggersBackgroundBrush, textBounds);
                     graphics.DrawRectangle(cellTriggerPen, textBounds);
 
-                    StringFormat stringFormat = new StringFormat
-                    {
+                    var stringFormat = new StringFormat {
                         Alignment = StringAlignment.Center,
                         LineAlignment = StringAlignment.Center
                     };
@@ -273,14 +233,13 @@ namespace MobiusEditor.Tools
                 }
             }
 
-            if ((Layers & MapLayerFlag.Boundaries) != MapLayerFlag.None)
-            {
+            if((this.Layers & MapLayerFlag.Boundaries) != MapLayerFlag.None) {
                 var boundsPen = new Pen(Color.Cyan, 8.0f);
                 var bounds = Rectangle.FromLTRB(
-                    map.Bounds.Left * Globals.TileWidth,
-                    map.Bounds.Top * Globals.TileHeight,
-                    map.Bounds.Right * Globals.TileWidth,
-                    map.Bounds.Bottom * Globals.TileHeight
+                    this.map.Bounds.Left * Globals.TileWidth,
+                    this.map.Bounds.Top * Globals.TileHeight,
+                    this.map.Bounds.Right * Globals.TileWidth,
+                    this.map.Bounds.Bottom * Globals.TileHeight
                 );
                 graphics.DrawRectangle(boundsPen, bounds);
             }
@@ -289,27 +248,21 @@ namespace MobiusEditor.Tools
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    navigationWidget.Dispose();
+        protected virtual void Dispose(bool disposing) {
+            if(!this.disposedValue) {
+                if(disposing) {
+                    this.navigationWidget.Dispose();
 
-                    mapPanel.PreRender -= MapPanel_PreRender;
-                    mapPanel.PostRender -= MapPanel_PostRender;
+                    this.mapPanel.PreRender -= this.MapPanel_PreRender;
+                    this.mapPanel.PostRender -= this.MapPanel_PostRender;
 
-                    map.BasicSection.PropertyChanged -= BasicSection_PropertyChanged;
+                    this.map.BasicSection.PropertyChanged -= this.BasicSection_PropertyChanged;
                 }
-                disposedValue = true;
+                this.disposedValue = true;
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        public void Dispose() => this.Dispose(true);
         #endregion
     }
 }

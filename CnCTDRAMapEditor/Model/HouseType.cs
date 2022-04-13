@@ -15,68 +15,59 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MobiusEditor.Model
-{
-    public class HouseType
-    {
-        public sbyte ID { get; private set; }
+namespace MobiusEditor.Model {
+    public class HouseType {
+        public sbyte ID {
+            get; private set;
+        }
 
-        public string Name { get; private set; }
+        public string Name {
+            get; private set;
+        }
 
-        public string UnitTeamColor { get; private set; }
+        public string UnitTeamColor {
+            get; private set;
+        }
 
-        public string BuildingTeamColor { get; private set; }
+        public string BuildingTeamColor {
+            get; private set;
+        }
 
-        public IDictionary<string, string> OverrideTeamColors { get; private set; }
+        public IDictionary<string, string> OverrideTeamColors {
+            get; private set;
+        }
 
-        public HouseType(sbyte id, string name, string unitTeamColor, string buildingTeamColor, params (string type, string teamColor)[] overrideTeamColors)
-        {
-            ID = id;
-            Name = name;
-            UnitTeamColor = unitTeamColor;
-            BuildingTeamColor = buildingTeamColor;
-            OverrideTeamColors = overrideTeamColors.ToDictionary(x => x.type, x => x.teamColor);
+        public HouseType(sbyte id, string name, string unitTeamColor, string buildingTeamColor, params (string type, string teamColor)[] overrideTeamColors) {
+            this.ID = id;
+            this.Name = name;
+            this.UnitTeamColor = unitTeamColor;
+            this.BuildingTeamColor = buildingTeamColor;
+            this.OverrideTeamColors = overrideTeamColors.ToDictionary(x => x.type, x => x.teamColor);
         }
 
         public HouseType(sbyte id, string name, string teamColor)
-            : this(id, name, teamColor, teamColor)
-        {
+            : this(id, name, teamColor, teamColor) {
         }
 
         public HouseType(sbyte id, string name)
-            : this(id, name, null)
-        {
+            : this(id, name, null) {
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is HouseType)
-            {
+        public override bool Equals(object obj) {
+            if(obj is HouseType) {
                 return this == obj;
-            }
-            else if (obj is sbyte)
-            {
-                return ID == (sbyte)obj;
-            }
-            else if (obj is string)
-            {
-                return string.Equals(Name, obj as string, StringComparison.OrdinalIgnoreCase);
+            } else if(obj is sbyte) {
+                return this.ID == (sbyte)obj;
+            } else if(obj is string) {
+                return string.Equals(this.Name, obj as string, StringComparison.OrdinalIgnoreCase);
             }
 
             return base.Equals(obj);
         }
 
-        public override int GetHashCode()
-        {
-            return ID.GetHashCode();
-        }
+        public override int GetHashCode() => this.ID.GetHashCode();
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => this.Name;
     }
 }

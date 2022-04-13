@@ -24,16 +24,14 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools
-{
-    public class TerrainTool : ViewTool
-    {
+namespace MobiusEditor.Tools {
+    public class TerrainTool : ViewTool {
         private readonly TypeComboBox terrainTypeComboBox;
         private readonly MapPanel terrainTypeMapPanel;
         private readonly TerrainProperties terrainProperties;
 
         private Map previewMap;
-        protected override Map RenderMap => previewMap;
+        protected override Map RenderMap => this.previewMap;
 
         private bool placementMode;
 
@@ -44,374 +42,290 @@ namespace MobiusEditor.Tools
 
         private TerrainType selectedTerrainType;
         private TerrainPropertiesPopup selectedTerrainProperties;
-        private TerrainType SelectedTerrainType
-        {
-            get => selectedTerrainType;
-            set
-            {
-                if (selectedTerrainType != value)
-                {
-                    if (placementMode && (selectedTerrainType != null))
-                    {
-                        mapPanel.Invalidate(map, new Rectangle(navigationWidget.MouseCell, selectedTerrainType.OverlapBounds.Size));
+        private TerrainType SelectedTerrainType {
+            get => this.selectedTerrainType;
+            set {
+                if(this.selectedTerrainType != value) {
+                    if(this.placementMode && (this.selectedTerrainType != null)) {
+                        this.mapPanel.Invalidate(this.map, new Rectangle(this.navigationWidget.MouseCell, this.selectedTerrainType.OverlapBounds.Size));
                     }
 
-                    selectedTerrainType = value;
-                    terrainTypeComboBox.SelectedValue = selectedTerrainType;
+                    this.selectedTerrainType = value;
+                    this.terrainTypeComboBox.SelectedValue = this.selectedTerrainType;
 
-                    if (placementMode && (selectedTerrainType != null))
-                    {
-                        mapPanel.Invalidate(map, new Rectangle(navigationWidget.MouseCell, selectedTerrainType.OverlapBounds.Size));
+                    if(this.placementMode && (this.selectedTerrainType != null)) {
+                        this.mapPanel.Invalidate(this.map, new Rectangle(this.navigationWidget.MouseCell, this.selectedTerrainType.OverlapBounds.Size));
                     }
 
-                    mockTerrain.Type = selectedTerrainType;
-                    mockTerrain.Icon = selectedTerrainType.IsTransformable ? 22 : 0;
+                    this.mockTerrain.Type = this.selectedTerrainType;
+                    this.mockTerrain.Icon = this.selectedTerrainType.IsTransformable ? 22 : 0;
 
-                    RefreshMapPanel();
+                    this.RefreshMapPanel();
                 }
             }
         }
 
         public TerrainTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, TypeComboBox terrainTypeComboBox, MapPanel terrainTypeMapPanel, TerrainProperties terrainProperties, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
-            : base(mapPanel, layers, statusLbl, plugin, url)
-        {
-            previewMap = map;
+            : base(mapPanel, layers, statusLbl, plugin, url) {
+            this.previewMap = this.map;
 
-            mockTerrain = new Terrain();
-            mockTerrain.PropertyChanged += MockTerrain_PropertyChanged;
+            this.mockTerrain = new Terrain();
+            this.mockTerrain.PropertyChanged += this.MockTerrain_PropertyChanged;
 
-            this.mapPanel.MouseDown += MapPanel_MouseDown;
-            this.mapPanel.MouseMove += MapPanel_MouseMove;
-            this.mapPanel.MouseUp += MapPanel_MouseUp;
-            this.mapPanel.MouseDoubleClick += MapPanel_MouseDoubleClick;
-            (this.mapPanel as Control).KeyDown += TerrainTool_KeyDown;
-            (this.mapPanel as Control).KeyUp += TerrainTool_KeyUp;
+            this.mapPanel.MouseDown += this.MapPanel_MouseDown;
+            this.mapPanel.MouseMove += this.MapPanel_MouseMove;
+            this.mapPanel.MouseUp += this.MapPanel_MouseUp;
+            this.mapPanel.MouseDoubleClick += this.MapPanel_MouseDoubleClick;
+            (this.mapPanel as Control).KeyDown += this.TerrainTool_KeyDown;
+            (this.mapPanel as Control).KeyUp += this.TerrainTool_KeyUp;
 
             this.terrainTypeComboBox = terrainTypeComboBox;
-            this.terrainTypeComboBox.SelectedIndexChanged += TerrainTypeCombo_SelectedIndexChanged;
+            this.terrainTypeComboBox.SelectedIndexChanged += this.TerrainTypeCombo_SelectedIndexChanged;
 
             this.terrainTypeMapPanel = terrainTypeMapPanel;
             this.terrainTypeMapPanel.BackColor = Color.White;
             this.terrainTypeMapPanel.MaxZoom = 1;
 
             this.terrainProperties = terrainProperties;
-            this.terrainProperties.Terrain = mockTerrain;
+            this.terrainProperties.Terrain = this.mockTerrain;
             this.terrainProperties.Visible = plugin.GameType == GameType.TiberianDawn;
 
-            navigationWidget.MouseCellChanged += MouseoverWidget_MouseCellChanged;
+            this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
 
-            SelectedTerrainType = terrainTypeComboBox.Types.First() as TerrainType;
+            this.SelectedTerrainType = terrainTypeComboBox.Types.First() as TerrainType;
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void MapPanel_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (Control.ModifierKeys != Keys.None)
-            {
+        private void MapPanel_MouseDoubleClick(object sender, MouseEventArgs e) {
+            if(Control.ModifierKeys != Keys.None) {
                 return;
             }
 
-            if (map.Metrics.GetCell(navigationWidget.MouseCell, out int cell))
-            {
-                if (map.Technos[cell] is Terrain terrain)
-                {
-                    selectedTerrain = null;
+            if(this.map.Metrics.GetCell(this.navigationWidget.MouseCell, out var cell)) {
+                if(this.map.Technos[cell] is Terrain terrain) {
+                    this.selectedTerrain = null;
 
-                    selectedTerrainProperties?.Close();
-                    selectedTerrainProperties = new TerrainPropertiesPopup(terrainProperties.Plugin, terrain);
-                    selectedTerrainProperties.Closed += (cs, ce) =>
-                    {
-                        navigationWidget.Refresh();
+                    this.selectedTerrainProperties?.Close();
+                    this.selectedTerrainProperties = new TerrainPropertiesPopup(this.terrainProperties.Plugin, terrain);
+                    this.selectedTerrainProperties.Closed += (cs, ce) => {
+                        this.navigationWidget.Refresh();
                     };
 
-                    selectedTerrainProperties.Show(mapPanel, mapPanel.PointToClient(Control.MousePosition));
+                    this.selectedTerrainProperties.Show(this.mapPanel, this.mapPanel.PointToClient(Control.MousePosition));
 
-                    UpdateStatus();
+                    this.UpdateStatus();
                 }
             }
         }
 
-        private void MockTerrain_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            RefreshMapPanel();
-        }
+        private void MockTerrain_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.RefreshMapPanel();
 
-        private void TerrainTypeCombo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SelectedTerrainType = terrainTypeComboBox.SelectedValue as TerrainType;
-        }
+        private void TerrainTypeCombo_SelectedIndexChanged(object sender, EventArgs e) => this.SelectedTerrainType = this.terrainTypeComboBox.SelectedValue as TerrainType;
 
-        private void TerrainTool_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ShiftKey)
-            {
-                EnterPlacementMode();
+        private void TerrainTool_KeyDown(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.ShiftKey) {
+                this.EnterPlacementMode();
             }
         }
 
-        private void TerrainTool_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ShiftKey)
-            {
-                ExitPlacementMode();
+        private void TerrainTool_KeyUp(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.ShiftKey) {
+                this.ExitPlacementMode();
             }
         }
 
-        private void MapPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (placementMode)
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    AddTerrain(navigationWidget.MouseCell);
+        private void MapPanel_MouseDown(object sender, MouseEventArgs e) {
+            if(this.placementMode) {
+                if(e.Button == MouseButtons.Left) {
+                    this.AddTerrain(this.navigationWidget.MouseCell);
+                } else if(e.Button == MouseButtons.Right) {
+                    this.RemoveTerrain(this.navigationWidget.MouseCell);
                 }
-                else if (e.Button == MouseButtons.Right)
-                {
-                    RemoveTerrain(navigationWidget.MouseCell);
-                }
-            }
-            else if (e.Button == MouseButtons.Left)
-            {
-                SelectTerrain(navigationWidget.MouseCell);
-            }
-            else if (e.Button == MouseButtons.Right)
-            {
-                PickTerrain(navigationWidget.MouseCell);
+            } else if(e.Button == MouseButtons.Left) {
+                this.SelectTerrain(this.navigationWidget.MouseCell);
+            } else if(e.Button == MouseButtons.Right) {
+                this.PickTerrain(this.navigationWidget.MouseCell);
             }
         }
 
-        private void MapPanel_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (selectedTerrain != null)
-            {
-                selectedTerrain = null;
-                selectedTerrainPivot = Point.Empty;
+        private void MapPanel_MouseUp(object sender, MouseEventArgs e) {
+            if(this.selectedTerrain != null) {
+                this.selectedTerrain = null;
+                this.selectedTerrainPivot = Point.Empty;
 
-                UpdateStatus();
+                this.UpdateStatus();
             }
         }
 
-        private void MapPanel_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (!placementMode && (Control.ModifierKeys == Keys.Shift))
-            {
-                EnterPlacementMode();
-            }
-            else if (placementMode && (Control.ModifierKeys == Keys.None))
-            {
-                ExitPlacementMode();
+        private void MapPanel_MouseMove(object sender, MouseEventArgs e) {
+            if(!this.placementMode && (Control.ModifierKeys == Keys.Shift)) {
+                this.EnterPlacementMode();
+            } else if(this.placementMode && (Control.ModifierKeys == Keys.None)) {
+                this.ExitPlacementMode();
             }
         }
 
-        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e)
-        {
-            if (placementMode)
-            {
-                if (SelectedTerrainType != null)
-                {
-                    mapPanel.Invalidate(map, new Rectangle(e.OldCell, SelectedTerrainType.OverlapBounds.Size));
-                    mapPanel.Invalidate(map, new Rectangle(e.NewCell, SelectedTerrainType.OverlapBounds.Size));
+        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e) {
+            if(this.placementMode) {
+                if(this.SelectedTerrainType != null) {
+                    this.mapPanel.Invalidate(this.map, new Rectangle(e.OldCell, this.SelectedTerrainType.OverlapBounds.Size));
+                    this.mapPanel.Invalidate(this.map, new Rectangle(e.NewCell, this.SelectedTerrainType.OverlapBounds.Size));
                 }
-            }
-            else if (selectedTerrain != null)
-            {
-                var oldLocation = map.Technos[selectedTerrain].Value;
-                var newLocation = new Point(Math.Max(0, e.NewCell.X - selectedTerrainPivot.X), Math.Max(0, e.NewCell.Y - selectedTerrainPivot.Y));
-                mapPanel.Invalidate(map, selectedTerrain);
-                map.Technos.Remove(selectedTerrain);
-                if (map.Technos.Add(newLocation, selectedTerrain))
-                {
-                    mapPanel.Invalidate(map, selectedTerrain);
-                }
-                else
-                {
-                    map.Technos.Add(oldLocation, selectedTerrain);
+            } else if(this.selectedTerrain != null) {
+                var oldLocation = this.map.Technos[this.selectedTerrain].Value;
+                var newLocation = new Point(Math.Max(0, e.NewCell.X - this.selectedTerrainPivot.X), Math.Max(0, e.NewCell.Y - this.selectedTerrainPivot.Y));
+                this.mapPanel.Invalidate(this.map, this.selectedTerrain);
+                this.map.Technos.Remove(this.selectedTerrain);
+                if(this.map.Technos.Add(newLocation, this.selectedTerrain)) {
+                    this.mapPanel.Invalidate(this.map, this.selectedTerrain);
+                } else {
+                    this.map.Technos.Add(oldLocation, this.selectedTerrain);
                 }
             }
         }
 
-        private void AddTerrain(Point location)
-        {
-            if (!map.Metrics.Contains(location))
-            {
+        private void AddTerrain(Point location) {
+            if(!this.map.Metrics.Contains(location)) {
                 return;
             }
 
-            if (SelectedTerrainType != null)
-            {
-                var terrain = mockTerrain.Clone();
-                if (map.Technos.Add(location, terrain))
-                {
-                    mapPanel.Invalidate(map, terrain);
+            if(this.SelectedTerrainType != null) {
+                var terrain = this.mockTerrain.Clone();
+                if(this.map.Technos.Add(location, terrain)) {
+                    this.mapPanel.Invalidate(this.map, terrain);
 
-                    void undoAction(UndoRedoEventArgs e)
-                    {
+                    void undoAction(UndoRedoEventArgs e) {
                         e.MapPanel.Invalidate(e.Map, location);
                         e.Map.Technos.Remove(terrain);
                     }
 
-                    void redoAction(UndoRedoEventArgs e)
-                    {
+                    void redoAction(UndoRedoEventArgs e) {
                         e.Map.Technos.Add(location, terrain);
                         e.MapPanel.Invalidate(e.Map, location);
                     }
 
-                    url.Track(undoAction, redoAction);
+                    this.url.Track(undoAction, redoAction);
 
-                    plugin.Dirty = true;
+                    this.plugin.Dirty = true;
                 }
             }
         }
 
-        private void RemoveTerrain(Point location)
-        {
-            if (map.Technos[location] is Terrain terrain)
-            {
-                mapPanel.Invalidate(map, terrain);
-                map.Technos.Remove(location);
+        private void RemoveTerrain(Point location) {
+            if(this.map.Technos[location] is Terrain terrain) {
+                this.mapPanel.Invalidate(this.map, terrain);
+                this.map.Technos.Remove(location);
 
-                void undoAction(UndoRedoEventArgs e)
-                {
+                void undoAction(UndoRedoEventArgs e) {
                     e.Map.Technos.Add(location, terrain);
                     e.MapPanel.Invalidate(e.Map, location);
                 }
 
-                void redoAction(UndoRedoEventArgs e)
-                {
+                void redoAction(UndoRedoEventArgs e) {
                     e.MapPanel.Invalidate(e.Map, location);
                     e.Map.Technos.Remove(terrain);
                 }
 
-                url.Track(undoAction, redoAction);
+                this.url.Track(undoAction, redoAction);
 
-                plugin.Dirty = true;
+                this.plugin.Dirty = true;
             }
         }
 
-        private void EnterPlacementMode()
-        {
-            if (placementMode)
-            {
+        private void EnterPlacementMode() {
+            if(this.placementMode) {
                 return;
             }
 
-            placementMode = true;
+            this.placementMode = true;
 
-            navigationWidget.MouseoverSize = Size.Empty;
+            this.navigationWidget.MouseoverSize = Size.Empty;
 
-            if (SelectedTerrainType != null)
-            {
-                mapPanel.Invalidate(map, new Rectangle(navigationWidget.MouseCell, selectedTerrainType.OverlapBounds.Size));
+            if(this.SelectedTerrainType != null) {
+                this.mapPanel.Invalidate(this.map, new Rectangle(this.navigationWidget.MouseCell, this.selectedTerrainType.OverlapBounds.Size));
             }
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void ExitPlacementMode()
-        {
-            if (!placementMode)
-            {
+        private void ExitPlacementMode() {
+            if(!this.placementMode) {
                 return;
             }
 
-            placementMode = false;
+            this.placementMode = false;
 
-            navigationWidget.MouseoverSize = new Size(1, 1);
+            this.navigationWidget.MouseoverSize = new Size(1, 1);
 
-            if (SelectedTerrainType != null)
-            {
-                mapPanel.Invalidate(map, new Rectangle(navigationWidget.MouseCell, selectedTerrainType.OverlapBounds.Size));
+            if(this.SelectedTerrainType != null) {
+                this.mapPanel.Invalidate(this.map, new Rectangle(this.navigationWidget.MouseCell, this.selectedTerrainType.OverlapBounds.Size));
             }
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void PickTerrain(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                if (map.Technos[cell] is Terrain terrain)
-                {
-                    SelectedTerrainType = terrain.Type;
-                    mockTerrain.Trigger = terrain.Trigger;
+        private void PickTerrain(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                if(this.map.Technos[cell] is Terrain terrain) {
+                    this.SelectedTerrainType = terrain.Type;
+                    this.mockTerrain.Trigger = terrain.Trigger;
                 }
             }
         }
 
-        private void SelectTerrain(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                selectedTerrain = map.Technos[cell] as Terrain;
-                selectedTerrainPivot = (selectedTerrain != null) ? (location - (Size)map.Technos[selectedTerrain].Value) : Point.Empty;
+        private void SelectTerrain(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                this.selectedTerrain = this.map.Technos[cell] as Terrain;
+                this.selectedTerrainPivot = (this.selectedTerrain != null) ? (location - (Size)this.map.Technos[this.selectedTerrain].Value) : Point.Empty;
             }
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void RefreshMapPanel()
-        {
-            terrainTypeMapPanel.MapImage = mockTerrain.Type.Thumbnail;
-        }
+        private void RefreshMapPanel() => this.terrainTypeMapPanel.MapImage = this.mockTerrain.Type.Thumbnail;
 
-        private void UpdateStatus()
-        {
-            if (placementMode)
-            {
-                statusLbl.Text = "Left-Click to place terrain, Right-Click to remove terrain";
-            }
-            else if (selectedTerrain != null)
-            {
-                statusLbl.Text = "Drag mouse to move terrain";
-            }
-            else
-            {
-                statusLbl.Text = "Shift to enter placement mode, Left-Click drag to move terrain, Double-Click update terrain properties, Right-Click to pick terrain";
+        private void UpdateStatus() {
+            if(this.placementMode) {
+                this.statusLbl.Text = "Left-Click to place terrain, Right-Click to remove terrain";
+            } else if(this.selectedTerrain != null) {
+                this.statusLbl.Text = "Drag mouse to move terrain";
+            } else {
+                this.statusLbl.Text = "Shift to enter placement mode, Left-Click drag to move terrain, Double-Click update terrain properties, Right-Click to pick terrain";
             }
         }
 
-        protected override void PreRenderMap()
-        {
+        protected override void PreRenderMap() {
             base.PreRenderMap();
 
-            previewMap = map.Clone();
-            if (placementMode)
-            {
-                var location = navigationWidget.MouseCell;
-                if (SelectedTerrainType != null)
-                {
-                    if (previewMap.Metrics.Contains(location))
-                    {
-                        var terrain = new Terrain
-                        {
+            this.previewMap = this.map.Clone();
+            if(this.placementMode) {
+                var location = this.navigationWidget.MouseCell;
+                if(this.SelectedTerrainType != null) {
+                    if(this.previewMap.Metrics.Contains(location)) {
+                        var terrain = new Terrain {
                             Type = SelectedTerrainType,
-                            Icon = SelectedTerrainType.IsTransformable ? 22 : 0,
+                            Icon = this.SelectedTerrainType.IsTransformable ? 22 : 0,
                             Tint = Color.FromArgb(128, Color.White)
                         };
-                        previewMap.Technos.Add(location, terrain);
+                        this.previewMap.Technos.Add(location, terrain);
                     }
                 }
             }
         }
 
-        protected override void PostRenderMap(Graphics graphics)
-        {
+        protected override void PostRenderMap(Graphics graphics) {
             base.PostRenderMap(graphics);
 
             var terrainPen = new Pen(Color.Green, 4.0f);
             var occupyPen = new Pen(Color.Red, 2.0f);
-            foreach (var (topLeft, terrain) in previewMap.Technos.OfType<Terrain>())
-            {
+            foreach(var (topLeft, terrain) in this.previewMap.Technos.OfType<Terrain>()) {
                 var bounds = new Rectangle(new Point(topLeft.X * Globals.TileWidth, topLeft.Y * Globals.TileHeight), terrain.Type.RenderSize);
                 graphics.DrawRectangle(terrainPen, bounds);
 
-                for (var y = 0; y < terrain.Type.OccupyMask.GetLength(0); ++y)
-                {
-                    for (var x = 0; x < terrain.Type.OccupyMask.GetLength(1); ++x)
-                    {
-                        if (terrain.Type.OccupyMask[y, x])
-                        {
+                for(var y = 0; y < terrain.Type.OccupyMask.GetLength(0); ++y) {
+                    for(var x = 0; x < terrain.Type.OccupyMask.GetLength(1); ++x) {
+                        if(terrain.Type.OccupyMask[y, x]) {
                             var occupyBounds = new Rectangle(
                                 new Point((topLeft.X + x) * Globals.TileWidth, (topLeft.Y + y) * Globals.TileHeight),
                                 Globals.TileSize
@@ -426,26 +340,23 @@ namespace MobiusEditor.Tools
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    selectedTerrainProperties?.Close();
+        protected override void Dispose(bool disposing) {
+            if(!this.disposedValue) {
+                if(disposing) {
+                    this.selectedTerrainProperties?.Close();
 
-                    mapPanel.MouseDown -= MapPanel_MouseDown;
-                    mapPanel.MouseMove -= MapPanel_MouseMove;
-                    mapPanel.MouseUp -= MapPanel_MouseUp;
-                    mapPanel.MouseDoubleClick -= MapPanel_MouseDoubleClick;
-                    (mapPanel as Control).KeyDown -= TerrainTool_KeyDown;
-                    (mapPanel as Control).KeyUp -= TerrainTool_KeyUp;
+                    this.mapPanel.MouseDown -= this.MapPanel_MouseDown;
+                    this.mapPanel.MouseMove -= this.MapPanel_MouseMove;
+                    this.mapPanel.MouseUp -= this.MapPanel_MouseUp;
+                    this.mapPanel.MouseDoubleClick -= this.MapPanel_MouseDoubleClick;
+                    (this.mapPanel as Control).KeyDown -= this.TerrainTool_KeyDown;
+                    (this.mapPanel as Control).KeyUp -= this.TerrainTool_KeyUp;
 
-                    terrainTypeComboBox.SelectedIndexChanged -= TerrainTypeCombo_SelectedIndexChanged;
+                    this.terrainTypeComboBox.SelectedIndexChanged -= this.TerrainTypeCombo_SelectedIndexChanged;
 
-                    navigationWidget.MouseCellChanged -= MouseoverWidget_MouseCellChanged;
+                    this.navigationWidget.MouseCellChanged -= this.MouseoverWidget_MouseCellChanged;
                 }
-                disposedValue = true;
+                this.disposedValue = true;
             }
 
             base.Dispose(disposing);

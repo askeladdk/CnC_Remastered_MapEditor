@@ -6,60 +6,38 @@
 // Changes to this file will be reverted when you update Steamworks.NET
 
 #if UNITY_ANDROID || UNITY_IOS || UNITY_TIZEN || UNITY_TVOS || UNITY_WEBGL || UNITY_WSA || UNITY_PS4 || UNITY_WII || UNITY_XBOXONE || UNITY_SWITCH
-	#define DISABLESTEAMWORKS
+#define DISABLESTEAMWORKS
 #endif
 
 #if !DISABLESTEAMWORKS
 
-using System.Runtime.InteropServices;
-using IntPtr = System.IntPtr;
 
 namespace Steamworks {
-	[System.Serializable]
-	public struct UGCHandle_t : System.IEquatable<UGCHandle_t>, System.IComparable<UGCHandle_t> {
-		public static readonly UGCHandle_t Invalid = new UGCHandle_t(0xffffffffffffffff);
-		public ulong m_UGCHandle;
+    [System.Serializable]
+    public struct UGCHandle_t : System.IEquatable<UGCHandle_t>, System.IComparable<UGCHandle_t> {
+        public static readonly UGCHandle_t Invalid = new UGCHandle_t(0xffffffffffffffff);
+        public ulong m_UGCHandle;
 
-		public UGCHandle_t(ulong value) {
-			m_UGCHandle = value;
-		}
+        public UGCHandle_t(ulong value) => this.m_UGCHandle = value;
 
-		public override string ToString() {
-			return m_UGCHandle.ToString();
-		}
+        public override string ToString() => this.m_UGCHandle.ToString();
 
-		public override bool Equals(object other) {
-			return other is UGCHandle_t && this == (UGCHandle_t)other;
-		}
+        public override bool Equals(object other) => other is UGCHandle_t && this == (UGCHandle_t)other;
 
-		public override int GetHashCode() {
-			return m_UGCHandle.GetHashCode();
-		}
+        public override int GetHashCode() => this.m_UGCHandle.GetHashCode();
 
-		public static bool operator ==(UGCHandle_t x, UGCHandle_t y) {
-			return x.m_UGCHandle == y.m_UGCHandle;
-		}
+        public static bool operator ==(UGCHandle_t x, UGCHandle_t y) => x.m_UGCHandle == y.m_UGCHandle;
 
-		public static bool operator !=(UGCHandle_t x, UGCHandle_t y) {
-			return !(x == y);
-		}
+        public static bool operator !=(UGCHandle_t x, UGCHandle_t y) => !(x == y);
 
-		public static explicit operator UGCHandle_t(ulong value) {
-			return new UGCHandle_t(value);
-		}
+        public static explicit operator UGCHandle_t(ulong value) => new UGCHandle_t(value);
 
-		public static explicit operator ulong(UGCHandle_t that) {
-			return that.m_UGCHandle;
-		}
+        public static explicit operator ulong(UGCHandle_t that) => that.m_UGCHandle;
 
-		public bool Equals(UGCHandle_t other) {
-			return m_UGCHandle == other.m_UGCHandle;
-		}
+        public bool Equals(UGCHandle_t other) => this.m_UGCHandle == other.m_UGCHandle;
 
-		public int CompareTo(UGCHandle_t other) {
-			return m_UGCHandle.CompareTo(other.m_UGCHandle);
-		}
-	}
+        public int CompareTo(UGCHandle_t other) => this.m_UGCHandle.CompareTo(other.m_UGCHandle);
+    }
 }
 
 #endif // !DISABLESTEAMWORKS

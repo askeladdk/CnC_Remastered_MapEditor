@@ -22,68 +22,56 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Controls
-{
-    public partial class TypeComboBox : ComboBox
-    {
+namespace MobiusEditor.Controls {
+    public partial class TypeComboBox : ComboBox {
         [Category("Behavior")]
         public Image MissingThumbnail { get; set; } = SystemIcons.Error.ToBitmap();
 
-        public IEnumerable<IBrowsableType> Types
-        {
-            get => Items.Cast<TypeItem<IBrowsableType>>().Select(t => t.Type);
-            set
-            {
-                DataSource = value.Select(t => new TypeItem<IBrowsableType>(t.DisplayName, t)).ToArray();
-                DropDownHeight = Math.Max(DropDownHeight, value.Max(t => (t.Thumbnail?.Height ?? MissingThumbnail.Height) * 3));
-                Invalidate();
+        public IEnumerable<IBrowsableType> Types {
+            get => this.Items.Cast<TypeItem<IBrowsableType>>().Select(t => t.Type);
+            set {
+                this.DataSource = value.Select(t => new TypeItem<IBrowsableType>(t.DisplayName, t)).ToArray();
+                this.DropDownHeight = Math.Max(this.DropDownHeight, value.Max(t => (t.Thumbnail?.Height ?? this.MissingThumbnail.Height) * 3));
+                this.Invalidate();
             }
         }
 
-        public IBrowsableType SelectedType => SelectedValue as IBrowsableType;
+        public IBrowsableType SelectedType => this.SelectedValue as IBrowsableType;
 
-        public TypeComboBox()
-        {
-            InitializeComponent();
+        public TypeComboBox() {
+            this.InitializeComponent();
 
-            DisplayMember = "Name";
-            ValueMember = "Type";
+            this.DisplayMember = "Name";
+            this.ValueMember = "Type";
         }
 
-        protected override void OnMeasureItem(MeasureItemEventArgs e)
-        {
+        protected override void OnMeasureItem(MeasureItemEventArgs e) {
             base.OnMeasureItem(e);
 
-            var typeItem = Items[e.Index] as TypeItem<IBrowsableType>;
-            if (typeItem?.Type != null)
-            {
-                e.ItemHeight = typeItem.Type.Thumbnail?.Height ?? MissingThumbnail.Height;
+            var typeItem = this.Items[e.Index] as TypeItem<IBrowsableType>;
+            if(typeItem?.Type != null) {
+                e.ItemHeight = typeItem.Type.Thumbnail?.Height ?? this.MissingThumbnail.Height;
             }
         }
 
-        protected override void OnDrawItem(DrawItemEventArgs e)
-        {
+        protected override void OnDrawItem(DrawItemEventArgs e) {
             base.OnDrawItem(e);
 
             e.DrawBackground();
 
-            if ((e.Index >= 0) && (e.Index < Items.Count))
-            {
-                var typeItem = Items[e.Index] as TypeItem<IBrowsableType>;
-                if (typeItem?.Type != null)
-                {
-                    StringFormat stringFormat = new StringFormat
-                    {
+            if((e.Index >= 0) && (e.Index < this.Items.Count)) {
+                var typeItem = this.Items[e.Index] as TypeItem<IBrowsableType>;
+                if(typeItem?.Type != null) {
+                    var stringFormat = new StringFormat {
                         LineAlignment = StringAlignment.Center
                     };
 
                     var textColor = ((e.State & DrawItemState.Selected) == DrawItemState.Selected) ? SystemBrushes.HighlightText : SystemBrushes.WindowText;
-                    var textSize = e.Graphics.MeasureString(typeItem.Name, Font, e.Bounds.Width, stringFormat);
-                    e.Graphics.DrawString(typeItem.Name, Font, textColor, e.Bounds, stringFormat);
+                    var textSize = e.Graphics.MeasureString(typeItem.Name, this.Font, e.Bounds.Width, stringFormat);
+                    e.Graphics.DrawString(typeItem.Name, this.Font, textColor, e.Bounds, stringFormat);
 
-                    if ((e.State & DrawItemState.ComboBoxEdit) == DrawItemState.None)
-                    {
-                        var thumbnail = typeItem.Type.Thumbnail ?? MissingThumbnail;
+                    if((e.State & DrawItemState.ComboBoxEdit) == DrawItemState.None) {
+                        var thumbnail = typeItem.Type.Thumbnail ?? this.MissingThumbnail;
                         var thumbnailWidth = (int)Math.Min(e.Bounds.Width - textSize.Width, thumbnail.Width);
                         var thumbnailSize = new Size(thumbnailWidth, thumbnailWidth * thumbnail.Height / thumbnail.Width);
                         var thumbnailBounds = new Rectangle(new Point(e.Bounds.Right - thumbnailSize.Width, e.Bounds.Top), thumbnailSize);

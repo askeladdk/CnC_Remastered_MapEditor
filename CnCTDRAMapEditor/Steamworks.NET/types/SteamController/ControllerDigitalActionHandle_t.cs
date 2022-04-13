@@ -6,59 +6,37 @@
 // Changes to this file will be reverted when you update Steamworks.NET
 
 #if UNITY_ANDROID || UNITY_IOS || UNITY_TIZEN || UNITY_TVOS || UNITY_WEBGL || UNITY_WSA || UNITY_PS4 || UNITY_WII || UNITY_XBOXONE || UNITY_SWITCH
-	#define DISABLESTEAMWORKS
+#define DISABLESTEAMWORKS
 #endif
 
 #if !DISABLESTEAMWORKS
 
-using System.Runtime.InteropServices;
-using IntPtr = System.IntPtr;
 
 namespace Steamworks {
-	[System.Serializable]
-	public struct ControllerDigitalActionHandle_t : System.IEquatable<ControllerDigitalActionHandle_t>, System.IComparable<ControllerDigitalActionHandle_t> {
-		public ulong m_ControllerDigitalActionHandle;
+    [System.Serializable]
+    public struct ControllerDigitalActionHandle_t : System.IEquatable<ControllerDigitalActionHandle_t>, System.IComparable<ControllerDigitalActionHandle_t> {
+        public ulong m_ControllerDigitalActionHandle;
 
-		public ControllerDigitalActionHandle_t(ulong value) {
-			m_ControllerDigitalActionHandle = value;
-		}
+        public ControllerDigitalActionHandle_t(ulong value) => this.m_ControllerDigitalActionHandle = value;
 
-		public override string ToString() {
-			return m_ControllerDigitalActionHandle.ToString();
-		}
+        public override string ToString() => this.m_ControllerDigitalActionHandle.ToString();
 
-		public override bool Equals(object other) {
-			return other is ControllerDigitalActionHandle_t && this == (ControllerDigitalActionHandle_t)other;
-		}
+        public override bool Equals(object other) => other is ControllerDigitalActionHandle_t && this == (ControllerDigitalActionHandle_t)other;
 
-		public override int GetHashCode() {
-			return m_ControllerDigitalActionHandle.GetHashCode();
-		}
+        public override int GetHashCode() => this.m_ControllerDigitalActionHandle.GetHashCode();
 
-		public static bool operator ==(ControllerDigitalActionHandle_t x, ControllerDigitalActionHandle_t y) {
-			return x.m_ControllerDigitalActionHandle == y.m_ControllerDigitalActionHandle;
-		}
+        public static bool operator ==(ControllerDigitalActionHandle_t x, ControllerDigitalActionHandle_t y) => x.m_ControllerDigitalActionHandle == y.m_ControllerDigitalActionHandle;
 
-		public static bool operator !=(ControllerDigitalActionHandle_t x, ControllerDigitalActionHandle_t y) {
-			return !(x == y);
-		}
+        public static bool operator !=(ControllerDigitalActionHandle_t x, ControllerDigitalActionHandle_t y) => !(x == y);
 
-		public static explicit operator ControllerDigitalActionHandle_t(ulong value) {
-			return new ControllerDigitalActionHandle_t(value);
-		}
+        public static explicit operator ControllerDigitalActionHandle_t(ulong value) => new ControllerDigitalActionHandle_t(value);
 
-		public static explicit operator ulong(ControllerDigitalActionHandle_t that) {
-			return that.m_ControllerDigitalActionHandle;
-		}
+        public static explicit operator ulong(ControllerDigitalActionHandle_t that) => that.m_ControllerDigitalActionHandle;
 
-		public bool Equals(ControllerDigitalActionHandle_t other) {
-			return m_ControllerDigitalActionHandle == other.m_ControllerDigitalActionHandle;
-		}
+        public bool Equals(ControllerDigitalActionHandle_t other) => this.m_ControllerDigitalActionHandle == other.m_ControllerDigitalActionHandle;
 
-		public int CompareTo(ControllerDigitalActionHandle_t other) {
-			return m_ControllerDigitalActionHandle.CompareTo(other.m_ControllerDigitalActionHandle);
-		}
-	}
+        public int CompareTo(ControllerDigitalActionHandle_t other) => this.m_ControllerDigitalActionHandle.CompareTo(other.m_ControllerDigitalActionHandle);
+    }
 }
 
 #endif // !DISABLESTEAMWORKS

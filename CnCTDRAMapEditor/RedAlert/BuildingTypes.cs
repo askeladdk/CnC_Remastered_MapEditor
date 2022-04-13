@@ -14,14 +14,11 @@
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using MobiusEditor.Model;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.RedAlert
-{
-    public static class BuildingTypes
-    {
+namespace MobiusEditor.RedAlert {
+    public static class BuildingTypes {
         public static readonly BuildingType AdvancedTech = new BuildingType(0, "atek", "TEXT_STRUCTURE_RA_ATEK", new bool[2, 2] { { true, true }, { true, true } }, true, "Greece");
         public static readonly BuildingType IronCurtain = new BuildingType(1, "iron", "TEXT_STRUCTURE_RA_IRON", new bool[2, 2] { { false, false }, { true, true } }, false, "USSR");
         public static readonly BuildingType Weapon = new BuildingType(2, "weap", "TEXT_STRUCTURE_RA_WEAP", new bool[2, 3] { { true, true, true }, { true, true, true } }, true, "Greece", false, false, "weap2");
@@ -88,17 +85,11 @@ namespace MobiusEditor.RedAlert
 
         private static readonly BuildingType[] Types;
 
-        static BuildingTypes()
-        {
-            Types =
+        static BuildingTypes() => Types =
                 (from field in typeof(BuildingTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsInitOnly && typeof(BuildingType).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as BuildingType).ToArray();
-        }
 
-        public static IEnumerable<BuildingType> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<BuildingType> GetTypes() => Types;
     }
 }

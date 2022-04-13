@@ -21,23 +21,26 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Utility
-{
-    public interface ISteamworksOperation : IDisposable
-    {
-        bool Done { get; }
+namespace MobiusEditor.Utility {
+    public interface ISteamworksOperation : IDisposable {
+        bool Done {
+            get;
+        }
 
-        bool Failed { get; }
+        bool Failed {
+            get;
+        }
 
-        string Status { get; }
+        string Status {
+            get;
+        }
 
         void OnSuccess();
 
         void OnFailed();
     }
 
-    public class SteamworksUGCPublishOperation : ISteamworksOperation
-    {
+    public class SteamworksUGCPublishOperation : ISteamworksOperation {
         private readonly string ugcPath;
         private readonly IList<string> tags;
         private readonly Action onSuccess;
@@ -45,185 +48,167 @@ namespace MobiusEditor.Utility
 
         private CallResult<CreateItemResult_t> createItemResult;
         private CallResult<SubmitItemUpdateResult_t> submitItemUpdateResult;
-        private SteamSection steamSection = new SteamSection();
+        private readonly SteamSection steamSection = new SteamSection();
 
-        public bool Done => !(createItemResult?.IsActive() ?? false) && !(submitItemUpdateResult?.IsActive() ?? false);
+        public bool Done => !(this.createItemResult?.IsActive() ?? false) && !(this.submitItemUpdateResult?.IsActive() ?? false);
 
-        public bool Failed { get; private set; }
+        public bool Failed {
+            get; private set;
+        }
 
-        public string Status { get; private set; }
+        public string Status {
+            get; private set;
+        }
 
-        public SteamworksUGCPublishOperation(string ugcPath, SteamSection steamSection, IList<string> tags, Action onSuccess, Action<string> onFailed)
-        {
+        public SteamworksUGCPublishOperation(string ugcPath, SteamSection steamSection, IList<string> tags, Action onSuccess, Action<string> onFailed) {
             this.ugcPath = ugcPath;
             this.steamSection = steamSection;
             this.tags = tags;
             this.onSuccess = onSuccess;
             this.onFailed = onFailed;
 
-            if (steamSection.PublishedFileId == PublishedFileId_t.Invalid.m_PublishedFileId)
-            {
-                CreateUGCItem();
-            }
-            else
-            {
-                UpdateUGCItem();
+            if(steamSection.PublishedFileId == PublishedFileId_t.Invalid.m_PublishedFileId) {
+                this.CreateUGCItem();
+            } else {
+                this.UpdateUGCItem();
             }
 
-            Status = "Publishing UGC...";
+            this.Status = "Publishing UGC...";
         }
 
-        public void OnSuccess() => onSuccess();
+        public void OnSuccess() => this.onSuccess();
 
-        public void OnFailed() => onFailed(Status);
+        public void OnFailed() => this.onFailed(this.Status);
 
-        private void CreateUGCItem()
-        {
+        private void CreateUGCItem() {
             var steamAPICall = SteamUGC.CreateItem(SteamUtils.GetAppID(), EWorkshopFileType.k_EWorkshopFileTypeCommunity);
-            if (steamAPICall == SteamAPICall_t.Invalid)
-            {
-                Failed = true;
-                Status = "Publishing failed.";
+            if(steamAPICall == SteamAPICall_t.Invalid) {
+                this.Failed = true;
+                this.Status = "Publishing failed.";
                 return;
             }
 
-            createItemResult = CallResult<CreateItemResult_t>.Create(OnCreateItemResult);
-            createItemResult.Set(steamAPICall);
+            this.createItemResult = CallResult<CreateItemResult_t>.Create(this.OnCreateItemResult);
+            this.createItemResult.Set(steamAPICall);
         }
 
-        private void UpdateUGCItem()
-        {
-            var updateHandle = SteamUGC.StartItemUpdate(SteamUtils.GetAppID(), new PublishedFileId_t(steamSection.PublishedFileId));
-            if (updateHandle == UGCUpdateHandle_t.Invalid)
-            {
-                Failed = true;
-                Status = "Publishing failed.";
+        private void UpdateUGCItem() {
+            var updateHandle = SteamUGC.StartItemUpdate(SteamUtils.GetAppID(), new PublishedFileId_t(this.steamSection.PublishedFileId));
+            if(updateHandle == UGCUpdateHandle_t.Invalid) {
+                this.Failed = true;
+                this.Status = "Publishing failed.";
                 return;
             }
 
-            bool success = true;
-            success = success && SteamUGC.SetItemContent(updateHandle, ugcPath);
-            success = success && SteamUGC.SetItemPreview(updateHandle, steamSection.PreviewFile);
+            var success = true;
+            success = success && SteamUGC.SetItemContent(updateHandle, this.ugcPath);
+            success = success && SteamUGC.SetItemPreview(updateHandle, this.steamSection.PreviewFile);
             success = success && SteamUGC.SetItemUpdateLanguage(updateHandle, "English");
-            success = success && SteamUGC.SetItemTitle(updateHandle, steamSection.Title);
-            success = success && SteamUGC.SetItemDescription(updateHandle, steamSection.Description);
-            success = success && SteamUGC.SetItemVisibility(updateHandle, steamSection.Visibility);
-            success = success && SteamUGC.SetItemTags(updateHandle, tags);
-            if (!success)
-            {
-                Failed = true;
-                Status = "Publishing failed.";
+            success = success && SteamUGC.SetItemTitle(updateHandle, this.steamSection.Title);
+            success = success && SteamUGC.SetItemDescription(updateHandle, this.steamSection.Description);
+            success = success && SteamUGC.SetItemVisibility(updateHandle, this.steamSection.Visibility);
+            success = success && SteamUGC.SetItemTags(updateHandle, this.tags);
+            if(!success) {
+                this.Failed = true;
+                this.Status = "Publishing failed.";
                 return;
             }
 
             var steamAPICall = SteamUGC.SubmitItemUpdate(updateHandle, "");
-            if (steamAPICall == SteamAPICall_t.Invalid)
-            {
-                Failed = true;
-                Status = "Publishing failed.";
+            if(steamAPICall == SteamAPICall_t.Invalid) {
+                this.Failed = true;
+                this.Status = "Publishing failed.";
                 return;
             }
 
-            submitItemUpdateResult = CallResult<SubmitItemUpdateResult_t>.Create(OnSubmitItemUpdateResult);
-            submitItemUpdateResult.Set(steamAPICall);
+            this.submitItemUpdateResult = CallResult<SubmitItemUpdateResult_t>.Create(this.OnSubmitItemUpdateResult);
+            this.submitItemUpdateResult.Set(steamAPICall);
         }
 
-        private void OnCreateItemResult(CreateItemResult_t callback, bool ioFailure)
-        {
-            if (ioFailure)
-            {
-                Failed = true;
-                Status = "Publishing failed.";
+        private void OnCreateItemResult(CreateItemResult_t callback, bool ioFailure) {
+            if(ioFailure) {
+                this.Failed = true;
+                this.Status = "Publishing failed.";
                 return;
             }
 
-            switch (callback.m_eResult)
-            {
-                case EResult.k_EResultOK:
-                    steamSection.PublishedFileId = callback.m_nPublishedFileId.m_PublishedFileId;
-                    UpdateUGCItem();
-                    break;
-                case EResult.k_EResultFileNotFound:
-                    Failed = true;
-                    Status = "UGC not found.";
-                    break;
-                case EResult.k_EResultNotLoggedOn:
-                    Failed = true;
-                    Status = "Not logged on.";
-                    break;
-                default:
-                    Failed = true;
-                    Status = "Publishing failed.";
-                    break;
+            switch(callback.m_eResult) {
+            case EResult.k_EResultOK:
+                this.steamSection.PublishedFileId = callback.m_nPublishedFileId.m_PublishedFileId;
+                this.UpdateUGCItem();
+                break;
+            case EResult.k_EResultFileNotFound:
+                this.Failed = true;
+                this.Status = "UGC not found.";
+                break;
+            case EResult.k_EResultNotLoggedOn:
+                this.Failed = true;
+                this.Status = "Not logged on.";
+                break;
+            default:
+                this.Failed = true;
+                this.Status = "Publishing failed.";
+                break;
             }
         }
 
-        private void OnSubmitItemUpdateResult(SubmitItemUpdateResult_t callback, bool ioFailure)
-        {
-            if (ioFailure)
-            {
-                Failed = true;
-                Status = "Publishing failed.";
+        private void OnSubmitItemUpdateResult(SubmitItemUpdateResult_t callback, bool ioFailure) {
+            if(ioFailure) {
+                this.Failed = true;
+                this.Status = "Publishing failed.";
                 return;
             }
 
-            switch (callback.m_eResult)
-            {
-                case EResult.k_EResultOK:
-                    Status = "Done.";
-                    steamSection.PublishedFileId = callback.m_nPublishedFileId.m_PublishedFileId;
-                    break;
-                case EResult.k_EResultFileNotFound:
-                    Failed = true;
-                    Status = "UGC not found.";
-                    break;
-                case EResult.k_EResultLimitExceeded:
-                    Failed = true;
-                    Status = "Size limit exceeded.";
-                    break;
-                default:
-                    Failed = true;
-                    Status = string.Format("Publishing failed. ({0})", callback.m_eResult);
-                    break;
+            switch(callback.m_eResult) {
+            case EResult.k_EResultOK:
+                this.Status = "Done.";
+                this.steamSection.PublishedFileId = callback.m_nPublishedFileId.m_PublishedFileId;
+                break;
+            case EResult.k_EResultFileNotFound:
+                this.Failed = true;
+                this.Status = "UGC not found.";
+                break;
+            case EResult.k_EResultLimitExceeded:
+                this.Failed = true;
+                this.Status = "Size limit exceeded.";
+                break;
+            default:
+                this.Failed = true;
+                this.Status = string.Format("Publishing failed. ({0})", callback.m_eResult);
+                break;
             }
         }
 
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    createItemResult?.Dispose();
-                    submitItemUpdateResult?.Dispose();
+        protected virtual void Dispose(bool disposing) {
+            if(!this.disposedValue) {
+                if(disposing) {
+                    this.createItemResult?.Dispose();
+                    this.submitItemUpdateResult?.Dispose();
                 }
-                disposedValue = true;
+                this.disposedValue = true;
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        public void Dispose() => this.Dispose(true);
         #endregion
     }
 
-    public static class SteamworksUGC
-    {
-        public static bool IsInit { get; private set; }
+    public static class SteamworksUGC {
+        public static bool IsInit {
+            get; private set;
+        }
 
-        public static ISteamworksOperation CurrentOperation { get; private set; }
+        public static ISteamworksOperation CurrentOperation {
+            get; private set;
+        }
 
-        public static string WorkshopURL
-        {
-            get
-            {
+        public static string WorkshopURL {
+            get {
                 var app_id = IsInit ? SteamUtils.GetAppID() : AppId_t.Invalid;
-                if (app_id == AppId_t.Invalid)
-                {
+                if(app_id == AppId_t.Invalid) {
                     return string.Empty;
                 }
                 return string.Format("http://steamcommunity.com/app/{0}/workshop/", app_id.ToString());
@@ -234,30 +219,24 @@ namespace MobiusEditor.Utility
 
         private static Callback<GameLobbyJoinRequested_t> GameLobbyJoinRequested;
 
-        public static bool Init()
-        {
-            if (IsInit)
-            {
+        public static bool Init() {
+            if(IsInit) {
                 return true;
             }
 
-            if (!IsSteamBuild)
-            {
+            if(!IsSteamBuild) {
                 return false;
             }
 
-            if (!Packsize.Test())
-            {
+            if(!Packsize.Test()) {
                 return false;
             }
 
-            if (!DllCheck.Test())
-            {
+            if(!DllCheck.Test()) {
                 return false;
             }
 
-            if (!SteamAPI.Init())
-            {
+            if(!SteamAPI.Init()) {
                 return false;
             }
 
@@ -269,10 +248,8 @@ namespace MobiusEditor.Utility
             return IsInit;
         }
 
-        public static void Shutdown()
-        {
-            if (IsInit)
-            {
+        public static void Shutdown() {
+            if(IsInit) {
                 GameLobbyJoinRequested?.Dispose();
                 GameLobbyJoinRequested = null;
 
@@ -284,18 +261,13 @@ namespace MobiusEditor.Utility
             }
         }
 
-        public static void Service()
-        {
+        public static void Service() {
             SteamAPI.RunCallbacks();
 
-            if (CurrentOperation?.Done ?? false)
-            {
-                if (CurrentOperation.Failed)
-                {
+            if(CurrentOperation?.Done ?? false) {
+                if(CurrentOperation.Failed) {
                     CurrentOperation.OnFailed();
-                }
-                else
-                {
+                } else {
                     CurrentOperation.OnSuccess();
                 }
                 CurrentOperation.Dispose();
@@ -303,10 +275,8 @@ namespace MobiusEditor.Utility
             }
         }
 
-        public static bool PublishUGC(string ugcPath, SteamSection steamSection, IList<string> tags, Action onSuccess, Action<string> onFailed)
-        {
-            if (CurrentOperation != null)
-            {
+        public static bool PublishUGC(string ugcPath, SteamSection steamSection, IList<string> tags, Action onSuccess, Action<string> onFailed) {
+            if(CurrentOperation != null) {
                 return false;
             }
 
@@ -315,14 +285,8 @@ namespace MobiusEditor.Utility
             return true;
         }
 
-        private static void SteamAPIDebugTextHook(int nSeverity, StringBuilder pchDebugText)
-        {
-            Debug.WriteLine(pchDebugText);
-        }
+        private static void SteamAPIDebugTextHook(int nSeverity, StringBuilder pchDebugText) => Debug.WriteLine(pchDebugText);
 
-        private static void OnGameLobbyJoinRequested(GameLobbyJoinRequested_t data)
-        {
-            MessageBox.Show("You cannot accept an invitation to a multiplayer game while using the map editor.", "Steam", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
+        private static void OnGameLobbyJoinRequested(GameLobbyJoinRequested_t data) => MessageBox.Show("You cannot accept an invitation to a multiplayer game while using the map editor.", "Steam", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 }

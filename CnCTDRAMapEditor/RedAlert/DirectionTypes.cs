@@ -17,10 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.RedAlert
-{
-    public static class DirectionTypes
-    {
+namespace MobiusEditor.RedAlert {
+    public static class DirectionTypes {
         public static readonly DirectionType North = new DirectionType(0, "North", FacingType.North);
         public static readonly DirectionType NorthNorthEast = new DirectionType(16, "North-NorthEast");
         public static readonly DirectionType NorthEast = new DirectionType(32, "NorthEast", FacingType.NorthEast);
@@ -38,19 +36,13 @@ namespace MobiusEditor.RedAlert
         public static readonly DirectionType NorthWest = new DirectionType(224, "NorthWest", FacingType.NorthWest);
         public static readonly DirectionType NorthNorthWest = new DirectionType(240, "North-NorthWest");
 
-        private static DirectionType[] Types;
+        private static readonly DirectionType[] Types;
 
-        static DirectionTypes()
-        {
-            Types =
+        static DirectionTypes() => Types =
                 (from field in typeof(DirectionTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsInitOnly && typeof(DirectionType).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as DirectionType).ToArray();
-        }
 
-        public static IEnumerable<DirectionType> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<DirectionType> GetTypes() => Types;
     }
 }

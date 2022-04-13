@@ -18,83 +18,75 @@ using MobiusEditor.Utility;
 using System;
 using System.Drawing;
 
-namespace MobiusEditor.Model
-{
-    public class InfantryType : ITechnoType, IBrowsableType
-    {
-        public sbyte ID { get; private set; }
+namespace MobiusEditor.Model {
+    public class InfantryType : ITechnoType, IBrowsableType {
+        public sbyte ID {
+            get; private set;
+        }
 
-        public string Name { get; private set; }
+        public string Name {
+            get; private set;
+        }
 
-        public string DisplayName { get; private set; }
+        public string DisplayName {
+            get; private set;
+        }
 
-        public string OwnerHouse { get; private set; }
+        public string OwnerHouse {
+            get; private set;
+        }
 
-        public Size RenderSize { get; set; }
+        public Size RenderSize {
+            get; set;
+        }
 
-        public Image Thumbnail { get; set; }
+        public Image Thumbnail {
+            get; set;
+        }
 
-        public InfantryType(sbyte id, string name, string textId, string ownerHouse)
-        {
-            ID = id;
-            Name = name;
-            DisplayName = Globals.TheGameTextManager[textId];
-            OwnerHouse = ownerHouse;
+        public InfantryType(sbyte id, string name, string textId, string ownerHouse) {
+            this.ID = id;
+            this.Name = name;
+            this.DisplayName = Globals.TheGameTextManager[textId];
+            this.OwnerHouse = ownerHouse;
         }
 
         public InfantryType(sbyte id, string name, string textId)
-            : this(id, name, textId, null)
-        {
+            : this(id, name, textId, null) {
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is InfantryType)
-            {
+        public override bool Equals(object obj) {
+            if(obj is InfantryType) {
                 return this == obj;
-            }
-            else if (obj is sbyte)
-            {
-                return ID == (sbyte)obj;
-            }
-            else if (obj is string)
-            {
-                return string.Equals(Name, obj as string, StringComparison.OrdinalIgnoreCase);
+            } else if(obj is sbyte) {
+                return this.ID == (sbyte)obj;
+            } else if(obj is string) {
+                return string.Equals(this.Name, obj as string, StringComparison.OrdinalIgnoreCase);
             }
 
             return base.Equals(obj);
         }
 
-        public override int GetHashCode()
-        {
-            return ID.GetHashCode();
-        }
+        public override int GetHashCode() => this.ID.GetHashCode();
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => this.Name;
 
-        public void Init(GameType gameType, TheaterType theater, HouseType house, DirectionType direction)
-        {
-            if (Globals.TheTilesetManager.GetTileData(theater.Tilesets, Name, 4, out Tile tile))
-            {
-                RenderSize = new Size(tile.Image.Width / Globals.TileScale, tile.Image.Height / Globals.TileScale);
+        public void Init(GameType gameType, TheaterType theater, HouseType house, DirectionType direction) {
+            if(Globals.TheTilesetManager.GetTileData(theater.Tilesets, this.Name, 4, out Tile tile)) {
+                this.RenderSize = new Size(tile.Image.Width / Globals.TileScale, tile.Image.Height / Globals.TileScale);
             }
 
-            var mockInfantry = new Infantry(null)
-            {
+            var mockInfantry = new Infantry(null) {
                 Type = this,
                 House = house,
                 Strength = 256,
                 Direction = direction
             };
             var infantryThumbnail = new Bitmap(Globals.TileWidth, Globals.TileHeight);
-            using (var g = Graphics.FromImage(infantryThumbnail))
-            {
+            using(var g = Graphics.FromImage(infantryThumbnail)) {
                 MapRenderer.Render(theater, Point.Empty, Globals.TileSize, mockInfantry, InfantryStoppingType.Center).Item2(g);
             }
-            Thumbnail = infantryThumbnail;
+            this.Thumbnail = infantryThumbnail;
         }
     }
 }

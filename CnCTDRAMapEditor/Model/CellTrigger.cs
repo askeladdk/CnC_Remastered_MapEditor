@@ -12,10 +12,8 @@
 // distributed with this program. You should have received a copy of the 
 // GNU General Public License along with permitted additional restrictions 
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
-namespace MobiusEditor.Model
-{
-    public class CellTrigger
-    {
+namespace MobiusEditor.Model {
+    public class CellTrigger {
         public string Trigger { get; set; } = Model.Trigger.None;
     }
 }

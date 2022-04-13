@@ -16,69 +16,55 @@ using MobiusEditor.Interface;
 using System;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Dialogs
-{
-    public partial class NewMapDialog : Form
-    {
+namespace MobiusEditor.Dialogs {
+    public partial class NewMapDialog : Form {
         private GameType gameType = GameType.TiberianDawn;
-        public GameType GameType
-        {
-            get => gameType;
-            set
-            {
-                if (gameType != value)
-                {
-                    gameType = value;
-                    UpdateGameType();
+        public GameType GameType {
+            get => this.gameType;
+            set {
+                if(this.gameType != value) {
+                    this.gameType = value;
+                    this.UpdateGameType();
                 }
             }
         }
 
-        public string TheaterName
-        {
-            get
-            {
-                if (radioTheater1.Checked) return radioTheater1.Text;
-                if (radioTheater2.Checked) return radioTheater2.Text;
-                if (radioTheater3.Checked) return radioTheater3.Text;
+        public string TheaterName {
+            get {
+                if(this.radioTheater1.Checked)
+                    return this.radioTheater1.Text;
+                if(this.radioTheater2.Checked)
+                    return this.radioTheater2.Text;
+                if(this.radioTheater3.Checked)
+                    return this.radioTheater3.Text;
                 return null;
             }
         }
 
-        public NewMapDialog()
-        {
-            InitializeComponent();
-        }
+        public NewMapDialog() => this.InitializeComponent();
 
-        private void UpdateGameType()
-        {
-            switch(GameType)
-            {
-                case GameType.TiberianDawn:
-                    {
-                        radioTheater1.Text = "Desert";
-                        radioTheater2.Text = "Temperate";
-                        radioTheater3.Text = "Winter";
-                    } break;
-                case GameType.RedAlert:
-                    {
-                        radioTheater1.Text = "Temperate";
-                        radioTheater2.Text = "Snow";
-                        radioTheater3.Text = "Interior";
-                    }
-                    break;
+        private void UpdateGameType() {
+            switch(this.GameType) {
+            case GameType.TiberianDawn: {
+                this.radioTheater1.Text = "Desert";
+                this.radioTheater2.Text = "Temperate";
+                this.radioTheater3.Text = "Winter";
+            }
+            break;
+            case GameType.RedAlert: {
+                this.radioTheater1.Text = "Temperate";
+                this.radioTheater2.Text = "Snow";
+                this.radioTheater3.Text = "Interior";
+            }
+            break;
             }
         }
 
-        private void radioGameType_CheckedChanged(object sender, EventArgs e)
-        {
-            if (radioTD.Checked)
-            {
-                GameType = GameType.TiberianDawn;
-            }
-            else if (radioRA.Checked)
-            {
-                GameType = GameType.RedAlert;
+        private void radioGameType_CheckedChanged(object sender, EventArgs e) {
+            if(this.radioTD.Checked) {
+                this.GameType = GameType.TiberianDawn;
+            } else if(this.radioRA.Checked) {
+                this.GameType = GameType.RedAlert;
             }
         }
     }

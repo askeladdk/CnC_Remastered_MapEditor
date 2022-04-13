@@ -25,16 +25,14 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools
-{
-    public class UnitTool : ViewTool
-    {
+namespace MobiusEditor.Tools {
+    public class UnitTool : ViewTool {
         private readonly TypeComboBox unitTypeComboBox;
         private readonly MapPanel unitTypeMapPanel;
         private readonly ObjectProperties objectProperties;
 
         private Map previewMap;
-        protected override Map RenderMap => previewMap;
+        protected override Map RenderMap => this.previewMap;
 
         private bool placementMode;
 
@@ -44,351 +42,270 @@ namespace MobiusEditor.Tools
         private ObjectPropertiesPopup selectedObjectProperties;
 
         private UnitType selectedUnitType;
-        private UnitType SelectedUnitType
-        {
-            get => selectedUnitType;
-            set
-            {
-                if (selectedUnitType != value)
-                {
-                    if (placementMode && (selectedUnitType != null))
-                    {
-                        mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
+        private UnitType SelectedUnitType {
+            get => this.selectedUnitType;
+            set {
+                if(this.selectedUnitType != value) {
+                    if(this.placementMode && (this.selectedUnitType != null)) {
+                        this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(this.navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
                     }
 
-                    selectedUnitType = value;
-                    unitTypeComboBox.SelectedValue = selectedUnitType;
+                    this.selectedUnitType = value;
+                    this.unitTypeComboBox.SelectedValue = this.selectedUnitType;
 
-                    if (placementMode && (selectedUnitType != null))
-                    {
-                        mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
+                    if(this.placementMode && (this.selectedUnitType != null)) {
+                        this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(this.navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
                     }
 
-                    mockUnit.Type = selectedUnitType;
+                    this.mockUnit.Type = this.selectedUnitType;
 
-                    RefreshMapPanel();
+                    this.RefreshMapPanel();
                 }
             }
         }
 
         public UnitTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, TypeComboBox unitTypeComboBox, MapPanel unitTypeMapPanel, ObjectProperties objectProperties, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
-            : base(mapPanel, layers, statusLbl, plugin, url)
-        {
-            previewMap = map;
+            : base(mapPanel, layers, statusLbl, plugin, url) {
+            this.previewMap = this.map;
 
-            mockUnit = new Unit()
-            {
+            this.mockUnit = new Unit() {
                 Type = unitTypeComboBox.Types.First() as UnitType,
-                House = map.Houses.First().Type,
+                House = this.map.Houses.First().Type,
                 Strength = 256,
-                Direction = map.DirectionTypes.Where(d => d.Equals(FacingType.North)).First(),
-                Mission = map.MissionTypes.Where(m => m.Equals("Guard")).FirstOrDefault() ?? map.MissionTypes.First()
+                Direction = this.map.DirectionTypes.Where(d => d.Equals(FacingType.North)).First(),
+                Mission = this.map.MissionTypes.Where(m => m.Equals("Guard")).FirstOrDefault() ?? this.map.MissionTypes.First()
             };
-            mockUnit.PropertyChanged += MockUnit_PropertyChanged;
+            this.mockUnit.PropertyChanged += this.MockUnit_PropertyChanged;
 
-            this.mapPanel.MouseDown += MapPanel_MouseDown;
-            this.mapPanel.MouseUp += MapPanel_MouseUp;
-            this.mapPanel.MouseDoubleClick += MapPanel_MouseDoubleClick;
-            this.mapPanel.MouseMove += MapPanel_MouseMove;
-            (this.mapPanel as Control).KeyDown += UnitTool_KeyDown;
-            (this.mapPanel as Control).KeyUp += UnitTool_KeyUp;
+            this.mapPanel.MouseDown += this.MapPanel_MouseDown;
+            this.mapPanel.MouseUp += this.MapPanel_MouseUp;
+            this.mapPanel.MouseDoubleClick += this.MapPanel_MouseDoubleClick;
+            this.mapPanel.MouseMove += this.MapPanel_MouseMove;
+            (this.mapPanel as Control).KeyDown += this.UnitTool_KeyDown;
+            (this.mapPanel as Control).KeyUp += this.UnitTool_KeyUp;
 
             this.unitTypeComboBox = unitTypeComboBox;
-            this.unitTypeComboBox.SelectedIndexChanged += UnitTypeComboBox_SelectedIndexChanged;
+            this.unitTypeComboBox.SelectedIndexChanged += this.UnitTypeComboBox_SelectedIndexChanged;
 
             this.unitTypeMapPanel = unitTypeMapPanel;
             this.unitTypeMapPanel.BackColor = Color.White;
             this.unitTypeMapPanel.MaxZoom = 1;
 
             this.objectProperties = objectProperties;
-            this.objectProperties.Object = mockUnit;
+            this.objectProperties.Object = this.mockUnit;
 
-            navigationWidget.MouseCellChanged += MouseoverWidget_MouseCellChanged;
+            this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
 
-            SelectedUnitType = mockUnit.Type;
+            this.SelectedUnitType = this.mockUnit.Type;
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void MapPanel_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (Control.ModifierKeys != Keys.None)
-            {
+        private void MapPanel_MouseDoubleClick(object sender, MouseEventArgs e) {
+            if(Control.ModifierKeys != Keys.None) {
                 return;
             }
 
-            if (map.Metrics.GetCell(navigationWidget.MouseCell, out int cell))
-            {
-                if (map.Technos[cell] is Unit unit)
-                {
-                    selectedUnit = null;
+            if(this.map.Metrics.GetCell(this.navigationWidget.MouseCell, out var cell)) {
+                if(this.map.Technos[cell] is Unit unit) {
+                    this.selectedUnit = null;
 
-                    selectedObjectProperties?.Close();
-                    selectedObjectProperties = new ObjectPropertiesPopup(objectProperties.Plugin, unit);
-                    selectedObjectProperties.Closed += (cs, ce) =>
-                    {
-                        navigationWidget.Refresh();
+                    this.selectedObjectProperties?.Close();
+                    this.selectedObjectProperties = new ObjectPropertiesPopup(this.objectProperties.Plugin, unit);
+                    this.selectedObjectProperties.Closed += (cs, ce) => {
+                        this.navigationWidget.Refresh();
                     };
 
-                    unit.PropertyChanged += SelectedUnit_PropertyChanged;
+                    unit.PropertyChanged += this.SelectedUnit_PropertyChanged;
 
-                    selectedObjectProperties.Show(mapPanel, mapPanel.PointToClient(Control.MousePosition));
+                    this.selectedObjectProperties.Show(this.mapPanel, this.mapPanel.PointToClient(Control.MousePosition));
 
-                    UpdateStatus();
+                    this.UpdateStatus();
                 }
             }
         }
 
-        private void MockUnit_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            RefreshMapPanel();
-        }
+        private void MockUnit_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.RefreshMapPanel();
 
-        private void SelectedUnit_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            mapPanel.Invalidate(map, sender as Unit);
-        }
+        private void SelectedUnit_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.mapPanel.Invalidate(this.map, sender as Unit);
 
-        private void UnitTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SelectedUnitType = unitTypeComboBox.SelectedValue as UnitType;
-        }
+        private void UnitTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) => this.SelectedUnitType = this.unitTypeComboBox.SelectedValue as UnitType;
 
-        private void UnitTool_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ShiftKey)
-            {
-                EnterPlacementMode();
+        private void UnitTool_KeyDown(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.ShiftKey) {
+                this.EnterPlacementMode();
             }
         }
 
-        private void UnitTool_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ShiftKey)
-            {
-                ExitPlacementMode();
+        private void UnitTool_KeyUp(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.ShiftKey) {
+                this.ExitPlacementMode();
             }
         }
 
-        private void MapPanel_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (!placementMode && (Control.ModifierKeys == Keys.Shift))
-            {
-                EnterPlacementMode();
-            }
-            else if (placementMode && (Control.ModifierKeys == Keys.None))
-            {
-                ExitPlacementMode();
+        private void MapPanel_MouseMove(object sender, MouseEventArgs e) {
+            if(!this.placementMode && (Control.ModifierKeys == Keys.Shift)) {
+                this.EnterPlacementMode();
+            } else if(this.placementMode && (Control.ModifierKeys == Keys.None)) {
+                this.ExitPlacementMode();
             }
         }
 
-        private void MapPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (placementMode)
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    AddUnit(navigationWidget.MouseCell);
+        private void MapPanel_MouseDown(object sender, MouseEventArgs e) {
+            if(this.placementMode) {
+                if(e.Button == MouseButtons.Left) {
+                    this.AddUnit(this.navigationWidget.MouseCell);
+                } else if(e.Button == MouseButtons.Right) {
+                    this.RemoveUnit(this.navigationWidget.MouseCell);
                 }
-                else if (e.Button == MouseButtons.Right)
-                {
-                    RemoveUnit(navigationWidget.MouseCell);
-                }
-            }
-            else if (e.Button == MouseButtons.Left)
-            {
-                SelectUnit(navigationWidget.MouseCell);
-            }
-            else if (e.Button == MouseButtons.Right)
-            {
-                PickUnit(navigationWidget.MouseCell);
+            } else if(e.Button == MouseButtons.Left) {
+                this.SelectUnit(this.navigationWidget.MouseCell);
+            } else if(e.Button == MouseButtons.Right) {
+                this.PickUnit(this.navigationWidget.MouseCell);
             }
         }
 
-        private void MapPanel_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (selectedUnit != null)
-            {
-                selectedUnit = null;
+        private void MapPanel_MouseUp(object sender, MouseEventArgs e) {
+            if(this.selectedUnit != null) {
+                this.selectedUnit = null;
 
-                UpdateStatus();
+                this.UpdateStatus();
             }
         }
 
-        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e)
-        {
-            if (placementMode)
-            {
-                if (SelectedUnitType != null)
-                {
-                    mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(e.OldCell, new Size(1, 1)), 1, 1));
-                    mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(e.NewCell, new Size(1, 1)), 1, 1));
+        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e) {
+            if(this.placementMode) {
+                if(this.SelectedUnitType != null) {
+                    this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(e.OldCell, new Size(1, 1)), 1, 1));
+                    this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(e.NewCell, new Size(1, 1)), 1, 1));
                 }
-            }
-            else if (selectedUnit != null)
-            {
-                var oldLocation = map.Technos[selectedUnit].Value;
-                mapPanel.Invalidate(map, selectedUnit);
-                map.Technos.Remove(selectedUnit);
-                if (map.Technos.Add(e.NewCell, selectedUnit))
-                {
-                    mapPanel.Invalidate(map, selectedUnit);
-                    plugin.Dirty = true;
-                }
-                else
-                {
-                    map.Technos.Add(oldLocation, selectedUnit);
+            } else if(this.selectedUnit != null) {
+                var oldLocation = this.map.Technos[this.selectedUnit].Value;
+                this.mapPanel.Invalidate(this.map, this.selectedUnit);
+                this.map.Technos.Remove(this.selectedUnit);
+                if(this.map.Technos.Add(e.NewCell, this.selectedUnit)) {
+                    this.mapPanel.Invalidate(this.map, this.selectedUnit);
+                    this.plugin.Dirty = true;
+                } else {
+                    this.map.Technos.Add(oldLocation, this.selectedUnit);
                 }
             }
         }
 
-        private void AddUnit(Point location)
-        {
-            if (SelectedUnitType != null)
-            {
-                var unit = mockUnit.Clone();
-                if (map.Technos.Add(location, unit))
-                {
-                    mapPanel.Invalidate(map, unit);
-                    plugin.Dirty = true;
+        private void AddUnit(Point location) {
+            if(this.SelectedUnitType != null) {
+                var unit = this.mockUnit.Clone();
+                if(this.map.Technos.Add(location, unit)) {
+                    this.mapPanel.Invalidate(this.map, unit);
+                    this.plugin.Dirty = true;
                 }
             }
         }
 
-        private void RemoveUnit(Point location)
-        {
-            if (map.Technos[location] is Unit unit)
-            {
-                mapPanel.Invalidate(map, unit);
-                map.Technos.Remove(unit);
-                plugin.Dirty = true;
+        private void RemoveUnit(Point location) {
+            if(this.map.Technos[location] is Unit unit) {
+                this.mapPanel.Invalidate(this.map, unit);
+                this.map.Technos.Remove(unit);
+                this.plugin.Dirty = true;
             }
         }
 
-        private void EnterPlacementMode()
-        {
-            if (placementMode)
-            {
+        private void EnterPlacementMode() {
+            if(this.placementMode) {
                 return;
             }
 
-            placementMode = true;
+            this.placementMode = true;
 
-            navigationWidget.MouseoverSize = Size.Empty;
+            this.navigationWidget.MouseoverSize = Size.Empty;
 
-            if (SelectedUnitType != null)
-            {
-                mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
+            if(this.SelectedUnitType != null) {
+                this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(this.navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
             }
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void ExitPlacementMode()
-        {
-            if (!placementMode)
-            {
+        private void ExitPlacementMode() {
+            if(!this.placementMode) {
                 return;
             }
 
-            placementMode = false;
+            this.placementMode = false;
 
-            navigationWidget.MouseoverSize = new Size(1, 1);
+            this.navigationWidget.MouseoverSize = new Size(1, 1);
 
-            if (SelectedUnitType != null)
-            {
-                mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
+            if(this.SelectedUnitType != null) {
+                this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(this.navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
             }
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void PickUnit(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                if (map.Technos[cell] is Unit unit)
-                {
-                    SelectedUnitType = unit.Type;
-                    mockUnit.House = unit.House;
-                    mockUnit.Strength = unit.Strength;
-                    mockUnit.Direction = unit.Direction;
-                    mockUnit.Mission = unit.Mission;
-                    mockUnit.Trigger = unit.Trigger;
+        private void PickUnit(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                if(this.map.Technos[cell] is Unit unit) {
+                    this.SelectedUnitType = unit.Type;
+                    this.mockUnit.House = unit.House;
+                    this.mockUnit.Strength = unit.Strength;
+                    this.mockUnit.Direction = unit.Direction;
+                    this.mockUnit.Mission = unit.Mission;
+                    this.mockUnit.Trigger = unit.Trigger;
                 }
             }
         }
 
-        private void SelectUnit(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                selectedUnit = map.Technos[cell] as Unit;
+        private void SelectUnit(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                this.selectedUnit = this.map.Technos[cell] as Unit;
             }
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void RefreshMapPanel()
-        {
-            if (mockUnit.Type != null)
-            {
+        private void RefreshMapPanel() {
+            if(this.mockUnit.Type != null) {
                 var unitPreview = new Bitmap(Globals.TileWidth * 3, Globals.TileHeight * 3);
-                using (var g = Graphics.FromImage(unitPreview))
-                {
-                    MapRenderer.Render(plugin.GameType, map.Theater, new Point(1, 1), Globals.TileSize, mockUnit).Item2(g);
+                using(var g = Graphics.FromImage(unitPreview)) {
+                    MapRenderer.Render(this.plugin.GameType, this.map.Theater, new Point(1, 1), Globals.TileSize, this.mockUnit).Item2(g);
                 }
-                unitTypeMapPanel.MapImage = unitPreview;
-            }
-            else
-            {
-                unitTypeMapPanel.MapImage = null;
+                this.unitTypeMapPanel.MapImage = unitPreview;
+            } else {
+                this.unitTypeMapPanel.MapImage = null;
             }
         }
 
-        private void UpdateStatus()
-        {
-            if (placementMode)
-            {
-                statusLbl.Text = "Left-Click to place unit, Right-Click to remove unit";
-            }
-            else if (selectedUnit != null)
-            {
-                statusLbl.Text = "Drag mouse to move unit";
-            }
-            else
-            {
-                statusLbl.Text = "Shift to enter placement mode, Left-Click drag to move unit, Double-Click update unit properties, Right-Click to pick unit";
+        private void UpdateStatus() {
+            if(this.placementMode) {
+                this.statusLbl.Text = "Left-Click to place unit, Right-Click to remove unit";
+            } else if(this.selectedUnit != null) {
+                this.statusLbl.Text = "Drag mouse to move unit";
+            } else {
+                this.statusLbl.Text = "Shift to enter placement mode, Left-Click drag to move unit, Double-Click update unit properties, Right-Click to pick unit";
             }
         }
 
-        protected override void PreRenderMap()
-        {
+        protected override void PreRenderMap() {
             base.PreRenderMap();
 
-            previewMap = map.Clone();
-            if (placementMode)
-            {
-                var location = navigationWidget.MouseCell;
-                if (SelectedUnitType != null)
-                {
-                    var unit = mockUnit.Clone();
+            this.previewMap = this.map.Clone();
+            if(this.placementMode) {
+                var location = this.navigationWidget.MouseCell;
+                if(this.SelectedUnitType != null) {
+                    var unit = this.mockUnit.Clone();
                     unit.Tint = Color.FromArgb(128, Color.White);
-                    if (previewMap.Technos.Add(location, unit))
-                    {
-                        mapPanel.Invalidate(previewMap, unit);
+                    if(this.previewMap.Technos.Add(location, unit)) {
+                        this.mapPanel.Invalidate(this.previewMap, unit);
                     }
                 }
             }
         }
 
-        protected override void PostRenderMap(Graphics graphics)
-        {
+        protected override void PostRenderMap(Graphics graphics) {
             base.PostRenderMap(graphics);
 
             var unitPen = new Pen(Color.Green, 4.0f);
-            foreach (var (topLeft, _) in map.Technos.OfType<Unit>())
-            {
+            foreach(var (topLeft, _) in this.map.Technos.OfType<Unit>()) {
                 var bounds = new Rectangle(new Point(topLeft.X * Globals.TileWidth, topLeft.Y * Globals.TileHeight), Globals.TileSize);
                 graphics.DrawRectangle(unitPen, bounds);
             }
@@ -397,26 +314,23 @@ namespace MobiusEditor.Tools
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    selectedObjectProperties?.Close();
+        protected override void Dispose(bool disposing) {
+            if(!this.disposedValue) {
+                if(disposing) {
+                    this.selectedObjectProperties?.Close();
 
-                    mapPanel.MouseDown -= MapPanel_MouseDown;
-                    mapPanel.MouseUp -= MapPanel_MouseUp;
-                    mapPanel.MouseDoubleClick -= MapPanel_MouseDoubleClick;
-                    mapPanel.MouseMove -= MapPanel_MouseMove;
-                    (mapPanel as Control).KeyDown -= UnitTool_KeyDown;
-                    (mapPanel as Control).KeyUp -= UnitTool_KeyUp;
+                    this.mapPanel.MouseDown -= this.MapPanel_MouseDown;
+                    this.mapPanel.MouseUp -= this.MapPanel_MouseUp;
+                    this.mapPanel.MouseDoubleClick -= this.MapPanel_MouseDoubleClick;
+                    this.mapPanel.MouseMove -= this.MapPanel_MouseMove;
+                    (this.mapPanel as Control).KeyDown -= this.UnitTool_KeyDown;
+                    (this.mapPanel as Control).KeyUp -= this.UnitTool_KeyUp;
 
-                    unitTypeComboBox.SelectedIndexChanged -= UnitTypeComboBox_SelectedIndexChanged;
+                    this.unitTypeComboBox.SelectedIndexChanged -= this.UnitTypeComboBox_SelectedIndexChanged;
 
-                    navigationWidget.MouseCellChanged -= MouseoverWidget_MouseCellChanged;
+                    this.navigationWidget.MouseCellChanged -= this.MouseoverWidget_MouseCellChanged;
                 }
-                disposedValue = true;
+                this.disposedValue = true;
             }
 
             base.Dispose(disposing);

@@ -6,60 +6,38 @@
 // Changes to this file will be reverted when you update Steamworks.NET
 
 #if UNITY_ANDROID || UNITY_IOS || UNITY_TIZEN || UNITY_TVOS || UNITY_WEBGL || UNITY_WSA || UNITY_PS4 || UNITY_WII || UNITY_XBOXONE || UNITY_SWITCH
-	#define DISABLESTEAMWORKS
+#define DISABLESTEAMWORKS
 #endif
 
 #if !DISABLESTEAMWORKS
 
-using System.Runtime.InteropServices;
-using IntPtr = System.IntPtr;
 
 namespace Steamworks {
-	[System.Serializable]
-	public struct HServerQuery : System.IEquatable<HServerQuery>, System.IComparable<HServerQuery> {
-		public static readonly HServerQuery Invalid = new HServerQuery(-1);
-		public int m_HServerQuery;
+    [System.Serializable]
+    public struct HServerQuery : System.IEquatable<HServerQuery>, System.IComparable<HServerQuery> {
+        public static readonly HServerQuery Invalid = new HServerQuery(-1);
+        public int m_HServerQuery;
 
-		public HServerQuery(int value) {
-			m_HServerQuery = value;
-		}
+        public HServerQuery(int value) => this.m_HServerQuery = value;
 
-		public override string ToString() {
-			return m_HServerQuery.ToString();
-		}
+        public override string ToString() => this.m_HServerQuery.ToString();
 
-		public override bool Equals(object other) {
-			return other is HServerQuery && this == (HServerQuery)other;
-		}
+        public override bool Equals(object other) => other is HServerQuery && this == (HServerQuery)other;
 
-		public override int GetHashCode() {
-			return m_HServerQuery.GetHashCode();
-		}
+        public override int GetHashCode() => this.m_HServerQuery.GetHashCode();
 
-		public static bool operator ==(HServerQuery x, HServerQuery y) {
-			return x.m_HServerQuery == y.m_HServerQuery;
-		}
+        public static bool operator ==(HServerQuery x, HServerQuery y) => x.m_HServerQuery == y.m_HServerQuery;
 
-		public static bool operator !=(HServerQuery x, HServerQuery y) {
-			return !(x == y);
-		}
+        public static bool operator !=(HServerQuery x, HServerQuery y) => !(x == y);
 
-		public static explicit operator HServerQuery(int value) {
-			return new HServerQuery(value);
-		}
+        public static explicit operator HServerQuery(int value) => new HServerQuery(value);
 
-		public static explicit operator int(HServerQuery that) {
-			return that.m_HServerQuery;
-		}
+        public static explicit operator int(HServerQuery that) => that.m_HServerQuery;
 
-		public bool Equals(HServerQuery other) {
-			return m_HServerQuery == other.m_HServerQuery;
-		}
+        public bool Equals(HServerQuery other) => this.m_HServerQuery == other.m_HServerQuery;
 
-		public int CompareTo(HServerQuery other) {
-			return m_HServerQuery.CompareTo(other.m_HServerQuery);
-		}
-	}
+        public int CompareTo(HServerQuery other) => this.m_HServerQuery.CompareTo(other.m_HServerQuery);
+    }
 }
 
 #endif // !DISABLESTEAMWORKS

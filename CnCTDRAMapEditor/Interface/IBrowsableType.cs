@@ -14,12 +14,14 @@
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using System.Drawing;
 
-namespace MobiusEditor.Interface
-{
-    public interface IBrowsableType
-    {
-        string DisplayName { get; }
+namespace MobiusEditor.Interface {
+    public interface IBrowsableType {
+        string DisplayName {
+            get;
+        }
 
-        Image Thumbnail { get; }
+        Image Thumbnail {
+            get;
+        }
     }
 }

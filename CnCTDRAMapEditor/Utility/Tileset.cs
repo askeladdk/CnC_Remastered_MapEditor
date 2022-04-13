@@ -19,32 +19,34 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 
-namespace MobiusEditor.Utility
-{
-    public class Tile
-    {
-        public Image Image { get; private set; }
+namespace MobiusEditor.Utility {
+    public class Tile {
+        public Image Image {
+            get; private set;
+        }
 
-        public Rectangle OpaqueBounds { get; private set; }
+        public Rectangle OpaqueBounds {
+            get; private set;
+        }
 
-        public Tile(Image image, Rectangle opaqueBounds)
-        {
-            Image = image;
-            OpaqueBounds = opaqueBounds;
+        public Tile(Image image, Rectangle opaqueBounds) {
+            this.Image = image;
+            this.OpaqueBounds = opaqueBounds;
         }
 
         public Tile(Image image)
-            : this(image, new Rectangle(0, 0, image.Width, image.Height))
-        {
+            : this(image, new Rectangle(0, 0, image.Width, image.Height)) {
         }
     }
 
-    public class Tileset
-    {
-        private class TileData
-        {
-            public int FPS { get; set; }
-            public string[] Frames { get; set; }
+    public class Tileset {
+        private class TileData {
+            public int FPS {
+                get; set;
+            }
+            public string[] Frames {
+                get; set;
+            }
 
             public Dictionary<string, Tile[]> TeamColorTiles { get; } = new Dictionary<string, Tile[]>();
         }
@@ -55,37 +57,28 @@ namespace MobiusEditor.Utility
 
         private static readonly Bitmap transparentTileImage;
 
-        static Tileset()
-        {
+        static Tileset() {
             transparentTileImage = new Bitmap(Globals.TileWidth, Globals.TileHeight);
             transparentTileImage.MakeTransparent();
         }
 
-        public Tileset(TextureManager textureManager)
-        {
-            this.textureManager = textureManager;
-        }
+        public Tileset(TextureManager textureManager) => this.textureManager = textureManager;
 
-        public void Reset()
-        {
-            foreach (var item in tiles)
-            {
-                foreach (var tileItem in item.Value)
-                {
+        public void Reset() {
+            foreach(var item in this.tiles) {
+                foreach(var tileItem in item.Value) {
                     tileItem.Value.TeamColorTiles.Clear();
                 }
             }
         }
 
-        public void Load(string xml, string texturesPath)
-        {
-            XmlDocument xmlDoc = new XmlDocument();
+        public void Load(string xml, string texturesPath) {
+            var xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xml);
 
             var rootPath = Path.Combine(texturesPath, xmlDoc.SelectSingleNode("TilesetTypeClass/RootTexturePath").InnerText);
-            foreach (XmlNode tileNode in xmlDoc.SelectNodes("TilesetTypeClass/Tiles/Tile"))
-            {
-                TileData tileData = new TileData();
+            foreach(XmlNode tileNode in xmlDoc.SelectNodes("TilesetTypeClass/Tiles/Tile")) {
+                var tileData = new TileData();
 
                 var name = tileNode.SelectSingleNode("Key/Name").InnerText;
                 var shape = int.Parse(tileNode.SelectSingleNode("Key/Shape").InnerText);
@@ -99,62 +92,50 @@ namespace MobiusEditor.Utility
                 tileData.Frames = new string[Math.Min(1, frameNodes.Count)];
 #endif
 
-                for (var i = 0; i < tileData.Frames.Length; ++i)
-                {
+                for(var i = 0; i < tileData.Frames.Length; ++i) {
                     string filename = null;
-                    if (!string.IsNullOrEmpty(frameNodes[i].InnerText))
-                    {
+                    if(!string.IsNullOrEmpty(frameNodes[i].InnerText)) {
                         filename = Path.Combine(rootPath, frameNodes[i].InnerText);
                     }
 
                     tileData.Frames[i] = filename;
                 }
 
-                if (!tiles.TryGetValue(name, out Dictionary<int, TileData> shapes))
-                {
+                if(!this.tiles.TryGetValue(name, out var shapes)) {
                     shapes = new Dictionary<int, TileData>();
-                    tiles[name] = shapes;
+                    this.tiles[name] = shapes;
                 }
 
                 shapes[shape] = tileData;
             }
         }
 
-        public bool GetTileData(string name, int shape, TeamColor teamColor, out int fps, out Tile[] tiles)
-        {
+        public bool GetTileData(string name, int shape, TeamColor teamColor, out int fps, out Tile[] tiles) {
             fps = 0;
             tiles = null;
 
-            if (!this.tiles.TryGetValue(name, out Dictionary<int, TileData> shapes))
-            {
+            if(!this.tiles.TryGetValue(name, out var shapes)) {
                 return false;
             }
 
-            if (shape < 0)
-            {
+            if(shape < 0) {
                 shape = Math.Max(0, shapes.Max(kv => kv.Key) + shape + 1);
             }
-            if (!shapes.TryGetValue(shape, out TileData tileData))
-            {
+            if(!shapes.TryGetValue(shape, out var tileData)) {
                 return false;
             }
 
             var key = teamColor?.Name ?? string.Empty;
-            if (!tileData.TeamColorTiles.TryGetValue(key, out Tile[] tileDataTiles))
-            {
+            if(!tileData.TeamColorTiles.TryGetValue(key, out var tileDataTiles)) {
                 tileDataTiles = new Tile[tileData.Frames.Length];
                 tileData.TeamColorTiles[key] = tileDataTiles;
 
-                for (int i = 0; i < tileDataTiles.Length; ++i)
-                {
+                for(var i = 0; i < tileDataTiles.Length; ++i) {
                     var filename = tileData.Frames[i];
-                    if (!string.IsNullOrEmpty(filename))
-                    {
-                        (Bitmap bitmap, Rectangle opaqueBounds) = textureManager.GetTexture(filename, teamColor);
+                    if(!string.IsNullOrEmpty(filename)) {
+                        (var bitmap, var opaqueBounds) = this.textureManager.GetTexture(filename, teamColor);
                         tileDataTiles[i] = new Tile(bitmap, opaqueBounds);
-                    }
-                    else
-                    {
+                    } else {
                         tileDataTiles[i] = new Tile(transparentTileImage);
                     }
                 }

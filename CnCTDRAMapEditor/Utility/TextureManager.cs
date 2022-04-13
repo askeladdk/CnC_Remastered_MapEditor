@@ -20,14 +20,11 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Runtime.InteropServices;
 using TGASharpLib;
 
-namespace MobiusEditor.Utility
-{
-    public class TextureManager
-    {
+namespace MobiusEditor.Utility {
+    public class TextureManager {
 #if false
         private class ImageData
         {
@@ -38,31 +35,23 @@ namespace MobiusEditor.Utility
 
         private readonly MegafileManager megafileManager;
 
-        private Dictionary<string, Bitmap> cachedTextures = new Dictionary<string, Bitmap>();
-        private Dictionary<(string, TeamColor), (Bitmap, Rectangle)> teamColorTextures = new Dictionary<(string, TeamColor), (Bitmap, Rectangle)>();
+        private readonly Dictionary<string, Bitmap> cachedTextures = new Dictionary<string, Bitmap>();
+        private readonly Dictionary<(string, TeamColor), (Bitmap, Rectangle)> teamColorTextures = new Dictionary<(string, TeamColor), (Bitmap, Rectangle)>();
 
-        public TextureManager(MegafileManager megafileManager)
-        {
-            this.megafileManager = megafileManager;
+        public TextureManager(MegafileManager megafileManager) => this.megafileManager = megafileManager;
+
+        public void Reset() {
+            this.cachedTextures.Clear();
+            this.teamColorTextures.Clear();
         }
 
-        public void Reset()
-        {
-            cachedTextures.Clear();
-            teamColorTextures.Clear();
-        }
-
-        public (Bitmap, Rectangle) GetTexture(string filename, TeamColor teamColor)
-        {
-            if (teamColorTextures.TryGetValue((filename, teamColor), out (Bitmap bitmap, Rectangle opaqueBounds) result))
-            {
+        public (Bitmap, Rectangle) GetTexture(string filename, TeamColor teamColor) {
+            if(this.teamColorTextures.TryGetValue((filename, teamColor), out (Bitmap bitmap, Rectangle opaqueBounds) result)) {
                 return result;
             }
 
-            if (!cachedTextures.TryGetValue(filename, out result.bitmap))
-            {
-                if (Path.GetExtension(filename).ToLower() == ".tga")
-                {
+            if(!this.cachedTextures.TryGetValue(filename, out result.bitmap)) {
+                if(Path.GetExtension(filename).ToLower() == ".tga") {
                     TGA tga = null;
                     JObject metadata = null;
 
@@ -70,36 +59,25 @@ namespace MobiusEditor.Utility
                     var name = Path.GetFileNameWithoutExtension(filename);
                     var archiveDir = Path.GetDirectoryName(filename);
                     var archivePath = archiveDir + ".ZIP";
-                    using (var fileStream = megafileManager.Open(archivePath))
-                    {
-                        if (fileStream != null)
-                        {
-                            using (var archive = new ZipArchive(fileStream, ZipArchiveMode.Read))
-                            {
-                                foreach (var entry in archive.Entries)
-                                {
-                                    if (name == Path.GetFileNameWithoutExtension(entry.Name))
-                                    {
-                                        if ((tga == null) && (Path.GetExtension(entry.Name).ToLower() == ".tga"))
-                                        {
-                                            using (var stream = entry.Open())
-                                            using (var memStream = new MemoryStream())
-                                            {
+                    using(var fileStream = this.megafileManager.Open(archivePath)) {
+                        if(fileStream != null) {
+                            using(var archive = new ZipArchive(fileStream, ZipArchiveMode.Read)) {
+                                foreach(var entry in archive.Entries) {
+                                    if(name == Path.GetFileNameWithoutExtension(entry.Name)) {
+                                        if((tga == null) && (Path.GetExtension(entry.Name).ToLower() == ".tga")) {
+                                            using(var stream = entry.Open())
+                                            using(var memStream = new MemoryStream()) {
                                                 stream.CopyTo(memStream);
                                                 tga = new TGA(memStream);
                                             }
-                                        }
-                                        else if ((metadata == null) && (Path.GetExtension(entry.Name).ToLower() == ".meta"))
-                                        {
-                                            using (var stream = entry.Open())
-                                            using (var reader = new StreamReader(stream))
-                                            {
+                                        } else if((metadata == null) && (Path.GetExtension(entry.Name).ToLower() == ".meta")) {
+                                            using(var stream = entry.Open())
+                                            using(var reader = new StreamReader(stream)) {
                                                 metadata = JObject.Parse(reader.ReadToEnd());
                                             }
                                         }
 
-                                        if ((tga != null) && (metadata != null))
-                                        {
+                                        if((tga != null) && (metadata != null)) {
                                             break;
                                         }
                                     }
@@ -109,22 +87,17 @@ namespace MobiusEditor.Utility
                     }
 
                     // Next attempt to load a standalone file
-                    if (tga == null)
-                    {
-                        using (var fileStream = megafileManager.Open(filename))
-                        {
-                            if (fileStream != null)
-                            {
+                    if(tga == null) {
+                        using(var fileStream = this.megafileManager.Open(filename)) {
+                            if(fileStream != null) {
                                 tga = new TGA(fileStream);
                             }
                         }
                     }
 
-                    if (tga != null)
-                    {
+                    if(tga != null) {
                         var bitmap = tga.ToBitmap(true);
-                        if (metadata != null)
-                        {
+                        if(metadata != null) {
                             var size = new Size(metadata["size"][0].ToObject<int>(), metadata["size"][1].ToObject<int>());
                             var crop = Rectangle.FromLTRB(
                                 metadata["crop"][0].ToObject<int>(),
@@ -134,15 +107,12 @@ namespace MobiusEditor.Utility
                             );
 
                             var uncroppedBitmap = new Bitmap(size.Width, size.Height, bitmap.PixelFormat);
-                            using (var g = Graphics.FromImage(uncroppedBitmap))
-                            {
+                            using(var g = Graphics.FromImage(uncroppedBitmap)) {
                                 g.DrawImage(bitmap, crop, new Rectangle(Point.Empty, bitmap.Size), GraphicsUnit.Pixel);
                             }
-                            cachedTextures[filename] = uncroppedBitmap;
-                        }
-                        else
-                        {
-                            cachedTextures[filename] = bitmap;
+                            this.cachedTextures[filename] = uncroppedBitmap;
+                        } else {
+                            this.cachedTextures[filename] = bitmap;
                         }
                     }
 
@@ -216,78 +186,70 @@ namespace MobiusEditor.Utility
 #endif
                 }
 
-                if (!cachedTextures.TryGetValue(filename, out result.bitmap))
-                {
+                if(!this.cachedTextures.TryGetValue(filename, out result.bitmap)) {
                     // Try loading as a DDS
                     var ddsFilename = Path.ChangeExtension(filename, ".DDS");
-                    using (var fileStream = megafileManager.Open(ddsFilename))
-                    {
-                        if (fileStream != null)
-                        {
+                    using(var fileStream = this.megafileManager.Open(ddsFilename)) {
+                        if(fileStream != null) {
                             var bytes = new byte[fileStream.Length];
                             fileStream.Read(bytes, 0, bytes.Length);
 
-                            using (var image = Dds.Create(bytes, new PfimConfig()))
-                            {
+                            using(var image = Dds.Create(bytes, new PfimConfig())) {
                                 PixelFormat format;
-                                switch (image.Format)
-                                {
-                                    case Pfim.ImageFormat.Rgb24:
-                                        format = PixelFormat.Format24bppRgb;
-                                        break;
+                                switch(image.Format) {
+                                case Pfim.ImageFormat.Rgb24:
+                                    format = PixelFormat.Format24bppRgb;
+                                    break;
 
-                                    case Pfim.ImageFormat.Rgba32:
-                                        format = PixelFormat.Format32bppArgb;
-                                        break;
+                                case Pfim.ImageFormat.Rgba32:
+                                    format = PixelFormat.Format32bppArgb;
+                                    break;
 
-                                    case Pfim.ImageFormat.R5g5b5:
-                                        format = PixelFormat.Format16bppRgb555;
-                                        break;
+                                case Pfim.ImageFormat.R5g5b5:
+                                    format = PixelFormat.Format16bppRgb555;
+                                    break;
 
-                                    case Pfim.ImageFormat.R5g6b5:
-                                        format = PixelFormat.Format16bppRgb565;
-                                        break;
+                                case Pfim.ImageFormat.R5g6b5:
+                                    format = PixelFormat.Format16bppRgb565;
+                                    break;
 
-                                    case Pfim.ImageFormat.R5g5b5a1:
-                                        format = PixelFormat.Format16bppArgb1555;
-                                        break;
+                                case Pfim.ImageFormat.R5g5b5a1:
+                                    format = PixelFormat.Format16bppArgb1555;
+                                    break;
 
-                                    case Pfim.ImageFormat.Rgb8:
-                                        format = PixelFormat.Format8bppIndexed;
-                                        break;
+                                case Pfim.ImageFormat.Rgb8:
+                                    format = PixelFormat.Format8bppIndexed;
+                                    break;
 
-                                    default:
-                                        format = PixelFormat.DontCare;
-                                        break;
+                                default:
+                                    format = PixelFormat.DontCare;
+                                    break;
                                 }
 
                                 var bitmap = new Bitmap(image.Width, image.Height, format);
                                 var bitmapData = bitmap.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.WriteOnly, bitmap.PixelFormat);
                                 Marshal.Copy(image.Data, 0, bitmapData.Scan0, image.Stride * image.Height);
                                 bitmap.UnlockBits(bitmapData);
-                                cachedTextures[filename] = bitmap;
+                                this.cachedTextures[filename] = bitmap;
                             }
                         }
                     }
                 }
             }
 
-            if (!cachedTextures.TryGetValue(filename, out result.bitmap))
-            {
+            if(!this.cachedTextures.TryGetValue(filename, out result.bitmap)) {
                 return result;
             }
 
             result.bitmap = new Bitmap(result.bitmap);
             result.opaqueBounds = new Rectangle(0, 0, result.bitmap.Width, result.bitmap.Height);
-            if (teamColor != null)
-            {
+            if(teamColor != null) {
                 float frac(float x) => x - (int)x;
                 float lerp(float x, float y, float t) => (x * (1.0f - t)) + (y * t);
                 float saturate(float x) => Math.Max(0.0f, Math.Min(1.0f, x));
 
                 BitmapData data = null;
-                try
-                {
+                try {
                     data = result.bitmap.LockBits(new Rectangle(0, 0, result.bitmap.Width, result.bitmap.Height), ImageLockMode.ReadWrite, result.bitmap.PixelFormat);
                     var bpp = Image.GetPixelFormatSize(data.PixelFormat) / 8;
                     var bytes = new byte[data.Stride * data.Height];
@@ -295,21 +257,19 @@ namespace MobiusEditor.Utility
 
                     result.opaqueBounds = CalculateOpaqueBounds(bytes, data.Width, data.Height, bpp, data.Stride);
 
-                    for (int j = 0; j < bytes.Length; j += bpp)
-                    {
+                    for(var j = 0; j < bytes.Length; j += bpp) {
                         var pixel = Color.FromArgb(bytes[j + 2], bytes[j + 1], bytes[j + 0]);
-                        (float r, float g, float b) = (pixel.R.ToLinear(), pixel.G.ToLinear(), pixel.B.ToLinear());
+                        (var r, var g, var b) = (pixel.R.ToLinear(), pixel.G.ToLinear(), pixel.B.ToLinear());
 
                         (float x, float y, float z, float w) K = (0.0f, -1.0f / 3.0f, 2.0f / 3.0f, -1.0f);
                         (float x, float y, float z, float w) p = (g >= b) ? (g, b, K.x, K.y) : (b, g, K.w, K.z);
                         (float x, float y, float z, float w) q = (r >= p.x) ? (r, p.y, p.z, p.x) : (p.x, p.y, p.w, r);
-                        (float d, float e) = (q.x - Math.Min(q.w, q.y), 1e-10f);
-                        (float hue, float saturation, float value) = (Math.Abs(q.z + (q.w - q.y) / (6.0f * d + e)), d / (q.x + e), q.x);
+                        (var d, var e) = (q.x - Math.Min(q.w, q.y), 1e-10f);
+                        (var hue, var saturation, var value) = (Math.Abs(q.z + (q.w - q.y) / (6.0f * d + e)), d / (q.x + e), q.x);
 
                         var lowerHue = teamColor.LowerBounds.GetHue() / 360.0f;
                         var upperHue = teamColor.UpperBounds.GetHue() / 360.0f;
-                        if ((hue >= lowerHue) && (upperHue >= hue))
-                        {
+                        if((hue >= lowerHue) && (upperHue >= hue)) {
                             hue = (hue / (upperHue - lowerHue)) * ((upperHue + teamColor.Fudge) - (lowerHue - teamColor.Fudge));
                             hue += teamColor.HSVShift.X;
                             saturation += teamColor.HSVShift.Y;
@@ -359,33 +319,24 @@ namespace MobiusEditor.Utility
                     }
 
                     Marshal.Copy(bytes, 0, data.Scan0, bytes.Length);
-                }
-                finally
-                {
-                    if (data != null)
-                    {
+                } finally {
+                    if(data != null) {
                         result.bitmap.UnlockBits(data);
                     }
                 }
-            }
-            else
-            {
+            } else {
                 result.opaqueBounds = CalculateOpaqueBounds(result.bitmap);
             }
 
-            teamColorTextures[(filename, teamColor)] = result;
+            this.teamColorTextures[(filename, teamColor)] = result;
             return result;
         }
 
-        private static Rectangle CalculateOpaqueBounds(byte[] data, int width, int height, int bpp, int stride)
-        {
-            bool isTransparentRow(int y)
-            {
+        private static Rectangle CalculateOpaqueBounds(byte[] data, int width, int height, int bpp, int stride) {
+            bool isTransparentRow(int y) {
                 var start = y * stride;
-                for (var i = bpp - 1; i < stride; i += bpp)
-                {
-                    if (data[start + i] != 0)
-                    {
+                for(var i = bpp - 1; i < stride; i += bpp) {
+                    if(data[start + i] != 0) {
                         return false;
                     }
                 }
@@ -393,48 +344,37 @@ namespace MobiusEditor.Utility
             }
 
             var opaqueBounds = new Rectangle(0, 0, width, height);
-            for (int y = 0; y < height; ++y)
-            {
-                if (!isTransparentRow(y))
-                {
+            for(var y = 0; y < height; ++y) {
+                if(!isTransparentRow(y)) {
                     opaqueBounds.Offset(0, y);
                     break;
                 }
             }
-            for (int y = height; y > 0; --y)
-            {
-                if (!isTransparentRow(y - 1))
-                {
+            for(var y = height; y > 0; --y) {
+                if(!isTransparentRow(y - 1)) {
                     opaqueBounds.Height = y - opaqueBounds.Top;
                     break;
                 }
             }
 
-            bool isTransparentColumn(int x)
-            {
+            bool isTransparentColumn(int x) {
                 var start = (x * bpp) + (bpp - 1);
-                for (var y = opaqueBounds.Top; y < opaqueBounds.Bottom; ++y)
-                {
-                    if (data[start + (y * stride)] != 0)
-                    {
+                for(var y = opaqueBounds.Top; y < opaqueBounds.Bottom; ++y) {
+                    if(data[start + (y * stride)] != 0) {
                         return false;
                     }
                 }
                 return true;
             }
 
-            for (int x = 0; x < width; ++x)
-            {
-                if (!isTransparentColumn(x))
-                {
+            for(var x = 0; x < width; ++x) {
+                if(!isTransparentColumn(x)) {
                     opaqueBounds.Offset(x, 0);
                     break;
                 }
             }
-            for (int x = width; x > 0; --x)
-            {
-                if (!isTransparentColumn(x - 1))
-                {
+            for(var x = width; x > 0; --x) {
+                if(!isTransparentColumn(x - 1)) {
                     opaqueBounds.Width = x - opaqueBounds.Left;
                     break;
                 }
@@ -443,21 +383,16 @@ namespace MobiusEditor.Utility
             return opaqueBounds;
         }
 
-        private static Rectangle CalculateOpaqueBounds(Bitmap bitmap)
-        {
+        private static Rectangle CalculateOpaqueBounds(Bitmap bitmap) {
             BitmapData data = null;
-            try
-            {
+            try {
                 data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, bitmap.PixelFormat);
                 var bpp = Image.GetPixelFormatSize(data.PixelFormat) / 8;
                 var bytes = new byte[data.Stride * data.Height];
                 Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
                 return CalculateOpaqueBounds(bytes, data.Width, data.Height, bpp, data.Stride);
-            }
-            finally
-            {
-                if (data != null)
-                {
+            } finally {
+                if(data != null) {
                     bitmap.UnlockBits(data);
                 }
             }

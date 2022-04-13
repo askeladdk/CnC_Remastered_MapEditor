@@ -24,10 +24,8 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools
-{
-    public class ResourcesTool : ViewTool
-    {
+namespace MobiusEditor.Tools {
+    public class ResourcesTool : ViewTool {
         private readonly Label totalResourcesLbl;
         private readonly NumericUpDown brushSizeNud;
         private readonly CheckBox gemsCheckBox;
@@ -39,295 +37,230 @@ namespace MobiusEditor.Tools
         private readonly Dictionary<int, Overlay> redoOverlays = new Dictionary<int, Overlay>();
 
         public ResourcesTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, Label totalResourcesLbl, NumericUpDown brushSizeNud, CheckBox gemsCheckBox, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
-            : base(mapPanel, layers, statusLbl, plugin, url)
-        {
-            this.mapPanel.MouseDown += MapPanel_MouseDown;
-            this.mapPanel.MouseUp += MapPanel_MouseUp;
-            (this.mapPanel as Control).KeyDown += ResourceTool_KeyDown;
+            : base(mapPanel, layers, statusLbl, plugin, url) {
+            this.mapPanel.MouseDown += this.MapPanel_MouseDown;
+            this.mapPanel.MouseUp += this.MapPanel_MouseUp;
+            (this.mapPanel as Control).KeyDown += this.ResourceTool_KeyDown;
 
             this.totalResourcesLbl = totalResourcesLbl;
             this.brushSizeNud = brushSizeNud;
             this.gemsCheckBox = gemsCheckBox;
 
-            this.brushSizeNud.ValueChanged += BrushSizeNud_ValueChanged;
+            this.brushSizeNud.ValueChanged += this.BrushSizeNud_ValueChanged;
 
-            navigationWidget.MouseCellChanged += MouseoverWidget_MouseCellChanged;
-            navigationWidget.MouseoverSize = new Size((int)brushSizeNud.Value, (int)brushSizeNud.Value);
+            this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
+            this.navigationWidget.MouseoverSize = new Size((int)brushSizeNud.Value, (int)brushSizeNud.Value);
 
-            url.Undone += Url_UndoRedo;
-            url.Redone += Url_UndoRedo;
+            url.Undone += this.Url_UndoRedo;
+            url.Redone += this.Url_UndoRedo;
 
-            Update();
+            this.Update();
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void Url_UndoRedo(object sender, EventArgs e)
-        {
-            Update();
-        }
+        private void Url_UndoRedo(object sender, EventArgs e) => this.Update();
 
-        private void BrushSizeNud_ValueChanged(object sender, EventArgs e)
-        {
-            navigationWidget.MouseoverSize = new Size((int)brushSizeNud.Value, (int)brushSizeNud.Value);
-        }
+        private void BrushSizeNud_ValueChanged(object sender, EventArgs e) => this.navigationWidget.MouseoverSize = new Size((int)this.brushSizeNud.Value, (int)this.brushSizeNud.Value);
 
-        private void ResourceTool_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.OemOpenBrackets)
-            {
-                brushSizeNud.DownButton();
-                mapPanel.Invalidate();
-            }
-            else if (e.KeyCode == Keys.OemCloseBrackets)
-            {
-                brushSizeNud.UpButton();
-                mapPanel.Invalidate();
+        private void ResourceTool_KeyDown(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.OemOpenBrackets) {
+                this.brushSizeNud.DownButton();
+                this.mapPanel.Invalidate();
+            } else if(e.KeyCode == Keys.OemCloseBrackets) {
+                this.brushSizeNud.UpButton();
+                this.mapPanel.Invalidate();
             }
         }
 
-        private void MapPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                if (!placementMode)
-                {
-                    EnterPlacementMode(true);
-                    AddResource(navigationWidget.MouseCell);
+        private void MapPanel_MouseDown(object sender, MouseEventArgs e) {
+            if(e.Button == MouseButtons.Left) {
+                if(!this.placementMode) {
+                    this.EnterPlacementMode(true);
+                    this.AddResource(this.navigationWidget.MouseCell);
                 }
-            }
-            else if (e.Button == MouseButtons.Right)
-            {
-                if (!placementMode)
-                {
-                    EnterPlacementMode(false);
-                    RemoveResource(navigationWidget.MouseCell);
+            } else if(e.Button == MouseButtons.Right) {
+                if(!this.placementMode) {
+                    this.EnterPlacementMode(false);
+                    this.RemoveResource(this.navigationWidget.MouseCell);
                 }
             }
         }
 
-        private void MapPanel_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (placementMode)
-            {
-                if (((e.Button == MouseButtons.Left) && additivePlacement) ||
-                    ((e.Button == MouseButtons.Right) && !additivePlacement))
-                {
-                    ExitPlacementMode();
+        private void MapPanel_MouseUp(object sender, MouseEventArgs e) {
+            if(this.placementMode) {
+                if(((e.Button == MouseButtons.Left) && this.additivePlacement) ||
+                    ((e.Button == MouseButtons.Right) && !this.additivePlacement)) {
+                    this.ExitPlacementMode();
                 }
             }
 
-            if ((undoOverlays.Count > 0) || (redoOverlays.Count > 0))
-            {
-                CommitChange();
+            if((this.undoOverlays.Count > 0) || (this.redoOverlays.Count > 0)) {
+                this.CommitChange();
             }
         }
 
-        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e)
-        {
-            if (placementMode)
-            {
-                if (additivePlacement)
-                {
-                    AddResource(e.NewCell);
-                }
-                else
-                {
-                    RemoveResource(e.NewCell);
+        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e) {
+            if(this.placementMode) {
+                if(this.additivePlacement) {
+                    this.AddResource(e.NewCell);
+                } else {
+                    this.RemoveResource(e.NewCell);
                 }
             }
 
-            if (brushSizeNud.Value > 1)
-            {
-                foreach (var cell in new Point[] { e.OldCell, e.NewCell })
-                {
-                    mapPanel.Invalidate(mapPanel.MapToClient(new Rectangle(
-                        new Point(cell.X - ((int)brushSizeNud.Value / 2), cell.Y - ((int)brushSizeNud.Value / 2)),
-                        new Size((int)brushSizeNud.Value, (int)brushSizeNud.Value)
+            if(this.brushSizeNud.Value > 1) {
+                foreach(var cell in new Point[] { e.OldCell, e.NewCell }) {
+                    this.mapPanel.Invalidate(this.mapPanel.MapToClient(new Rectangle(
+                        new Point(cell.X - ((int)this.brushSizeNud.Value / 2), cell.Y - ((int)this.brushSizeNud.Value / 2)),
+                        new Size((int)this.brushSizeNud.Value, (int)this.brushSizeNud.Value)
                     )));
                 }
             }
         }
 
-        private void AddResource(Point location)
-        {
-            Rectangle rectangle = new Rectangle(location, new Size(1, 1));
-            rectangle.Inflate(navigationWidget.MouseoverSize.Width / 2, navigationWidget.MouseoverSize.Height / 2);
-            foreach (var subLocation in rectangle.Points())
-            {
-                if ((subLocation.Y == 0) || (subLocation.Y == (map.Metrics.Height - 1)))
-                {
+        private void AddResource(Point location) {
+            var rectangle = new Rectangle(location, new Size(1, 1));
+            rectangle.Inflate(this.navigationWidget.MouseoverSize.Width / 2, this.navigationWidget.MouseoverSize.Height / 2);
+            foreach(var subLocation in rectangle.Points()) {
+                if((subLocation.Y == 0) || (subLocation.Y == (this.map.Metrics.Height - 1))) {
                     continue;
                 }
 
-                if (map.Metrics.GetCell(subLocation, out int cell))
-                {
-                    if (map.Overlay[cell] == null)
-                    {
-                        var resourceType = gemsCheckBox.Checked ?
-                            map.OverlayTypes.Where(t => t.IsGem).FirstOrDefault() :
-                            map.OverlayTypes.Where(t => t.IsTiberiumOrGold).FirstOrDefault();
-                        if (resourceType != null)
-                        {
-                            if (!undoOverlays.ContainsKey(cell))
-                            {
-                                undoOverlays[cell] = map.Overlay[cell];
+                if(this.map.Metrics.GetCell(subLocation, out var cell)) {
+                    if(this.map.Overlay[cell] == null) {
+                        var resourceType = this.gemsCheckBox.Checked ?
+                            this.map.OverlayTypes.Where(t => t.IsGem).FirstOrDefault() :
+                            this.map.OverlayTypes.Where(t => t.IsTiberiumOrGold).FirstOrDefault();
+                        if(resourceType != null) {
+                            if(!this.undoOverlays.ContainsKey(cell)) {
+                                this.undoOverlays[cell] = this.map.Overlay[cell];
                             }
 
                             var overlay = new Overlay { Type = resourceType, Icon = 0 };
-                            map.Overlay[cell] = overlay;
-                            redoOverlays[cell] = overlay;
+                            this.map.Overlay[cell] = overlay;
+                            this.redoOverlays[cell] = overlay;
 
-                            plugin.Dirty = true;
+                            this.plugin.Dirty = true;
                         }
                     }
                 }
             }
 
             rectangle.Inflate(1, 1);
-            mapPanel.Invalidate(map, rectangle);
+            this.mapPanel.Invalidate(this.map, rectangle);
 
-            Update();
+            this.Update();
         }
 
-        private void RemoveResource(Point location)
-        {
-            Rectangle rectangle = new Rectangle(location, new Size(1, 1));
-            rectangle.Inflate(navigationWidget.MouseoverSize.Width / 2, navigationWidget.MouseoverSize.Height / 2);
-            foreach (var subLocation in rectangle.Points())
-            {
-                if (map.Metrics.GetCell(subLocation, out int cell))
-                {
-                    if (map.Overlay[cell]?.Type.IsResource ?? false)
-                    {
-                        if (!undoOverlays.ContainsKey(cell))
-                        {
-                            undoOverlays[cell] = map.Overlay[cell];
+        private void RemoveResource(Point location) {
+            var rectangle = new Rectangle(location, new Size(1, 1));
+            rectangle.Inflate(this.navigationWidget.MouseoverSize.Width / 2, this.navigationWidget.MouseoverSize.Height / 2);
+            foreach(var subLocation in rectangle.Points()) {
+                if(this.map.Metrics.GetCell(subLocation, out var cell)) {
+                    if(this.map.Overlay[cell]?.Type.IsResource ?? false) {
+                        if(!this.undoOverlays.ContainsKey(cell)) {
+                            this.undoOverlays[cell] = this.map.Overlay[cell];
                         }
 
-                        map.Overlay[cell] = null;
-                        redoOverlays[cell] = null;
+                        this.map.Overlay[cell] = null;
+                        this.redoOverlays[cell] = null;
 
-                        plugin.Dirty = true;
+                        this.plugin.Dirty = true;
                     }
                 }
             }
 
             rectangle.Inflate(1, 1);
-            mapPanel.Invalidate(map, rectangle);
+            this.mapPanel.Invalidate(this.map, rectangle);
 
-            Update();
+            this.Update();
         }
 
-        private void EnterPlacementMode(bool additive)
-        {
-            if (placementMode)
-            {
+        private void EnterPlacementMode(bool additive) {
+            if(this.placementMode) {
                 return;
             }
 
-            placementMode = true;
-            additivePlacement = additive;
+            this.placementMode = true;
+            this.additivePlacement = additive;
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void ExitPlacementMode()
-        {
-            if (!placementMode)
-            {
+        private void ExitPlacementMode() {
+            if(!this.placementMode) {
                 return;
             }
 
-            placementMode = false;
+            this.placementMode = false;
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void CommitChange()
-        {
-            var undoOverlays2 = new Dictionary<int, Overlay>(undoOverlays);
-            void undoAction(UndoRedoEventArgs e)
-            {
-                foreach (var kv in undoOverlays2)
-                {
+        private void CommitChange() {
+            var undoOverlays2 = new Dictionary<int, Overlay>(this.undoOverlays);
+            void undoAction(UndoRedoEventArgs e) {
+                foreach(var kv in undoOverlays2) {
                     e.Map.Overlay[kv.Key] = kv.Value;
                 }
-                e.MapPanel.Invalidate(e.Map, undoOverlays2.Keys.Select(k =>
-                {
-                    e.Map.Metrics.GetLocation(k, out Point location);
+                e.MapPanel.Invalidate(e.Map, undoOverlays2.Keys.Select(k => {
+                    e.Map.Metrics.GetLocation(k, out var location);
                     var rectangle = new Rectangle(location, new Size(1, 1));
                     rectangle.Inflate(1, 1);
                     return rectangle;
                 }));
             }
 
-            var redoOverlays2 = new Dictionary<int, Overlay>(redoOverlays);
-            void redoAction(UndoRedoEventArgs e)
-            {
-                foreach (var kv in redoOverlays2)
-                {
+            var redoOverlays2 = new Dictionary<int, Overlay>(this.redoOverlays);
+            void redoAction(UndoRedoEventArgs e) {
+                foreach(var kv in redoOverlays2) {
                     e.Map.Overlay[kv.Key] = kv.Value;
                 }
-                e.MapPanel.Invalidate(e.Map, redoOverlays2.Keys.Select(k =>
-                {
-                    e.Map.Metrics.GetLocation(k, out Point location);
+                e.MapPanel.Invalidate(e.Map, redoOverlays2.Keys.Select(k => {
+                    e.Map.Metrics.GetLocation(k, out var location);
                     var rectangle = new Rectangle(location, new Size(1, 1));
                     rectangle.Inflate(1, 1);
                     return rectangle;
                 }));
             }
 
-            undoOverlays.Clear();
-            redoOverlays.Clear();
+            this.undoOverlays.Clear();
+            this.redoOverlays.Clear();
 
-            url.Track(undoAction, redoAction);
+            this.url.Track(undoAction, redoAction);
         }
 
-        private void Update()
-        {
-            totalResourcesLbl.Text = map.TotalResources.ToString();
+        private void Update() {
+            this.totalResourcesLbl.Text = this.map.TotalResources.ToString();
 
-            if (map.OverlayTypes.Any(t => t.IsGem))
-            {
-                gemsCheckBox.Visible = true;
-            }
-            else
-            {
-                gemsCheckBox.Visible = false;
-                gemsCheckBox.Checked = false;
+            if(this.map.OverlayTypes.Any(t => t.IsGem)) {
+                this.gemsCheckBox.Visible = true;
+            } else {
+                this.gemsCheckBox.Visible = false;
+                this.gemsCheckBox.Checked = false;
             }
         }
 
-        private void UpdateStatus()
-        {
-            if (placementMode)
-            {
-                if (additivePlacement)
-                {
-                    statusLbl.Text = "Drag mouse to add resources";
+        private void UpdateStatus() {
+            if(this.placementMode) {
+                if(this.additivePlacement) {
+                    this.statusLbl.Text = "Drag mouse to add resources";
+                } else {
+                    this.statusLbl.Text = "Drag mouse to remove resources";
                 }
-                else
-                {
-                    statusLbl.Text = "Drag mouse to remove resources";
-                }
-            }
-            else
-            {
-                statusLbl.Text = "Left-Click drag to add resources, Right-Click drag to remove resources";
+            } else {
+                this.statusLbl.Text = "Left-Click drag to add resources, Right-Click drag to remove resources";
             }
         }
 
-        protected override void PostRenderMap(Graphics graphics)
-        {
+        protected override void PostRenderMap(Graphics graphics) {
             base.PostRenderMap(graphics);
 
             var resourcePen = new Pen(Color.Green, 4.0f);
-            foreach (var (cell, overlay) in map.Overlay)
-            {
-                if (overlay.Type.IsResource)
-                {
-                    map.Metrics.GetLocation(cell, out Point topLeft);
+            foreach(var (cell, overlay) in this.map.Overlay) {
+                if(overlay.Type.IsResource) {
+                    this.map.Metrics.GetLocation(cell, out var topLeft);
                     var bounds = new Rectangle(new Point(topLeft.X * Globals.TileWidth, topLeft.Y * Globals.TileHeight), Globals.TileSize);
                     graphics.DrawRectangle(resourcePen, bounds);
                 }
@@ -337,24 +270,21 @@ namespace MobiusEditor.Tools
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    mapPanel.MouseDown -= MapPanel_MouseDown;
-                    mapPanel.MouseUp -= MapPanel_MouseUp;
-                    (mapPanel as Control).KeyDown -= ResourceTool_KeyDown;
+        protected override void Dispose(bool disposing) {
+            if(!this.disposedValue) {
+                if(disposing) {
+                    this.mapPanel.MouseDown -= this.MapPanel_MouseDown;
+                    this.mapPanel.MouseUp -= this.MapPanel_MouseUp;
+                    (this.mapPanel as Control).KeyDown -= this.ResourceTool_KeyDown;
 
-                    brushSizeNud.ValueChanged -= BrushSizeNud_ValueChanged;
+                    this.brushSizeNud.ValueChanged -= this.BrushSizeNud_ValueChanged;
 
-                    navigationWidget.MouseCellChanged -= MouseoverWidget_MouseCellChanged;
+                    this.navigationWidget.MouseCellChanged -= this.MouseoverWidget_MouseCellChanged;
 
-                    url.Undone -= Url_UndoRedo;
-                    url.Redone -= Url_UndoRedo;
+                    this.url.Undone -= this.Url_UndoRedo;
+                    this.url.Redone -= this.Url_UndoRedo;
                 }
-                disposedValue = true;
+                this.disposedValue = true;
             }
 
             base.Dispose(disposing);

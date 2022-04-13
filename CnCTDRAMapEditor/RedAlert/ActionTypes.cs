@@ -16,10 +16,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.RedAlert
-{
-    public static class ActionTypes
-    {
+namespace MobiusEditor.RedAlert {
+    public static class ActionTypes {
         public const string TACTION_NONE = "None";
         public const string TACTION_WIN = "Winner is...";
         public const string TACTION_LOSE = "Loser is...";
@@ -60,17 +58,11 @@ namespace MobiusEditor.RedAlert
 
         private static readonly string[] Types;
 
-        static ActionTypes()
-        {
-            Types =
+        static ActionTypes() => Types =
                 (from field in typeof(ActionTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsLiteral && !field.IsInitOnly && typeof(string).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as string).ToArray();
-        }
 
-        public static IEnumerable<string> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<string> GetTypes() => Types;
     }
 }

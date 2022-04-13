@@ -17,10 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.RedAlert
-{
-    public class TerrainTypes
-    {
+namespace MobiusEditor.RedAlert {
+    public class TerrainTypes {
         public static readonly TerrainType Tree1Class = new TerrainType(0, "t01", new TheaterType[] { TheaterTypes.Temperate, TheaterTypes.Snow }, new bool[2, 2] { { false, false }, { true, false } });
         public static readonly TerrainType Tree2Class = new TerrainType(1, "t02", new TheaterType[] { TheaterTypes.Temperate, TheaterTypes.Snow }, new bool[2, 2] { { false, false }, { true, false } });
         public static readonly TerrainType Tree3Class = new TerrainType(2, "t03", new TheaterType[] { TheaterTypes.Temperate, TheaterTypes.Snow }, new bool[2, 2] { { false, false }, { true, false } });
@@ -58,19 +56,13 @@ namespace MobiusEditor.RedAlert
         public static readonly TerrainType Mine = new TerrainType(34, "mine", new TheaterType[] { TheaterTypes.Temperate, TheaterTypes.Snow }, new bool[1, 2] { { true, false } }, TemplateTypeFlag.OreMine);
 
 
-        private static TerrainType[] Types;
+        private static readonly TerrainType[] Types;
 
-        static TerrainTypes()
-        {
-            Types =
+        static TerrainTypes() => Types =
                 (from field in typeof(TerrainTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsInitOnly && typeof(TerrainType).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as TerrainType).ToArray();
-        }
 
-        public static IEnumerable<TerrainType> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<TerrainType> GetTypes() => Types;
     }
 }

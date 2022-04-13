@@ -14,14 +14,9 @@
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MobiusEditor.Utility
-{
-    public class UndoRedoList<T>
-    {
+namespace MobiusEditor.Utility {
+    public class UndoRedoList<T> {
         private const int DefaultMaxUndoRedo = 50;
 
         private readonly List<(Action<T> Undo, Action<T> Redo)> undoRedoActions = new List<(Action<T> Undo, Action<T> Redo)>();
@@ -32,82 +27,61 @@ namespace MobiusEditor.Utility
         public event EventHandler<EventArgs> Undone;
         public event EventHandler<EventArgs> Redone;
 
-        public bool CanUndo => undoRedoPosition > 0;
+        public bool CanUndo => this.undoRedoPosition > 0;
 
-        public bool CanRedo => undoRedoActions.Count > undoRedoPosition;
+        public bool CanRedo => this.undoRedoActions.Count > this.undoRedoPosition;
 
-        public UndoRedoList(int maxUndoRedo)
-        {
-            this.maxUndoRedo = maxUndoRedo;
-        }
+        public UndoRedoList(int maxUndoRedo) => this.maxUndoRedo = maxUndoRedo;
 
         public UndoRedoList()
-            : this(DefaultMaxUndoRedo)
-        {
+            : this(DefaultMaxUndoRedo) {
         }
 
-        public void Clear()
-        {
-            undoRedoActions.Clear();
-            undoRedoPosition = 0;
-            OnTracked();
+        public void Clear() {
+            this.undoRedoActions.Clear();
+            this.undoRedoPosition = 0;
+            this.OnTracked();
         }
 
-        public void Track(Action<T> undo, Action<T> redo)
-        {
-            if (undoRedoActions.Count > undoRedoPosition)
-            {
-                undoRedoActions.RemoveRange(undoRedoPosition, undoRedoActions.Count - undoRedoPosition);
+        public void Track(Action<T> undo, Action<T> redo) {
+            if(this.undoRedoActions.Count > this.undoRedoPosition) {
+                this.undoRedoActions.RemoveRange(this.undoRedoPosition, this.undoRedoActions.Count - this.undoRedoPosition);
             }
 
-            undoRedoActions.Add((undo, redo));
+            this.undoRedoActions.Add((undo, redo));
 
-            if (undoRedoActions.Count > maxUndoRedo)
-            {
-                undoRedoActions.RemoveRange(0, undoRedoActions.Count - maxUndoRedo);
+            if(this.undoRedoActions.Count > this.maxUndoRedo) {
+                this.undoRedoActions.RemoveRange(0, this.undoRedoActions.Count - this.maxUndoRedo);
             }
 
-            undoRedoPosition = undoRedoActions.Count;
-            OnTracked();
+            this.undoRedoPosition = this.undoRedoActions.Count;
+            this.OnTracked();
         }
 
-        public void Undo(T context)
-        {
-            if (!CanUndo)
-            {
+        public void Undo(T context) {
+            if(!this.CanUndo) {
                 throw new InvalidOperationException();
             }
 
-            undoRedoPosition--;
-            undoRedoActions[undoRedoPosition].Undo(context);
-            OnUndone();
+            this.undoRedoPosition--;
+            this.undoRedoActions[this.undoRedoPosition].Undo(context);
+            this.OnUndone();
         }
 
-        public void Redo(T context)
-        {
-            if (!CanRedo)
-            {
+        public void Redo(T context) {
+            if(!this.CanRedo) {
                 throw new InvalidOperationException();
             }
 
-            undoRedoActions[undoRedoPosition].Redo(context);
-            undoRedoPosition++;
-            OnRedone();
+            this.undoRedoActions[this.undoRedoPosition].Redo(context);
+            this.undoRedoPosition++;
+            this.OnRedone();
         }
 
-        protected virtual void OnTracked()
-        {
-            Tracked?.Invoke(this, new EventArgs());
-        }
+        protected virtual void OnTracked() => Tracked?.Invoke(this, new EventArgs());
 
-        protected virtual void OnUndone()
-        {
-            Undone?.Invoke(this, new EventArgs());
-        }
+        protected virtual void OnUndone() => Undone?.Invoke(this, new EventArgs());
 
-        protected virtual void OnRedone()
-        {
-            Redone?.Invoke(this, new EventArgs());
-        }
+        protected virtual void OnRedone() => Redone?.Invoke(this, new EventArgs());
     }
 }

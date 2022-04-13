@@ -18,63 +18,58 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Controls
-{
-    public partial class BasicSettings : UserControl
-    {
-        public BasicSettings(IGamePlugin plugin, dynamic basicSection)
-        {
-            InitializeComponent();
+namespace MobiusEditor.Controls {
+    public partial class BasicSettings : UserControl {
+        public BasicSettings(IGamePlugin plugin, dynamic basicSection) {
+            this.InitializeComponent();
 
-            playerComboBox.DataSource = plugin.Map.Houses.Select(h => h.Type.Name).ToArray();
-            baseComboBox.DataSource = plugin.Map.Houses.Select(h => h.Type.Name).ToArray();
-            introComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
-            briefComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
-            actionComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
-            winComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
-            win2ComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
-            win3ComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
-            win4ComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
-            loseComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
+            this.playerComboBox.DataSource = plugin.Map.Houses.Select(h => h.Type.Name).ToArray();
+            this.baseComboBox.DataSource = plugin.Map.Houses.Select(h => h.Type.Name).ToArray();
+            this.introComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
+            this.briefComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
+            this.actionComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
+            this.winComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
+            this.win2ComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
+            this.win3ComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
+            this.win4ComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
+            this.loseComboBox.DataSource = plugin.Map.MovieTypes.ToArray();
 
-            carryOverMoneyNud.DataBindings.Add("Value", basicSection, "CarryOverMoney");
-            nameTxt.DataBindings.Add("Text", basicSection, "Name");
-            percentNud.DataBindings.Add("Value", basicSection, "Percent");
-            playerComboBox.DataBindings.Add("SelectedItem", basicSection, "Player");
-            authorTxt.DataBindings.Add("Text", basicSection, "Author");
-            isSinglePlayerCheckBox.DataBindings.Add("Checked", basicSection, "SoloMission");
-            introComboBox.DataBindings.Add("SelectedItem", basicSection, "Intro");
-            briefComboBox.DataBindings.Add("SelectedItem", basicSection, "Brief");
-            actionComboBox.DataBindings.Add("SelectedItem", basicSection, "Action");
-            winComboBox.DataBindings.Add("SelectedItem", basicSection, "Win");
-            loseComboBox.DataBindings.Add("SelectedItem", basicSection, "Lose");
+            this.carryOverMoneyNud.DataBindings.Add("Value", basicSection, "CarryOverMoney");
+            this.nameTxt.DataBindings.Add("Text", basicSection, "Name");
+            this.percentNud.DataBindings.Add("Value", basicSection, "Percent");
+            this.playerComboBox.DataBindings.Add("SelectedItem", basicSection, "Player");
+            this.authorTxt.DataBindings.Add("Text", basicSection, "Author");
+            this.isSinglePlayerCheckBox.DataBindings.Add("Checked", basicSection, "SoloMission");
+            this.introComboBox.DataBindings.Add("SelectedItem", basicSection, "Intro");
+            this.briefComboBox.DataBindings.Add("SelectedItem", basicSection, "Brief");
+            this.actionComboBox.DataBindings.Add("SelectedItem", basicSection, "Action");
+            this.winComboBox.DataBindings.Add("SelectedItem", basicSection, "Win");
+            this.loseComboBox.DataBindings.Add("SelectedItem", basicSection, "Lose");
 
-            switch (plugin.GameType)
-            {
-                case GameType.TiberianDawn:
-                    buidLevelNud.DataBindings.Add("Value", basicSection, "BuildLevel");
-                    baseLabel.Visible = baseComboBox.Visible = false;
-                    win2Label.Visible = win2ComboBox.Visible = false;
-                    win3Label.Visible = win3ComboBox.Visible = false;
-                    win4Label.Visible = win4ComboBox.Visible = false;
-                    break;
-                case GameType.RedAlert:
-                    buidLevelNud.Visible = buildLevelLabel.Visible = false;
-                    baseComboBox.DataBindings.Add("SelectedItem", basicSection, "BasePlayer");
-                    win2ComboBox.DataBindings.Add("SelectedItem", basicSection, "Win2");
-                    win3ComboBox.DataBindings.Add("SelectedItem", basicSection, "Win3");
-                    win4ComboBox.DataBindings.Add("SelectedItem", basicSection, "Win4");
-                    break;
+            switch(plugin.GameType) {
+            case GameType.TiberianDawn:
+                this.buidLevelNud.DataBindings.Add("Value", basicSection, "BuildLevel");
+                this.baseLabel.Visible = this.baseComboBox.Visible = false;
+                this.win2Label.Visible = this.win2ComboBox.Visible = false;
+                this.win3Label.Visible = this.win3ComboBox.Visible = false;
+                this.win4Label.Visible = this.win4ComboBox.Visible = false;
+                break;
+            case GameType.RedAlert:
+                this.buidLevelNud.Visible = this.buildLevelLabel.Visible = false;
+                this.baseComboBox.DataBindings.Add("SelectedItem", basicSection, "BasePlayer");
+                this.win2ComboBox.DataBindings.Add("SelectedItem", basicSection, "Win2");
+                this.win3ComboBox.DataBindings.Add("SelectedItem", basicSection, "Win3");
+                this.win4ComboBox.DataBindings.Add("SelectedItem", basicSection, "Win4");
+                break;
             }
 
-            introComboBox.Enabled = briefComboBox.Enabled = actionComboBox.Enabled = loseComboBox.Enabled = isSinglePlayerCheckBox.Checked;
-            winComboBox.Enabled = win2ComboBox.Enabled = win3ComboBox.Enabled = win4ComboBox.Enabled = isSinglePlayerCheckBox.Checked;
+            this.introComboBox.Enabled = this.briefComboBox.Enabled = this.actionComboBox.Enabled = this.loseComboBox.Enabled = this.isSinglePlayerCheckBox.Checked;
+            this.winComboBox.Enabled = this.win2ComboBox.Enabled = this.win3ComboBox.Enabled = this.win4ComboBox.Enabled = this.isSinglePlayerCheckBox.Checked;
         }
 
-        private void isSinglePlayerCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            introComboBox.Enabled = briefComboBox.Enabled = actionComboBox.Enabled = loseComboBox.Enabled = isSinglePlayerCheckBox.Checked;
-            winComboBox.Enabled = win2ComboBox.Enabled = win3ComboBox.Enabled = win4ComboBox.Enabled = isSinglePlayerCheckBox.Checked;
+        private void isSinglePlayerCheckBox_CheckedChanged(object sender, EventArgs e) {
+            this.introComboBox.Enabled = this.briefComboBox.Enabled = this.actionComboBox.Enabled = this.loseComboBox.Enabled = this.isSinglePlayerCheckBox.Checked;
+            this.winComboBox.Enabled = this.win2ComboBox.Enabled = this.win3ComboBox.Enabled = this.win4ComboBox.Enabled = this.isSinglePlayerCheckBox.Checked;
         }
     }
 }

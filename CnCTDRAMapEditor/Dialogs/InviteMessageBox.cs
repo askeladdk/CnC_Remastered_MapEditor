@@ -16,22 +16,15 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Dialogs
-{
-    public partial class InviteMessageBox : Form
-    {
-        public bool DontShowAgain => checkBoxDontShowThisAgain.Checked;
+namespace MobiusEditor.Dialogs {
+    public partial class InviteMessageBox : Form {
+        public bool DontShowAgain => this.checkBoxDontShowThisAgain.Checked;
 
-        public InviteMessageBox()
-        {
-            InitializeComponent();
-        }
+        public InviteMessageBox() => this.InitializeComponent();
 
-        private void InviteMessageBox_Load(object sender, EventArgs e)
-        {
-            using (var infoIcon = new Icon(SystemIcons.Information, pictureBoxIcon.Width, pictureBoxIcon.Height))
-            {
-                pictureBoxIcon.Image = infoIcon.ToBitmap();
+        private void InviteMessageBox_Load(object sender, EventArgs e) {
+            using(var infoIcon = new Icon(SystemIcons.Information, this.pictureBoxIcon.Width, this.pictureBoxIcon.Height)) {
+                this.pictureBoxIcon.Image = infoIcon.ToBitmap();
             }
         }
     }

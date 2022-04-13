@@ -16,72 +16,55 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
-namespace MobiusEditor.Utility
-{
-    public class TeamColorManager
-    {
+namespace MobiusEditor.Utility {
+    public class TeamColorManager {
         private readonly Dictionary<string, TeamColor> teamColors = new Dictionary<string, TeamColor>();
 
         private readonly MegafileManager megafileManager;
 
-        public TeamColor this[string key] => !string.IsNullOrEmpty(key) ? teamColors[key] : null;
+        public TeamColor this[string key] => !string.IsNullOrEmpty(key) ? this.teamColors[key] : null;
 
-        public TeamColorManager(MegafileManager megafileManager)
-        {
-            this.megafileManager = megafileManager;
-        }
+        public TeamColorManager(MegafileManager megafileManager) => this.megafileManager = megafileManager;
 
-        public void Reset()
-        {
-            teamColors.Clear();
-        }
+        public void Reset() => this.teamColors.Clear();
 
-        public void Load(string xmlPath)
-        {
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(megafileManager.Open(xmlPath));
+        public void Load(string xmlPath) {
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(this.megafileManager.Open(xmlPath));
 
-            foreach (XmlNode teamColorNode in xmlDoc.SelectNodes("/*/TeamColorTypeClass"))
-            {
-                var teamColor = new TeamColor(this, megafileManager);
+            foreach(XmlNode teamColorNode in xmlDoc.SelectNodes("/*/TeamColorTypeClass")) {
+                var teamColor = new TeamColor(this, this.megafileManager);
                 teamColor.Load(teamColorNode.OuterXml);
 
-                teamColors[teamColorNode.Attributes["Name"].Value] = teamColor;
+                this.teamColors[teamColorNode.Attributes["Name"].Value] = teamColor;
             }
 
-            foreach (var teamColor in TopologicalSortTeamColors())
-            {
+            foreach(var teamColor in this.TopologicalSortTeamColors()) {
                 teamColor.Flatten();
             }
         }
 
-        private IEnumerable<TeamColor> TopologicalSortTeamColors()
-        {
-            var nodes = teamColors.Values.ToList();
-            HashSet<(TeamColor, TeamColor)> edges = new HashSet<(TeamColor, TeamColor)>();
-            foreach (var node in nodes)
-            {
-                if (!string.IsNullOrEmpty(node.Variant))
-                {
+        private IEnumerable<TeamColor> TopologicalSortTeamColors() {
+            var nodes = this.teamColors.Values.ToList();
+            var edges = new HashSet<(TeamColor, TeamColor)>();
+            foreach(var node in nodes) {
+                if(!string.IsNullOrEmpty(node.Variant)) {
                     edges.Add((this[node.Variant], node));
                 }
             }
 
             var sorted = new List<TeamColor>();
             var openSet = new HashSet<TeamColor>(nodes.Where(n => edges.All(e => !e.Item2.Equals(n))));
-            while (openSet.Count > 0)
-            {
+            while(openSet.Count > 0) {
                 var node = openSet.First();
                 openSet.Remove(node);
                 sorted.Add(node);
 
-                foreach (var edge in edges.Where(e => e.Item1.Equals(node)).ToArray())
-                {
+                foreach(var edge in edges.Where(e => e.Item1.Equals(node)).ToArray()) {
                     var node2 = edge.Item2;
                     edges.Remove(edge);
 
-                    if (edges.All(edge2 => !edge2.Item2.Equals(node2)))
-                    {
+                    if(edges.All(edge2 => !edge2.Item2.Equals(node2))) {
                         openSet.Add(node2);
                     }
                 }

@@ -24,10 +24,8 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools
-{
-    public class WallsTool : ViewTool
-    {
+namespace MobiusEditor.Tools {
+    public class WallsTool : ViewTool {
         private readonly TypeComboBox wallTypeComboBox;
         private readonly MapPanel wallTypeMapPanel;
 
@@ -35,320 +33,249 @@ namespace MobiusEditor.Tools
         private readonly Dictionary<int, Overlay> redoOverlays = new Dictionary<int, Overlay>();
 
         private Map previewMap;
-        protected override Map RenderMap => previewMap;
+        protected override Map RenderMap => this.previewMap;
 
         private bool placementMode;
 
         private OverlayType selectedWallType;
-        private OverlayType SelectedWallType
-        {
-            get => selectedWallType;
-            set
-            {
-                if (selectedWallType != value)
-                {
-                    if (placementMode && (selectedWallType != null))
-                    {
-                        mapPanel.Invalidate(map, navigationWidget.MouseCell);
+        private OverlayType SelectedWallType {
+            get => this.selectedWallType;
+            set {
+                if(this.selectedWallType != value) {
+                    if(this.placementMode && (this.selectedWallType != null)) {
+                        this.mapPanel.Invalidate(this.map, this.navigationWidget.MouseCell);
                     }
 
-                    selectedWallType = value;
-                    wallTypeComboBox.SelectedValue = selectedWallType;
+                    this.selectedWallType = value;
+                    this.wallTypeComboBox.SelectedValue = this.selectedWallType;
 
-                    RefreshMapPanel();
+                    this.RefreshMapPanel();
                 }
             }
         }
 
         public WallsTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, TypeComboBox wallTypeComboBox, MapPanel wallTypeMapPanel, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
-            : base(mapPanel, layers, statusLbl, plugin, url)
-        {
-            previewMap = map;
+            : base(mapPanel, layers, statusLbl, plugin, url) {
+            this.previewMap = this.map;
 
-            this.mapPanel.MouseDown += MapPanel_MouseDown;
-            this.mapPanel.MouseUp += MapPanel_MouseUp;
-            this.mapPanel.MouseMove += MapPanel_MouseMove;
-            (this.mapPanel as Control).KeyDown += WallTool_KeyDown;
-            (this.mapPanel as Control).KeyUp += WallTool_KeyUp;
+            this.mapPanel.MouseDown += this.MapPanel_MouseDown;
+            this.mapPanel.MouseUp += this.MapPanel_MouseUp;
+            this.mapPanel.MouseMove += this.MapPanel_MouseMove;
+            (this.mapPanel as Control).KeyDown += this.WallTool_KeyDown;
+            (this.mapPanel as Control).KeyUp += this.WallTool_KeyUp;
 
             this.wallTypeComboBox = wallTypeComboBox;
-            this.wallTypeComboBox.SelectedIndexChanged += WallTypeComboBox_SelectedIndexChanged;
+            this.wallTypeComboBox.SelectedIndexChanged += this.WallTypeComboBox_SelectedIndexChanged;
 
             this.wallTypeMapPanel = wallTypeMapPanel;
             this.wallTypeMapPanel.BackColor = Color.White;
             this.wallTypeMapPanel.MaxZoom = 1;
 
-            navigationWidget.MouseCellChanged += MouseoverWidget_MouseCellChanged;
+            this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
 
-            SelectedWallType = this.wallTypeComboBox.Types.First() as OverlayType;
+            this.SelectedWallType = this.wallTypeComboBox.Types.First() as OverlayType;
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void WallTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SelectedWallType = wallTypeComboBox.SelectedValue as OverlayType;
-        }
+        private void WallTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) => this.SelectedWallType = this.wallTypeComboBox.SelectedValue as OverlayType;
 
-        private void WallTool_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ShiftKey)
-            {
-                EnterPlacementMode();
+        private void WallTool_KeyDown(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.ShiftKey) {
+                this.EnterPlacementMode();
             }
         }
 
-        private void WallTool_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ShiftKey)
-            {
-                ExitPlacementMode();
+        private void WallTool_KeyUp(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.ShiftKey) {
+                this.ExitPlacementMode();
             }
         }
 
-        private void MapPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (placementMode)
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    AddWall(navigationWidget.MouseCell);
+        private void MapPanel_MouseDown(object sender, MouseEventArgs e) {
+            if(this.placementMode) {
+                if(e.Button == MouseButtons.Left) {
+                    this.AddWall(this.navigationWidget.MouseCell);
+                } else if(e.Button == MouseButtons.Right) {
+                    this.RemoveWall(this.navigationWidget.MouseCell);
                 }
-                else if (e.Button == MouseButtons.Right)
-                {
-                    RemoveWall(navigationWidget.MouseCell);
-                }
-            }
-            else if ((e.Button == MouseButtons.Left) || (e.Button == MouseButtons.Right))
-            {
-                PickWall(navigationWidget.MouseCell);
+            } else if((e.Button == MouseButtons.Left) || (e.Button == MouseButtons.Right)) {
+                this.PickWall(this.navigationWidget.MouseCell);
             }
         }
 
-        private void MapPanel_MouseUp(object sender, MouseEventArgs e)
-        {
-            if ((undoOverlays.Count > 0) || (redoOverlays.Count > 0))
-            {
-                CommitChange();
+        private void MapPanel_MouseUp(object sender, MouseEventArgs e) {
+            if((this.undoOverlays.Count > 0) || (this.redoOverlays.Count > 0)) {
+                this.CommitChange();
             }
         }
 
-        private void MapPanel_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (!placementMode && (Control.ModifierKeys == Keys.Shift))
-            {
-                EnterPlacementMode();
-            }
-            else if (placementMode && (Control.ModifierKeys == Keys.None))
-            {
-                ExitPlacementMode();
+        private void MapPanel_MouseMove(object sender, MouseEventArgs e) {
+            if(!this.placementMode && (Control.ModifierKeys == Keys.Shift)) {
+                this.EnterPlacementMode();
+            } else if(this.placementMode && (Control.ModifierKeys == Keys.None)) {
+                this.ExitPlacementMode();
             }
         }
 
-        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e)
-        {
-            if (placementMode)
-            {
-                if (Control.MouseButtons == MouseButtons.Left)
-                {
-                    AddWall(e.NewCell);
-                }
-                else if (Control.MouseButtons == MouseButtons.Right)
-                {
-                    RemoveWall(e.NewCell);
+        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e) {
+            if(this.placementMode) {
+                if(Control.MouseButtons == MouseButtons.Left) {
+                    this.AddWall(e.NewCell);
+                } else if(Control.MouseButtons == MouseButtons.Right) {
+                    this.RemoveWall(e.NewCell);
                 }
 
-                if (SelectedWallType != null)
-                {
-                    mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(e.OldCell, new Size(1, 1)), 1, 1));
-                    mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(e.NewCell, new Size(1, 1)), 1, 1));
+                if(this.SelectedWallType != null) {
+                    this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(e.OldCell, new Size(1, 1)), 1, 1));
+                    this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(e.NewCell, new Size(1, 1)), 1, 1));
                 }
             }
         }
 
-        private void AddWall(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                if (SelectedWallType != null)
-                {
+        private void AddWall(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                if(this.SelectedWallType != null) {
                     var overlay = new Overlay { Type = SelectedWallType, Icon = 0 };
-                    if (map.Technos.CanAdd(cell, overlay) && map.Buildings.CanAdd(cell, overlay))
-                    {
-                        if (!undoOverlays.ContainsKey(cell))
-                        {
-                            undoOverlays[cell] = map.Overlay[cell];
+                    if(this.map.Technos.CanAdd(cell, overlay) && this.map.Buildings.CanAdd(cell, overlay)) {
+                        if(!this.undoOverlays.ContainsKey(cell)) {
+                            this.undoOverlays[cell] = this.map.Overlay[cell];
                         }
 
-                        map.Overlay[cell] = overlay;
-                        redoOverlays[cell] = overlay;
+                        this.map.Overlay[cell] = overlay;
+                        this.redoOverlays[cell] = overlay;
 
-                        mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(location, new Size(1, 1)), 1, 1));
+                        this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(location, new Size(1, 1)), 1, 1));
 
-                        plugin.Dirty = true;
+                        this.plugin.Dirty = true;
                     }
                 }
             }
         }
 
-        private void RemoveWall(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                var overlay = map.Overlay[cell];
-                if (overlay?.Type.IsWall ?? false)
-                {
-                    if (!undoOverlays.ContainsKey(cell))
-                    {
-                        undoOverlays[cell] = map.Overlay[cell];
+        private void RemoveWall(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                var overlay = this.map.Overlay[cell];
+                if(overlay?.Type.IsWall ?? false) {
+                    if(!this.undoOverlays.ContainsKey(cell)) {
+                        this.undoOverlays[cell] = this.map.Overlay[cell];
                     }
 
-                    map.Overlay[cell] = null;
-                    redoOverlays[cell] = null;
+                    this.map.Overlay[cell] = null;
+                    this.redoOverlays[cell] = null;
 
-                    mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(location, new Size(1, 1)), 1, 1));
+                    this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(location, new Size(1, 1)), 1, 1));
 
-                    plugin.Dirty = true;
+                    this.plugin.Dirty = true;
                 }
             }
         }
 
-        private void CommitChange()
-        {
-            var undoOverlays2 = new Dictionary<int, Overlay>(undoOverlays);
-            void undoAction(UndoRedoEventArgs e)
-            {
-                foreach (var kv in undoOverlays2)
-                {
+        private void CommitChange() {
+            var undoOverlays2 = new Dictionary<int, Overlay>(this.undoOverlays);
+            void undoAction(UndoRedoEventArgs e) {
+                foreach(var kv in undoOverlays2) {
                     e.Map.Overlay[kv.Key] = kv.Value;
                 }
-                e.MapPanel.Invalidate(e.Map, undoOverlays2.Keys.Select(k =>
-                {
-                    e.Map.Metrics.GetLocation(k, out Point location);
+                e.MapPanel.Invalidate(e.Map, undoOverlays2.Keys.Select(k => {
+                    e.Map.Metrics.GetLocation(k, out var location);
                     return Rectangle.Inflate(new Rectangle(location, new Size(1, 1)), 1, 1);
                 }));
             }
 
-            var redoOverlays2 = new Dictionary<int, Overlay>(redoOverlays);
-            void redoAction(UndoRedoEventArgs e)
-            {
-                foreach (var kv in redoOverlays2)
-                {
+            var redoOverlays2 = new Dictionary<int, Overlay>(this.redoOverlays);
+            void redoAction(UndoRedoEventArgs e) {
+                foreach(var kv in redoOverlays2) {
                     e.Map.Overlay[kv.Key] = kv.Value;
                 }
-                e.MapPanel.Invalidate(e.Map, redoOverlays2.Keys.Select(k =>
-                {
-                    e.Map.Metrics.GetLocation(k, out Point location);
+                e.MapPanel.Invalidate(e.Map, redoOverlays2.Keys.Select(k => {
+                    e.Map.Metrics.GetLocation(k, out var location);
                     return Rectangle.Inflate(new Rectangle(location, new Size(1, 1)), 1, 1);
                 }));
             }
 
-            undoOverlays.Clear();
-            redoOverlays.Clear();
+            this.undoOverlays.Clear();
+            this.redoOverlays.Clear();
 
-            url.Track(undoAction, redoAction);
+            this.url.Track(undoAction, redoAction);
         }
 
-        private void EnterPlacementMode()
-        {
-            if (placementMode)
-            {
+        private void EnterPlacementMode() {
+            if(this.placementMode) {
                 return;
             }
 
-            placementMode = true;
+            this.placementMode = true;
 
-            navigationWidget.MouseoverSize = Size.Empty;
+            this.navigationWidget.MouseoverSize = Size.Empty;
 
-            if (SelectedWallType != null)
-            {
-                mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
+            if(this.SelectedWallType != null) {
+                this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(this.navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
             }
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void ExitPlacementMode()
-        {
-            if (!placementMode)
-            {
+        private void ExitPlacementMode() {
+            if(!this.placementMode) {
                 return;
             }
 
-            placementMode = false;
+            this.placementMode = false;
 
-            navigationWidget.MouseoverSize = new Size(1, 1);
+            this.navigationWidget.MouseoverSize = new Size(1, 1);
 
-            if (SelectedWallType != null)
-            {
-                mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
+            if(this.SelectedWallType != null) {
+                this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(this.navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
             }
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void PickWall(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                var overlay = map.Overlay[cell];
-                if ((overlay != null) && overlay.Type.IsWall)
-                {
-                    SelectedWallType = overlay.Type;
+        private void PickWall(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                var overlay = this.map.Overlay[cell];
+                if((overlay != null) && overlay.Type.IsWall) {
+                    this.SelectedWallType = overlay.Type;
                 }
             }
         }
 
-        private void RefreshMapPanel()
-        {
-            wallTypeMapPanel.MapImage = SelectedWallType?.Thumbnail;
-        }
+        private void RefreshMapPanel() => this.wallTypeMapPanel.MapImage = this.SelectedWallType?.Thumbnail;
 
-        private void UpdateStatus()
-        {
-            if (placementMode)
-            {
-                statusLbl.Text = "Left-Click drag to add walls, Right-Click drag to remove walls";
-            }
-            else
-            {
-                statusLbl.Text = "Shift to enter placement mode, Left-Click or Right-Click to pick wall";
+        private void UpdateStatus() {
+            if(this.placementMode) {
+                this.statusLbl.Text = "Left-Click drag to add walls, Right-Click drag to remove walls";
+            } else {
+                this.statusLbl.Text = "Shift to enter placement mode, Left-Click or Right-Click to pick wall";
             }
         }
 
-        protected override void PreRenderMap()
-        {
+        protected override void PreRenderMap() {
             base.PreRenderMap();
 
-            previewMap = map.Clone();
-            if (placementMode)
-            {
-                var location = navigationWidget.MouseCell;
-                if (SelectedWallType != null)
-                {
-                    if (previewMap.Metrics.GetCell(location, out int cell))
-                    {
+            this.previewMap = this.map.Clone();
+            if(this.placementMode) {
+                var location = this.navigationWidget.MouseCell;
+                if(this.SelectedWallType != null) {
+                    if(this.previewMap.Metrics.GetCell(location, out var cell)) {
                         var overlay = new Overlay { Type = SelectedWallType, Icon = 0, Tint = Color.FromArgb(128, Color.White) };
-                        if (previewMap.Technos.CanAdd(cell, overlay) && previewMap.Buildings.CanAdd(cell, overlay))
-                        {
-                            previewMap.Overlay[cell] = overlay;
-                            mapPanel.Invalidate(previewMap, Rectangle.Inflate(new Rectangle(location, new Size(1, 1)), 1, 1));
+                        if(this.previewMap.Technos.CanAdd(cell, overlay) && this.previewMap.Buildings.CanAdd(cell, overlay)) {
+                            this.previewMap.Overlay[cell] = overlay;
+                            this.mapPanel.Invalidate(this.previewMap, Rectangle.Inflate(new Rectangle(location, new Size(1, 1)), 1, 1));
                         }
                     }
                 }
             }
         }
 
-        protected override void PostRenderMap(Graphics graphics)
-        {
+        protected override void PostRenderMap(Graphics graphics) {
             base.PostRenderMap(graphics);
 
             var wallPen = new Pen(Color.Green, 4.0f);
-            foreach (var (cell, overlay) in previewMap.Overlay)
-            {
-                if (overlay.Type.IsWall)
-                {
-                    previewMap.Metrics.GetLocation(cell, out Point topLeft);
+            foreach(var (cell, overlay) in this.previewMap.Overlay) {
+                if(overlay.Type.IsWall) {
+                    this.previewMap.Metrics.GetLocation(cell, out var topLeft);
                     var bounds = new Rectangle(new Point(topLeft.X * Globals.TileWidth, topLeft.Y * Globals.TileHeight), Globals.TileSize);
                     graphics.DrawRectangle(wallPen, bounds);
                 }
@@ -358,23 +285,20 @@ namespace MobiusEditor.Tools
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    mapPanel.MouseDown -= MapPanel_MouseDown;
-                    mapPanel.MouseUp -= MapPanel_MouseUp;
-                    mapPanel.MouseMove -= MapPanel_MouseMove;
-                    (mapPanel as Control).KeyDown -= WallTool_KeyDown;
-                    (mapPanel as Control).KeyUp -= WallTool_KeyUp;
+        protected override void Dispose(bool disposing) {
+            if(!this.disposedValue) {
+                if(disposing) {
+                    this.mapPanel.MouseDown -= this.MapPanel_MouseDown;
+                    this.mapPanel.MouseUp -= this.MapPanel_MouseUp;
+                    this.mapPanel.MouseMove -= this.MapPanel_MouseMove;
+                    (this.mapPanel as Control).KeyDown -= this.WallTool_KeyDown;
+                    (this.mapPanel as Control).KeyUp -= this.WallTool_KeyUp;
 
-                    wallTypeComboBox.SelectedIndexChanged -= WallTypeComboBox_SelectedIndexChanged;
+                    this.wallTypeComboBox.SelectedIndexChanged -= this.WallTypeComboBox_SelectedIndexChanged;
 
-                    navigationWidget.MouseCellChanged -= MouseoverWidget_MouseCellChanged;
+                    this.navigationWidget.MouseCellChanged -= this.MouseoverWidget_MouseCellChanged;
                 }
-                disposedValue = true;
+                this.disposedValue = true;
             }
 
             base.Dispose(disposing);

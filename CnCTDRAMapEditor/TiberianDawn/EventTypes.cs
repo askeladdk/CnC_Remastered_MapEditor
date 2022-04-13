@@ -16,10 +16,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.TiberianDawn
-{
-    public static class EventTypes
-    {
+namespace MobiusEditor.TiberianDawn {
+    public static class EventTypes {
         public const string EVENT_NONE = "None";
         public const string EVENT_PLAYER_ENTERED = "Player Enters";
         public const string EVENT_DISCOVERED = "Discovered";
@@ -40,17 +38,11 @@ namespace MobiusEditor.TiberianDawn
 
         private static readonly string[] Types;
 
-        static EventTypes()
-        {
-            Types =
+        static EventTypes() => Types =
                 (from field in typeof(EventTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsLiteral && !field.IsInitOnly && typeof(string).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as string).ToArray();
-        }
 
-        public static IEnumerable<string> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<string> GetTypes() => Types;
     }
 }

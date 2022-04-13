@@ -19,34 +19,22 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace MobiusEditor.Model
-{
-    public class TheaterTypeConverter : TypeConverter
-    {
-        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-        {
-            return (context is MapContext) && (sourceType == typeof(string));
-        }
+namespace MobiusEditor.Model {
+    public class TheaterTypeConverter : TypeConverter {
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) => (context is MapContext) && (sourceType == typeof(string));
 
-        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
-        {
-            return (context is MapContext) && (destinationType == typeof(string));
-        }
+        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) => (context is MapContext) && (destinationType == typeof(string));
 
-        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
-        {
-            if (!(value is TheaterType) || !CanConvertTo(context, destinationType))
-            {
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType) {
+            if(!(value is TheaterType) || !this.CanConvertTo(context, destinationType)) {
                 return null;
             }
 
             return (value as TheaterType)?.Name;
         }
 
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-        {
-            if (!CanConvertFrom(context, value?.GetType()))
-            {
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value) {
+            if(!this.CanConvertFrom(context, value?.GetType())) {
                 return null;
             }
 
@@ -55,39 +43,46 @@ namespace MobiusEditor.Model
         }
     }
 
-    public class MapSection : INotifyPropertyChanged
-    {
+    public class MapSection : INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;
 
         private int x;
         [DefaultValue(0)]
-        public int X { get => x; set => SetField(ref x, value); }
+        public int X {
+            get => this.x; set => this.SetField(ref this.x, value);
+        }
 
         private int y;
         [DefaultValue(0)]
-        public int Y { get => y; set => SetField(ref y, value); }
+        public int Y {
+            get => this.y; set => this.SetField(ref this.y, value);
+        }
 
         private int width;
         [DefaultValue(0)]
-        public int Width { get => width; set => SetField(ref width, value); }
+        public int Width {
+            get => this.width; set => this.SetField(ref this.width, value);
+        }
 
         private int height;
         [DefaultValue(0)]
-        public int Height { get => height; set => SetField(ref height, value); }
+        public int Height {
+            get => this.height; set => this.SetField(ref this.height, value);
+        }
 
         private TheaterType theater;
         [TypeConverter(typeof(TheaterTypeConverter))]
         [DefaultValue(null)]
-        public TheaterType Theater { get => theater; set => SetField(ref theater, value); }
+        public TheaterType Theater {
+            get => this.theater; set => this.SetField(ref this.theater, value);
+        }
 
-        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value))
-            {
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null) {
+            if(EqualityComparer<T>.Default.Equals(field, value)) {
                 return false;
             }
             field = value;
-            OnPropertyChanged(propertyName);
+            this.OnPropertyChanged(propertyName);
             return true;
         }
 

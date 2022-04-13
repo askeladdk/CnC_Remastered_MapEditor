@@ -19,85 +19,91 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 
-namespace MobiusEditor.Model
-{
-    public class Building : ICellOverlapper, ICellOccupier, INotifyPropertyChanged, ICloneable
-    {
+namespace MobiusEditor.Model {
+    public class Building : ICellOverlapper, ICellOccupier, INotifyPropertyChanged, ICloneable {
         public event PropertyChangedEventHandler PropertyChanged;
 
         private BuildingType type;
-        public BuildingType Type { get => type; set => SetField(ref type, value); }
+        public BuildingType Type {
+            get => this.type; set => this.SetField(ref this.type, value);
+        }
 
-        public Rectangle OverlapBounds => Type.OverlapBounds;
+        public Rectangle OverlapBounds => this.Type.OverlapBounds;
 
-        public bool[,] OccupyMask => Type.OccupyMask;
+        public bool[,] OccupyMask => this.Type.OccupyMask;
 
         private HouseType house;
-        public HouseType House { get => house; set => SetField(ref house, value); }
+        public HouseType House {
+            get => this.house; set => this.SetField(ref this.house, value);
+        }
 
         private int strength;
-        public int Strength { get => strength; set => SetField(ref strength, value); }
+        public int Strength {
+            get => this.strength; set => this.SetField(ref this.strength, value);
+        }
 
         private DirectionType direction;
-        public DirectionType Direction { get => direction; set => SetField(ref direction, value); }
+        public DirectionType Direction {
+            get => this.direction; set => this.SetField(ref this.direction, value);
+        }
 
         private string trigger = Model.Trigger.None;
-        public string Trigger { get => trigger; set => SetField(ref trigger, value); }
+        public string Trigger {
+            get => this.trigger; set => this.SetField(ref this.trigger, value);
+        }
 
         private int basePriority = -1;
-        public int BasePriority { get => basePriority; set => SetField(ref basePriority, value); }
+        public int BasePriority {
+            get => this.basePriority; set => this.SetField(ref this.basePriority, value);
+        }
 
         private bool isPrebuilt = true;
-        public bool IsPrebuilt { get => isPrebuilt; set => SetField(ref isPrebuilt, value); }
+        public bool IsPrebuilt {
+            get => this.isPrebuilt; set => this.SetField(ref this.isPrebuilt, value);
+        }
 
         private bool sellable;
-        public bool Sellable { get => sellable; set => SetField(ref sellable, value); }
+        public bool Sellable {
+            get => this.sellable; set => this.SetField(ref this.sellable, value);
+        }
 
         private bool rebuild;
-        public bool Rebuild { get => rebuild; set => SetField(ref rebuild, value); }
+        public bool Rebuild {
+            get => this.rebuild; set => this.SetField(ref this.rebuild, value);
+        }
 
         public ISet<int> BibCells { get; private set; } = new HashSet<int>();
 
         private Color tint = Color.White;
-        public Color Tint
-        {
-            get => IsPrebuilt ? tint : Color.FromArgb((int)(tint.A * 0.75f), tint.R, tint.G, tint.B);
-            set => tint = value;
+        public Color Tint {
+            get => this.IsPrebuilt ? this.tint : Color.FromArgb((int)(this.tint.A * 0.75f), this.tint.R, this.tint.G, this.tint.B);
+            set => this.tint = value;
         }
 
-        public Building Clone()
-        {
-            return new Building()
-            {
-                Type = Type,
-                House = House,
-                Strength = Strength,
-                Direction = Direction,
-                Trigger = Trigger,
-                BasePriority = BasePriority,
-                IsPrebuilt = IsPrebuilt,
-                Sellable = Sellable,
-                Rebuild = Rebuild,
-                Tint = Tint
-            };
-        }
+        public Building Clone() => new Building() {
+            Type = Type,
+            House = House,
+            Strength = Strength,
+            Direction = Direction,
+            Trigger = Trigger,
+            BasePriority = BasePriority,
+            IsPrebuilt = IsPrebuilt,
+            Sellable = Sellable,
+            Rebuild = Rebuild,
+            Tint = Tint
+        };
 
-        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value))
-            {
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null) {
+            if(EqualityComparer<T>.Default.Equals(field, value)) {
                 return false;
             }
             field = value;
-            OnPropertyChanged(propertyName);
+            this.OnPropertyChanged(propertyName);
             return true;
         }
 
         protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
     }
 }

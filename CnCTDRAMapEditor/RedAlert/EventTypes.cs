@@ -16,10 +16,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.RedAlert
-{
-    public static class EventTypes
-    {
+namespace MobiusEditor.RedAlert {
+    public static class EventTypes {
         public const string TEVENT_NONE = "None";
         public const string TEVENT_PLAYER_ENTERED = "Entered by...";
         public const string TEVENT_SPIED = "Spied by...";
@@ -56,17 +54,11 @@ namespace MobiusEditor.RedAlert
 
         private static readonly string[] Types;
 
-        static EventTypes()
-        {
-            Types =
+        static EventTypes() => Types =
                 (from field in typeof(EventTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsLiteral && !field.IsInitOnly && typeof(string).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as string).ToArray();
-        }
 
-        public static IEnumerable<string> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<string> GetTypes() => Types;
     }
 }

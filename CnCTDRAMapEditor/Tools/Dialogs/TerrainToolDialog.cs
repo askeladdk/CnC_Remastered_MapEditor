@@ -15,43 +15,29 @@
 using MobiusEditor.Controls;
 using MobiusEditor.Interface;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools.Dialogs
-{
-    public partial class TerrainToolDialog : Form
-    {
-        public TypeComboBox TerrainTypeComboBox => terrainTypeComboBox;
+namespace MobiusEditor.Tools.Dialogs {
+    public partial class TerrainToolDialog : Form {
+        public TypeComboBox TerrainTypeComboBox => this.terrainTypeComboBox;
 
-        public MapPanel TerrainTypeMapPanel => terrainTypeMapPanel;
+        public MapPanel TerrainTypeMapPanel => this.terrainTypeMapPanel;
 
-        public TerrainProperties TerrainProperties => terrainProperties;
+        public TerrainProperties TerrainProperties => this.terrainProperties;
 
-        public TerrainToolDialog()
-        {
-            InitializeComponent();
+        public TerrainToolDialog() {
+            this.InitializeComponent();
 
-            Location = Properties.Settings.Default.ToolDialogPosition;
+            this.Location = Properties.Settings.Default.ToolDialogPosition;
         }
 
         public TerrainToolDialog(IGamePlugin plugin)
-            : this()
-        {
-            terrainProperties.Initialize(plugin, true);
-        }
+            : this() => this.terrainProperties.Initialize(plugin, true);
 
-        protected override void OnMove(EventArgs e)
-        {
+        protected override void OnMove(EventArgs e) {
             base.OnMove(e);
 
-            Properties.Settings.Default.ToolDialogPosition = Location;
+            Properties.Settings.Default.ToolDialogPosition = this.Location;
             Properties.Settings.Default.Save();
         }
     }

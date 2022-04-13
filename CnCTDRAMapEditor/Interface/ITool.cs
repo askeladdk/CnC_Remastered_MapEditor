@@ -14,16 +14,11 @@
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using MobiusEditor.Model;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MobiusEditor.Interface
-{
-    public interface ITool : IDisposable
-    {
-        MapLayerFlag Layers { get; set; }
+namespace MobiusEditor.Interface {
+    public interface ITool : IDisposable {
+        MapLayerFlag Layers {
+            get; set;
+        }
     }
 }

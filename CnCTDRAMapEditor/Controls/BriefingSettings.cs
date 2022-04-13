@@ -15,15 +15,12 @@
 using MobiusEditor.Interface;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Controls
-{
-    public partial class BriefingSettings : UserControl
-    {
-        public BriefingSettings(IGamePlugin plugin, dynamic briefingSection)
-        {
-            InitializeComponent();
+namespace MobiusEditor.Controls {
+    public partial class BriefingSettings : UserControl {
+        public BriefingSettings(IGamePlugin plugin, dynamic briefingSection) {
+            this.InitializeComponent();
 
-            briefingTxt.DataBindings.Add("Text", briefingSection, "Briefing");
+            this.briefingTxt.DataBindings.Add("Text", briefingSection, "Briefing");
         }
     }
 }

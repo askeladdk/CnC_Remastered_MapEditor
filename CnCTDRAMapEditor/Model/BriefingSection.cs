@@ -14,11 +14,11 @@
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using System.ComponentModel;
 
-namespace MobiusEditor.Model
-{
-    public class BriefingSection
-    {
+namespace MobiusEditor.Model {
+    public class BriefingSection {
         [DefaultValue(null)]
-        public string Briefing { get; set; }
+        public string Briefing {
+            get; set;
+        }
     }
 }

@@ -12,60 +12,55 @@
 // distributed with this program. You should have received a copy of the 
 // GNU General Public License along with permitted additional restrictions 
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
+using MobiusEditor.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.CompilerServices;
-using MobiusEditor.Interface;
 
-namespace MobiusEditor.Model
-{
-    public class Terrain : ICellOverlapper, ICellOccupier, INotifyPropertyChanged, ICloneable
-    {
+namespace MobiusEditor.Model {
+    public class Terrain : ICellOverlapper, ICellOccupier, INotifyPropertyChanged, ICloneable {
         public event PropertyChangedEventHandler PropertyChanged;
 
         private TerrainType type;
-        public TerrainType Type { get => type; set => SetField(ref type, value); }
+        public TerrainType Type {
+            get => this.type; set => this.SetField(ref this.type, value);
+        }
 
         private int icon;
-        public int Icon { get => icon; set => SetField(ref icon, value); }
+        public int Icon {
+            get => this.icon; set => this.SetField(ref this.icon, value);
+        }
 
-        public Rectangle OverlapBounds => Type.OverlapBounds;
+        public Rectangle OverlapBounds => this.Type.OverlapBounds;
 
-        public bool[,] OccupyMask => Type.OccupyMask;
+        public bool[,] OccupyMask => this.Type.OccupyMask;
 
         private string trigger = Model.Trigger.None;
-        public string Trigger { get => trigger; set => SetField(ref trigger, value); }
+        public string Trigger {
+            get => this.trigger; set => this.SetField(ref this.trigger, value);
+        }
 
         public Color Tint { get; set; } = Color.White;
 
-        public Terrain Clone()
-        {
-            return new Terrain()
-            {
-                Type = Type,
-                Icon = Icon,
-                Trigger = Trigger
-            };
-        }
+        public Terrain Clone() => new Terrain() {
+            Type = Type,
+            Icon = Icon,
+            Trigger = Trigger
+        };
 
-        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value))
-            {
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null) {
+            if(EqualityComparer<T>.Default.Equals(field, value)) {
                 return false;
             }
             field = value;
-            OnPropertyChanged(propertyName);
+            this.OnPropertyChanged(propertyName);
             return true;
         }
 
         protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
     }
 }

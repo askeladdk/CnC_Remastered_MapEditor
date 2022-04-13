@@ -16,10 +16,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.TiberianDawn
-{
-    public static class ActionTypes
-    {
+namespace MobiusEditor.TiberianDawn {
+    public static class ActionTypes {
         public const string ACTION_NONE = "None";
         public const string ACTION_WIN = "Win";
         public const string ACTION_LOSE = "Lose";
@@ -41,17 +39,11 @@ namespace MobiusEditor.TiberianDawn
 
         private static readonly string[] Types;
 
-        static ActionTypes()
-        {
-            Types =
+        static ActionTypes() => Types =
                 (from field in typeof(ActionTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsLiteral && !field.IsInitOnly && typeof(string).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as string).ToArray();
-        }
 
-        public static IEnumerable<string> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<string> GetTypes() => Types;
     }
 }

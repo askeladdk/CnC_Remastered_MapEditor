@@ -31,24 +31,21 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace MobiusEditor
-{
-    public partial class MainForm : Form
-    {
+namespace MobiusEditor {
+    public partial class MainForm : Form {
         [Flags]
-        private enum ToolType
-        {
-            None        = 0,
-            Map         = 1 << 0,
-            Smudge      = 1 << 1,
-            Overlay     = 1 << 2,
-            Terrain     = 1 << 3,
-            Infantry    = 1 << 4,
-            Unit        = 1 << 5,
-            Building    = 1 << 6,
-            Resources   = 1 << 7,
-            Wall        = 1 << 8,
-            Waypoint    = 1 << 9,
+        private enum ToolType {
+            None = 0,
+            Map = 1 << 0,
+            Smudge = 1 << 1,
+            Overlay = 1 << 2,
+            Terrain = 1 << 3,
+            Infantry = 1 << 4,
+            Unit = 1 << 5,
+            Building = 1 << 6,
+            Resources = 1 << 7,
+            Wall = 1 << 8,
+            Waypoint = 1 << 9,
             CellTrigger = 1 << 10
         }
 
@@ -57,38 +54,30 @@ namespace MobiusEditor
         private ToolType availableToolTypes = ToolType.None;
 
         private ToolType activeToolType = ToolType.None;
-        private ToolType ActiveToolType
-        {
-            get => activeToolType;
-            set
-            {
+        private ToolType ActiveToolType {
+            get => this.activeToolType;
+            set {
                 var firstAvailableTool = value;
-                if ((availableToolTypes & firstAvailableTool) == ToolType.None)
-                {
-                    var otherAvailableToolTypes = toolTypes.Where(t => (availableToolTypes & t) != ToolType.None);
+                if((this.availableToolTypes & firstAvailableTool) == ToolType.None) {
+                    var otherAvailableToolTypes = toolTypes.Where(t => (this.availableToolTypes & t) != ToolType.None);
                     firstAvailableTool = otherAvailableToolTypes.Any() ? otherAvailableToolTypes.First() : ToolType.None;
                 }
 
-                if (activeToolType != firstAvailableTool)
-                {
-                    activeToolType = firstAvailableTool;
-                    RefreshActiveTool();
+                if(this.activeToolType != firstAvailableTool) {
+                    this.activeToolType = firstAvailableTool;
+                    this.RefreshActiveTool();
                 }
             }
         }
 
         private MapLayerFlag activeLayers;
-        public MapLayerFlag ActiveLayers
-        {
-            get => activeLayers;
-            set
-            {
-                if (activeLayers != value)
-                {
-                    activeLayers = value;
-                    if (activeTool != null)
-                    {
-                        activeTool.Layers = ActiveLayers;
+        public MapLayerFlag ActiveLayers {
+            get => this.activeLayers;
+            set {
+                if(this.activeLayers != value) {
+                    this.activeLayers = value;
+                    if(this.activeTool != null) {
+                        this.activeTool.Layers = this.ActiveLayers;
                     }
                 }
             }
@@ -106,21 +95,16 @@ namespace MobiusEditor
 
         private readonly Timer steamUpdateTimer = new Timer();
 
-        static MainForm()
-        {
-            toolTypes = ((IEnumerable<ToolType>)Enum.GetValues(typeof(ToolType))).Where(t => t != ToolType.None).ToArray();
-        }
+        static MainForm() => toolTypes = ((IEnumerable<ToolType>)Enum.GetValues(typeof(ToolType))).Where(t => t != ToolType.None).ToArray();
 
-        public MainForm()
-        {
-            InitializeComponent();
+        public MainForm() {
+            this.InitializeComponent();
 
-            mru = new MRU("Software\\Petroglyph\\CnCRemasteredEditor", 10, fileRecentFilesMenuItem);
-            mru.FileSelected += Mru_FileSelected;
+            this.mru = new MRU("Software\\Petroglyph\\CnCRemasteredEditor", 10, this.fileRecentFilesMenuItem);
+            this.mru.FileSelected += this.Mru_FileSelected;
 
-            foreach (ToolStripButton toolStripButton in mainToolStrip.Items)
-            {
-                toolStripButton.MouseMove += mainToolStrip_MouseMove;
+            foreach(ToolStripButton toolStripButton in this.mainToolStrip.Items) {
+                toolStripButton.MouseMove += this.mainToolStrip_MouseMove;
             }
 
 #if !DEVELOPER
@@ -128,113 +112,81 @@ namespace MobiusEditor
             developerToolStripMenuItem.Visible = false;
 #endif
 
-            url.Tracked += UndoRedo_Updated;
-            url.Undone += UndoRedo_Updated;
-            url.Redone += UndoRedo_Updated;
-            UpdateUndoRedo();
+            this.url.Tracked += this.UndoRedo_Updated;
+            this.url.Undone += this.UndoRedo_Updated;
+            this.url.Redone += this.UndoRedo_Updated;
+            this.UpdateUndoRedo();
 
-            steamUpdateTimer.Interval = 500;
-            steamUpdateTimer.Tick += SteamUpdateTimer_Tick;
+            this.steamUpdateTimer.Interval = 500;
+            this.steamUpdateTimer.Tick += this.SteamUpdateTimer_Tick;
         }
 
-        private void SteamUpdateTimer_Tick(object sender, EventArgs e)
-        {
-            if (SteamworksUGC.IsInit)
-            {
+        private void SteamUpdateTimer_Tick(object sender, EventArgs e) {
+            if(SteamworksUGC.IsInit) {
                 SteamworksUGC.Service();
             }
         }
 
-        protected override void OnLoad(EventArgs e)
-        {
+        protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
 
-            RefreshAvailableTools();
-            UpdateVisibleLayers();
+            this.RefreshAvailableTools();
+            this.UpdateVisibleLayers();
 
-            filePublishMenuItem.Visible = SteamworksUGC.IsInit;
+            this.filePublishMenuItem.Visible = SteamworksUGC.IsInit;
 
-            steamUpdateTimer.Start();
+            this.steamUpdateTimer.Start();
         }
 
-        protected override void OnClosed(EventArgs e)
-        {
+        protected override void OnClosed(EventArgs e) {
             base.OnClosed(e);
 
-            steamUpdateTimer.Stop();
-            steamUpdateTimer.Dispose();
+            this.steamUpdateTimer.Stop();
+            this.steamUpdateTimer.Dispose();
         }
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Q)
-            {
-                mapToolStripButton.PerformClick();
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+            if(keyData == Keys.Q) {
+                this.mapToolStripButton.PerformClick();
                 return true;
-            }
-            else if (keyData == Keys.W)
-            {
-                smudgeToolStripButton.PerformClick();
+            } else if(keyData == Keys.W) {
+                this.smudgeToolStripButton.PerformClick();
                 return true;
-            }
-            else if (keyData == Keys.E)
-            {
-                overlayToolStripButton.PerformClick();
+            } else if(keyData == Keys.E) {
+                this.overlayToolStripButton.PerformClick();
                 return true;
-            }
-            else if (keyData == Keys.R)
-            {
-                terrainToolStripButton.PerformClick();
+            } else if(keyData == Keys.R) {
+                this.terrainToolStripButton.PerformClick();
                 return true;
-            }
-            else if (keyData == Keys.T)
-            {
-                infantryToolStripButton.PerformClick();
+            } else if(keyData == Keys.T) {
+                this.infantryToolStripButton.PerformClick();
                 return true;
-            }
-            else if (keyData == Keys.Y)
-            {
-                unitToolStripButton.PerformClick();
+            } else if(keyData == Keys.Y) {
+                this.unitToolStripButton.PerformClick();
                 return true;
-            }
-            else if (keyData == Keys.A)
-            {
-                buildingToolStripButton.PerformClick();
+            } else if(keyData == Keys.A) {
+                this.buildingToolStripButton.PerformClick();
                 return true;
-            }
-            else if (keyData == Keys.S)
-            {
-                resourcesToolStripButton.PerformClick();
+            } else if(keyData == Keys.S) {
+                this.resourcesToolStripButton.PerformClick();
                 return true;
-            }
-            else if (keyData == Keys.D)
-            {
-                wallsToolStripButton.PerformClick();
+            } else if(keyData == Keys.D) {
+                this.wallsToolStripButton.PerformClick();
                 return true;
-            }
-            else if (keyData == Keys.F)
-            {
-                waypointsToolStripButton.PerformClick();
+            } else if(keyData == Keys.F) {
+                this.waypointsToolStripButton.PerformClick();
                 return true;
-            }
-            else if (keyData == Keys.G)
-            {
-                cellTriggersToolStripButton.PerformClick();
+            } else if(keyData == Keys.G) {
+                this.cellTriggersToolStripButton.PerformClick();
                 return true;
-            }
-            else if (keyData == (Keys.Control | Keys.Z))
-            {
-                if (editUndoMenuItem.Enabled)
-                {
-                    editUndoMenuItem_Click(this, new EventArgs());
+            } else if(keyData == (Keys.Control | Keys.Z)) {
+                if(this.editUndoMenuItem.Enabled) {
+                    this.editUndoMenuItem_Click(this, new EventArgs());
                 }
                 return true;
-            }
-            else if (keyData == (Keys.Control | Keys.Y))
-            {
-                if (editRedoMenuItem.Enabled)
-                {
-                    editRedoMenuItem_Click(this, new EventArgs());
+            } else if(keyData == (Keys.Control | Keys.Y)) {
+                if(this.editRedoMenuItem.Enabled) {
+                    this.editRedoMenuItem_Click(this, new EventArgs());
                 }
                 return true;
             }
@@ -242,76 +194,62 @@ namespace MobiusEditor
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private void UpdateUndoRedo()
-        {
-            editUndoMenuItem.Enabled = url.CanUndo;
-            editRedoMenuItem.Enabled = url.CanRedo;
+        private void UpdateUndoRedo() {
+            this.editUndoMenuItem.Enabled = this.url.CanUndo;
+            this.editRedoMenuItem.Enabled = this.url.CanRedo;
         }
 
-        private void UndoRedo_Updated(object sender, EventArgs e)
-        {
-            UpdateUndoRedo();
-        }
+        private void UndoRedo_Updated(object sender, EventArgs e) => this.UpdateUndoRedo();
 
-        private void fileNewMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!PromptSaveMap())
-            {
+        private void fileNewMenuItem_Click(object sender, EventArgs e) {
+            if(!this.PromptSaveMap()) {
                 return;
             }
 
-            NewMapDialog nmd = new NewMapDialog();
-            if (nmd.ShowDialog() == DialogResult.OK)
-            {
-                if (plugin != null)
-                {
-                    plugin.Map.Triggers.CollectionChanged -= Triggers_CollectionChanged;
-                    plugin.Dispose();
+            var nmd = new NewMapDialog();
+            if(nmd.ShowDialog() == DialogResult.OK) {
+                if(this.plugin != null) {
+                    this.plugin.Map.Triggers.CollectionChanged -= this.Triggers_CollectionChanged;
+                    this.plugin.Dispose();
                 }
-                plugin = null;
+                this.plugin = null;
 
                 Globals.TheTilesetManager.Reset();
                 Globals.TheTextureManager.Reset();
 
-                if (nmd.GameType == GameType.TiberianDawn)
-                {
+                if(nmd.GameType == GameType.TiberianDawn) {
                     Globals.TheTeamColorManager.Reset();
                     Globals.TheTeamColorManager.Load(@"DATA\XML\CNCTDTEAMCOLORS.XML");
 
-                    plugin = new TiberianDawn.GamePlugin();
-                    plugin.New(nmd.TheaterName);
-                }
-                else if (nmd.GameType == GameType.RedAlert)
-                {
+                    this.plugin = new TiberianDawn.GamePlugin();
+                    this.plugin.New(nmd.TheaterName);
+                } else if(nmd.GameType == GameType.RedAlert) {
                     Globals.TheTeamColorManager.Reset();
                     Globals.TheTeamColorManager.Load(@"DATA\XML\CNCRATEAMCOLORS.XML");
 
-                    plugin = new RedAlert.GamePlugin();
-                    plugin.New(nmd.TheaterName);
+                    this.plugin = new RedAlert.GamePlugin();
+                    this.plugin.New(nmd.TheaterName);
                 }
 
-                if (SteamworksUGC.IsInit)
-                {
-                    plugin.Map.BasicSection.Author = SteamFriends.GetPersonaName();
+                if(SteamworksUGC.IsInit) {
+                    this.plugin.Map.BasicSection.Author = SteamFriends.GetPersonaName();
                 }
 
-                plugin.Map.Triggers.CollectionChanged += Triggers_CollectionChanged;
-                mapPanel.MapImage = plugin.MapImage;
+                this.plugin.Map.Triggers.CollectionChanged += this.Triggers_CollectionChanged;
+                this.mapPanel.MapImage = this.plugin.MapImage;
 
-                filename = null;
-                Text = "CnC TDRA Map Editor";
-                url.Clear();
+                this.filename = null;
+                this.Text = "CnC TDRA Map Editor";
+                this.url.Clear();
 
-                ClearActiveTool();
-                RefreshAvailableTools();
-                RefreshActiveTool();
+                this.ClearActiveTool();
+                this.RefreshAvailableTools();
+                this.RefreshActiveTool();
             }
         }
 
-        private void fileOpenMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!PromptSaveMap())
-            {
+        private void fileOpenMenuItem_Click(object sender, EventArgs e) {
+            if(!this.PromptSaveMap()) {
                 return;
             }
 
@@ -323,489 +261,388 @@ namespace MobiusEditor
 #endif
             ;
 
-            OpenFileDialog ofd = new OpenFileDialog
-            {
+            var ofd = new OpenFileDialog {
                 AutoUpgradeEnabled = false,
                 RestoreDirectory = true
             };
-            ofd.Filter = "Tiberian Dawn files (*.ini;*.bin)|*.ini;*.bin|Red Alert files (*.mpr)|*.mpr" + pgmFilter  + "|All files (*.*)|*.*";
-            if (plugin != null)
-            {
-                switch (plugin.GameType)
-                {
-                    case GameType.TiberianDawn:
-                        ofd.InitialDirectory = TiberianDawn.Constants.SaveDirectory;
-                        ofd.FilterIndex = 1;
-                        break;
-                    case GameType.RedAlert:
-                        ofd.InitialDirectory = RedAlert.Constants.SaveDirectory;
-                        ofd.FilterIndex = 2;
-                        break;
+            ofd.Filter = "Tiberian Dawn files (*.ini;*.bin)|*.ini;*.bin|Red Alert files (*.mpr)|*.mpr" + pgmFilter + "|All files (*.*)|*.*";
+            if(this.plugin != null) {
+                switch(this.plugin.GameType) {
+                case GameType.TiberianDawn:
+                    ofd.InitialDirectory = TiberianDawn.Constants.SaveDirectory;
+                    ofd.FilterIndex = 1;
+                    break;
+                case GameType.RedAlert:
+                    ofd.InitialDirectory = RedAlert.Constants.SaveDirectory;
+                    ofd.FilterIndex = 2;
+                    break;
                 }
-            }
-            else
-            {
+            } else {
                 ofd.InitialDirectory = Globals.RootSaveDirectory;
             }
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
+            if(ofd.ShowDialog() == DialogResult.OK) {
                 var fileInfo = new FileInfo(ofd.FileName);
-                if (LoadFile(fileInfo.FullName))
-                {
-                    mru.Add(fileInfo);
-                }
-                else
-                {
-                    mru.Remove(fileInfo);
+                if(this.LoadFile(fileInfo.FullName)) {
+                    this.mru.Add(fileInfo);
+                } else {
+                    this.mru.Remove(fileInfo);
                     MessageBox.Show(string.Format("Error loading {0}.", ofd.FileName), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
-        private void fileSaveMenuItem_Click(object sender, EventArgs e)
-        {
-            if (plugin == null)
-            {
+        private void fileSaveMenuItem_Click(object sender, EventArgs e) {
+            if(this.plugin == null) {
                 return;
             }
 
-            if (string.IsNullOrEmpty(filename))
-            {
-                fileSaveAsMenuItem.PerformClick();
-            }
-            else
-            {
-                var fileInfo = new FileInfo(filename);
-                if (SaveFile(fileInfo.FullName))
-                {
-                    mru.Add(fileInfo);
-                }
-                else
-                {
-                    mru.Remove(fileInfo);
+            if(string.IsNullOrEmpty(this.filename)) {
+                this.fileSaveAsMenuItem.PerformClick();
+            } else {
+                var fileInfo = new FileInfo(this.filename);
+                if(this.SaveFile(fileInfo.FullName)) {
+                    this.mru.Add(fileInfo);
+                } else {
+                    this.mru.Remove(fileInfo);
                 }
             }
         }
 
-        private void fileSaveAsMenuItem_Click(object sender, EventArgs e)
-        {
-            if (plugin == null)
-            {
+        private void fileSaveAsMenuItem_Click(object sender, EventArgs e) {
+            if(this.plugin == null) {
                 return;
             }
 
-            SaveFileDialog sfd = new SaveFileDialog
-            {
+            var sfd = new SaveFileDialog {
                 AutoUpgradeEnabled = false,
                 RestoreDirectory = true
             };
             var filters = new List<string>();
-            switch (plugin.GameType)
-            {
-                case GameType.TiberianDawn:
-                    filters.Add("Tiberian Dawn files (*.ini;*.bin)|*.ini;*.bin");
-                    sfd.InitialDirectory = TiberianDawn.Constants.SaveDirectory;
-                    break;
-                case GameType.RedAlert:
-                    filters.Add("Red Alert files (*.mpr)|*.mpr");
-                    sfd.InitialDirectory = RedAlert.Constants.SaveDirectory;
-                    break;
+            switch(this.plugin.GameType) {
+            case GameType.TiberianDawn:
+                filters.Add("Tiberian Dawn files (*.ini;*.bin)|*.ini;*.bin");
+                sfd.InitialDirectory = TiberianDawn.Constants.SaveDirectory;
+                break;
+            case GameType.RedAlert:
+                filters.Add("Red Alert files (*.mpr)|*.mpr");
+                sfd.InitialDirectory = RedAlert.Constants.SaveDirectory;
+                break;
             }
             filters.Add("All files (*.*)|*.*");
 
             sfd.Filter = string.Join("|", filters);
-            if (!string.IsNullOrEmpty(filename))
-            {
-                sfd.InitialDirectory = Path.GetDirectoryName(filename);
-                sfd.FileName = Path.GetFileName(filename);
+            if(!string.IsNullOrEmpty(this.filename)) {
+                sfd.InitialDirectory = Path.GetDirectoryName(this.filename);
+                sfd.FileName = Path.GetFileName(this.filename);
             }
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
+            if(sfd.ShowDialog() == DialogResult.OK) {
                 var fileInfo = new FileInfo(sfd.FileName);
-                if (SaveFile(fileInfo.FullName))
-                {
-                    mru.Add(fileInfo);
-                }
-                else
-                {
-                    mru.Remove(fileInfo);
+                if(this.SaveFile(fileInfo.FullName)) {
+                    this.mru.Add(fileInfo);
+                } else {
+                    this.mru.Remove(fileInfo);
                 }
             }
         }
 
-        private void fileExportMenuItem_Click(object sender, EventArgs e)
-        {
-            if (plugin == null)
-            {
+        private void fileExportMenuItem_Click(object sender, EventArgs e) {
+            if(this.plugin == null) {
                 return;
             }
 
-            SaveFileDialog sfd = new SaveFileDialog
-            {
+            var sfd = new SaveFileDialog {
                 AutoUpgradeEnabled = false,
                 RestoreDirectory = true
             };
             sfd.Filter = "MEG files (*.meg)|*.meg";
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
-                plugin.Save(sfd.FileName, FileType.MEG);
+            if(sfd.ShowDialog() == DialogResult.OK) {
+                this.plugin.Save(sfd.FileName, FileType.MEG);
             }
         }
 
-        private void fileExitMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+        private void fileExitMenuItem_Click(object sender, EventArgs e) => this.Close();
 
-        private void editUndoMenuItem_Click(object sender, EventArgs e)
-        {
-            if (url.CanUndo)
-            {
-                url.Undo(new UndoRedoEventArgs(mapPanel, plugin.Map));
+        private void editUndoMenuItem_Click(object sender, EventArgs e) {
+            if(this.url.CanUndo) {
+                this.url.Undo(new UndoRedoEventArgs(this.mapPanel, this.plugin.Map));
             }
         }
 
-        private void editRedoMenuItem_Click(object sender, EventArgs e)
-        {
-            if (url.CanRedo)
-            {
-                url.Redo(new UndoRedoEventArgs(mapPanel, plugin.Map));
+        private void editRedoMenuItem_Click(object sender, EventArgs e) {
+            if(this.url.CanRedo) {
+                this.url.Redo(new UndoRedoEventArgs(this.mapPanel, this.plugin.Map));
             }
         }
 
-        private void settingsMapSettingsMenuItem_Click(object sender, EventArgs e)
-        {
-            if (plugin == null)
-            {
+        private void settingsMapSettingsMenuItem_Click(object sender, EventArgs e) {
+            if(this.plugin == null) {
                 return;
             }
 
-            var basicSettings = new PropertyTracker<BasicSection>(plugin.Map.BasicSection);
-            var briefingSettings = new PropertyTracker<BriefingSection>(plugin.Map.BriefingSection);
-            var houseSettingsTrackers = plugin.Map.Houses.ToDictionary(h => h, h => new PropertyTracker<House>(h));
+            var basicSettings = new PropertyTracker<BasicSection>(this.plugin.Map.BasicSection);
+            var briefingSettings = new PropertyTracker<BriefingSection>(this.plugin.Map.BriefingSection);
+            var houseSettingsTrackers = this.plugin.Map.Houses.ToDictionary(h => h, h => new PropertyTracker<House>(h));
 
-            MapSettingsDialog msd = new MapSettingsDialog(plugin, basicSettings, briefingSettings, houseSettingsTrackers);
-            if (msd.ShowDialog() == DialogResult.OK)
-            {
+            var msd = new MapSettingsDialog(this.plugin, basicSettings, briefingSettings, houseSettingsTrackers);
+            if(msd.ShowDialog() == DialogResult.OK) {
                 basicSettings.Commit();
                 briefingSettings.Commit();
-                foreach (var houseSettingsTracker in houseSettingsTrackers.Values)
-                {
+                foreach(var houseSettingsTracker in houseSettingsTrackers.Values) {
                     houseSettingsTracker.Commit();
                 }
-                plugin.Dirty = true;
+                this.plugin.Dirty = true;
             }
         }
 
-        private void settingsTeamTypesMenuItem_Click(object sender, EventArgs e)
-        {
-            if (plugin == null)
-            {
+        private void settingsTeamTypesMenuItem_Click(object sender, EventArgs e) {
+            if(this.plugin == null) {
                 return;
             }
 
-            int maxTeams = 0;
-            switch (plugin.GameType)
-            {
-                case GameType.TiberianDawn:
-                    {
-                        maxTeams = TiberianDawn.Constants.MaxTeams;
-                    }
-                    break;
-                case GameType.RedAlert:
-                    {
-                        maxTeams = RedAlert.Constants.MaxTeams;
-                    }
-                    break;
+            var maxTeams = 0;
+            switch(this.plugin.GameType) {
+            case GameType.TiberianDawn: {
+                maxTeams = TiberianDawn.Constants.MaxTeams;
+            }
+            break;
+            case GameType.RedAlert: {
+                maxTeams = RedAlert.Constants.MaxTeams;
+            }
+            break;
             }
 
-            TeamTypesDialog ttd = new TeamTypesDialog(plugin, maxTeams);
-            if (ttd.ShowDialog() == DialogResult.OK)
-            {
-                plugin.Map.TeamTypes.Clear();
-                plugin.Map.TeamTypes.AddRange(ttd.TeamTypes.Select(t => t.Clone()));
-                plugin.Dirty = true;
+            var ttd = new TeamTypesDialog(this.plugin, maxTeams);
+            if(ttd.ShowDialog() == DialogResult.OK) {
+                this.plugin.Map.TeamTypes.Clear();
+                this.plugin.Map.TeamTypes.AddRange(ttd.TeamTypes.Select(t => t.Clone()));
+                this.plugin.Dirty = true;
             }
         }
 
-        private void settingsTriggersMenuItem_Click(object sender, EventArgs e)
-        {
-            if (plugin == null)
-            {
+        private void settingsTriggersMenuItem_Click(object sender, EventArgs e) {
+            if(this.plugin == null) {
                 return;
             }
 
-            int maxTriggers = 0;
-            switch (plugin.GameType)
-            {
-                case GameType.TiberianDawn:
-                    {
-                        maxTriggers = TiberianDawn.Constants.MaxTriggers;
-                    }
-                    break;
-                case GameType.RedAlert:
-                    {
-                        maxTriggers = RedAlert.Constants.MaxTriggers;
-                    }
-                    break;
+            var maxTriggers = 0;
+            switch(this.plugin.GameType) {
+            case GameType.TiberianDawn: {
+                maxTriggers = TiberianDawn.Constants.MaxTriggers;
+            }
+            break;
+            case GameType.RedAlert: {
+                maxTriggers = RedAlert.Constants.MaxTriggers;
+            }
+            break;
             }
 
-            TriggersDialog td = new TriggersDialog(plugin, maxTriggers);
-            if (td.ShowDialog() == DialogResult.OK)
-            {
+            var td = new TriggersDialog(this.plugin, maxTriggers);
+            if(td.ShowDialog() == DialogResult.OK) {
                 var oldTriggers =
-                    from leftTrigger in plugin.Map.Triggers
+                    from leftTrigger in this.plugin.Map.Triggers
                     join rightTrigger in td.Triggers
                     on leftTrigger.Name equals rightTrigger.Name into result
                     where result.Count() == 0
                     select leftTrigger;
                 var newTriggers =
                     from leftTrigger in td.Triggers
-                    join rightTrigger in plugin.Map.Triggers
+                    join rightTrigger in this.plugin.Map.Triggers
                     on leftTrigger.Name equals rightTrigger.Name into result
                     where result.Count() == 0
                     select leftTrigger;
                 var sameTriggers =
-                    from leftTrigger in plugin.Map.Triggers
+                    from leftTrigger in this.plugin.Map.Triggers
                     join rightTrigger in td.Triggers
                     on leftTrigger.Name equals rightTrigger.Name
-                    select new
-                    {
+                    select new {
                         OldTrigger = leftTrigger,
                         NewTrigger = rightTrigger
                     };
 
-                foreach (var oldTrigger in oldTriggers.ToArray())
-                {
-                    plugin.Map.Triggers.Remove(oldTrigger);
+                foreach(var oldTrigger in oldTriggers.ToArray()) {
+                    this.plugin.Map.Triggers.Remove(oldTrigger);
                 }
 
-                foreach (var newTrigger in newTriggers.ToArray())
-                {
-                    plugin.Map.Triggers.Add(newTrigger.Clone());
+                foreach(var newTrigger in newTriggers.ToArray()) {
+                    this.plugin.Map.Triggers.Add(newTrigger.Clone());
                 }
 
-                foreach (var item in sameTriggers.ToArray())
-                {
-                    plugin.Map.Triggers.Add(item.NewTrigger.Clone());
-                    plugin.Map.Triggers.Remove(item.OldTrigger);
+                foreach(var item in sameTriggers.ToArray()) {
+                    this.plugin.Map.Triggers.Add(item.NewTrigger.Clone());
+                    this.plugin.Map.Triggers.Remove(item.OldTrigger);
                 }
 
-                plugin.Dirty = true;
+                this.plugin.Dirty = true;
             }
         }
 
-        private void Mru_FileSelected(object sender, FileInfo e)
-        {
-            if (!PromptSaveMap())
-            {
+        private void Mru_FileSelected(object sender, FileInfo e) {
+            if(!this.PromptSaveMap()) {
                 return;
             }
 
-            if (LoadFile(e.FullName))
-            {
-                mru.Add(e);
-            }
-            else
-            {
-                mru.Remove(e);
+            if(this.LoadFile(e.FullName)) {
+                this.mru.Add(e);
+            } else {
+                this.mru.Remove(e);
                 MessageBox.Show(string.Format("Error loading {0}.", e.FullName), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void mapPanel_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (plugin != null)
-            {
-                var mapPoint = mapPanel.ClientToMap(e.Location);
+        private void mapPanel_MouseMove(object sender, MouseEventArgs e) {
+            if(this.plugin != null) {
+                var mapPoint = this.mapPanel.ClientToMap(e.Location);
                 var location = new Point((int)Math.Floor((double)mapPoint.X / Globals.TileWidth), (int)Math.Floor((double)mapPoint.Y / Globals.TileHeight));
-                if (plugin.Map.Metrics.GetCell(location, out int cell))
-                {
+                if(this.plugin.Map.Metrics.GetCell(location, out var cell)) {
                     var sb = new StringBuilder();
                     sb.AppendFormat("X = {0}, Y = {1}, Cell = {2}", location.X, location.Y, cell);
 
-                    var template = plugin.Map.Templates[cell];
-                    var templateType = template?.Type;  
-                    if (templateType != null)
-                    {
+                    var template = this.plugin.Map.Templates[cell];
+                    var templateType = template?.Type;
+                    if(templateType != null) {
                         sb.AppendFormat(", Template = {0} ({1})", templateType.DisplayName, template.Icon);
                     }
 
-                    var smudge = plugin.Map.Smudge[cell];
+                    var smudge = this.plugin.Map.Smudge[cell];
                     var smudgeType = smudge?.Type;
-                    if (smudgeType != null)
-                    {
+                    if(smudgeType != null) {
                         sb.AppendFormat(", Smudge = {0}", smudgeType.DisplayName);
                     }
 
-                    var overlay = plugin.Map.Overlay[cell];
+                    var overlay = this.plugin.Map.Overlay[cell];
                     var overlayType = overlay?.Type;
-                    if (overlayType != null)
-                    {
+                    if(overlayType != null) {
                         sb.AppendFormat(", Overlay = {0}", overlayType.DisplayName);
                     }
 
-                    var terrain = plugin.Map.Technos[location] as Terrain;
+                    var terrain = this.plugin.Map.Technos[location] as Terrain;
                     var terrainType = terrain?.Type;
-                    if (terrainType != null)
-                    {
+                    if(terrainType != null) {
                         sb.AppendFormat(", Terrain = {0}", terrainType.DisplayName);
                     }
 
-                    if (plugin.Map.Technos[location] is InfantryGroup infantryGroup)
-                    {
+                    if(this.plugin.Map.Technos[location] is InfantryGroup infantryGroup) {
                         var subPixel = new Point(
                             (mapPoint.X * Globals.PixelWidth / Globals.TileWidth) % Globals.PixelWidth,
                             (mapPoint.Y * Globals.PixelHeight / Globals.TileHeight) % Globals.PixelHeight
                         );
 
                         var i = InfantryGroup.ClosestStoppingTypes(subPixel).Cast<int>().First();
-                        if (infantryGroup.Infantry[i] != null)
-                        {
+                        if(infantryGroup.Infantry[i] != null) {
                             sb.AppendFormat(", Infantry = {0}", infantryGroup.Infantry[i].Type.DisplayName);
                         }
                     }
 
-                    var unit = plugin.Map.Technos[location] as Unit;
+                    var unit = this.plugin.Map.Technos[location] as Unit;
                     var unitType = unit?.Type;
-                    if (unitType != null)
-                    {
+                    if(unitType != null) {
                         sb.AppendFormat(", Unit = {0}", unitType.DisplayName);
                     }
 
-                    var building = plugin.Map.Technos[location] as Building;
+                    var building = this.plugin.Map.Technos[location] as Building;
                     var buildingType = building?.Type;
-                    if (buildingType != null)
-                    {
+                    if(buildingType != null) {
                         sb.AppendFormat(", Building = {0}", buildingType.DisplayName);
                     }
 
-                    cellStatusLabel.Text = sb.ToString();
-                }
-                else
-                {
-                    cellStatusLabel.Text = string.Empty;
+                    this.cellStatusLabel.Text = sb.ToString();
+                } else {
+                    this.cellStatusLabel.Text = string.Empty;
                 }
             }
         }
 
-        private bool LoadFile(string loadFilename)
-        {
-            FileType fileType = FileType.None;
-            switch (Path.GetExtension(loadFilename).ToLower())
-            {
-                case ".ini":
-                case ".mpr":
-                    fileType = FileType.INI;
-                    break;
-                case ".bin":
-                    fileType = FileType.BIN;
-                    break;
+        private bool LoadFile(string loadFilename) {
+            var fileType = FileType.None;
+            switch(Path.GetExtension(loadFilename).ToLower()) {
+            case ".ini":
+            case ".mpr":
+                fileType = FileType.INI;
+                break;
+            case ".bin":
+                fileType = FileType.BIN;
+                break;
 #if DEVELOPER
-                case ".pgm":
-                    fileType = FileType.PGM;
-                    break;
+            case ".pgm":
+                fileType = FileType.PGM;
+                break;
 #endif
             }
 
-            if (fileType == FileType.None)
-            {
+            if(fileType == FileType.None) {
                 return false;
             }
 
-            GameType gameType = GameType.None;
-            switch (fileType)
-            {
-                case FileType.INI:
-                    {
-                        var ini = new INI();
-                        try
-                        {
-                            using (var reader = new StreamReader(loadFilename))
-                            {
-                                ini.Parse(reader);
-                            }
-                        }
-                        catch (FileNotFoundException)
-                        {
-                            return false;
-                        }
-                        gameType = File.Exists(Path.ChangeExtension(loadFilename, ".bin")) ? GameType.TiberianDawn : GameType.RedAlert;
+            var gameType = GameType.None;
+            switch(fileType) {
+            case FileType.INI: {
+                var ini = new INI();
+                try {
+                    using(var reader = new StreamReader(loadFilename)) {
+                        ini.Parse(reader);
                     }
-                    break;
-                case FileType.BIN:
-                    gameType = GameType.TiberianDawn;
-                    break;
+                } catch(FileNotFoundException) {
+                    return false;
+                }
+                gameType = File.Exists(Path.ChangeExtension(loadFilename, ".bin")) ? GameType.TiberianDawn : GameType.RedAlert;
+            }
+            break;
+            case FileType.BIN:
+                gameType = GameType.TiberianDawn;
+                break;
 #if DEVELOPER
-                case FileType.PGM:
-                    {
-                        try
-                        {
-                            using (var megafile = new Megafile(loadFilename))
-                            {
-                                if (megafile.Any(f => Path.GetExtension(f).ToLower() == ".mpr"))
-                                {
-                                    gameType = GameType.RedAlert;
-                                }
-                                else
-                                {
-                                    gameType = GameType.TiberianDawn;
-                                }
-                            }
-                        }
-                        catch (FileNotFoundException)
-                        {
-                            return false;
+            case FileType.PGM: {
+                try {
+                    using(var megafile = new Megafile(loadFilename)) {
+                        if(megafile.Any(f => Path.GetExtension(f).ToLower() == ".mpr")) {
+                            gameType = GameType.RedAlert;
+                        } else {
+                            gameType = GameType.TiberianDawn;
                         }
                     }
-                    break;
+                } catch(FileNotFoundException) {
+                    return false;
+                }
+            }
+            break;
 #endif
             }
 
-            if (gameType == GameType.None)
-            {
+            if(gameType == GameType.None) {
                 return false;
             }
 
-            if (plugin != null)
-            {
-                plugin.Map.Triggers.CollectionChanged -= Triggers_CollectionChanged;
-                plugin.Dispose();
+            if(this.plugin != null) {
+                this.plugin.Map.Triggers.CollectionChanged -= this.Triggers_CollectionChanged;
+                this.plugin.Dispose();
             }
-            plugin = null;
+            this.plugin = null;
 
             Globals.TheTilesetManager.Reset();
             Globals.TheTextureManager.Reset();
 
-            switch (gameType)
-            {
-                case GameType.TiberianDawn:
-                    {
-                        Globals.TheTeamColorManager.Reset();
-                        Globals.TheTeamColorManager.Load(@"DATA\XML\CNCTDTEAMCOLORS.XML");
-                        plugin = new TiberianDawn.GamePlugin();
-                    }
-                    break;
-                case GameType.RedAlert:
-                    {
-                        Globals.TheTeamColorManager.Reset();
-                        Globals.TheTeamColorManager.Load(@"DATA\XML\CNCRATEAMCOLORS.XML");
-                        plugin = new RedAlert.GamePlugin();
-                    }
-                    break;
+            switch(gameType) {
+            case GameType.TiberianDawn: {
+                Globals.TheTeamColorManager.Reset();
+                Globals.TheTeamColorManager.Load(@"DATA\XML\CNCTDTEAMCOLORS.XML");
+                this.plugin = new TiberianDawn.GamePlugin();
+            }
+            break;
+            case GameType.RedAlert: {
+                Globals.TheTeamColorManager.Reset();
+                Globals.TheTeamColorManager.Load(@"DATA\XML\CNCRATEAMCOLORS.XML");
+                this.plugin = new RedAlert.GamePlugin();
+            }
+            break;
             }
 
-            try
-            {
-                var errors = plugin.Load(loadFilename, fileType).ToArray();
-                if (errors.Length > 0)
-                {
-                    ErrorMessageBox errorMessageBox = new ErrorMessageBox { Errors = errors };
+            try {
+                var errors = this.plugin.Load(loadFilename, fileType).ToArray();
+                if(errors.Length > 0) {
+                    var errorMessageBox = new ErrorMessageBox { Errors = errors };
                     errorMessageBox.ShowDialog();
                 }
-            }
-            catch (Exception)
-            {
+            } catch(Exception) {
 #if DEVELOPER
                 throw;
 #else
@@ -813,516 +650,429 @@ namespace MobiusEditor
 #endif
             }
 
-            plugin.Map.Triggers.CollectionChanged += Triggers_CollectionChanged;
-            mapPanel.MapImage = plugin.MapImage;
+            this.plugin.Map.Triggers.CollectionChanged += this.Triggers_CollectionChanged;
+            this.mapPanel.MapImage = this.plugin.MapImage;
 
-            plugin.Dirty = false;
-            filename = loadFilename;
-            Text = string.Format("CnC TDRA Map Editor - {0}", filename);
+            this.plugin.Dirty = false;
+            this.filename = loadFilename;
+            this.Text = string.Format("CnC TDRA Map Editor - {0}", this.filename);
 
-            url.Clear();
+            this.url.Clear();
 
-            ClearActiveTool();
-            RefreshAvailableTools();
-            RefreshActiveTool();
+            this.ClearActiveTool();
+            this.RefreshAvailableTools();
+            this.RefreshActiveTool();
 
             return true;
         }
 
-        private bool SaveFile(string saveFilename)
-        {
-            FileType fileType = FileType.None;
-            switch (Path.GetExtension(saveFilename).ToLower())
-            {
-                case ".ini":
-                case ".mpr":
-                    fileType = FileType.INI;
-                    break;
-                case ".bin":
-                    fileType = FileType.BIN;
-                    break;
+        private bool SaveFile(string saveFilename) {
+            var fileType = FileType.None;
+            switch(Path.GetExtension(saveFilename).ToLower()) {
+            case ".ini":
+            case ".mpr":
+                fileType = FileType.INI;
+                break;
+            case ".bin":
+                fileType = FileType.BIN;
+                break;
             }
 
-            if (fileType == FileType.None)
-            {
+            if(fileType == FileType.None) {
                 return false;
             }
 
-            if (string.IsNullOrEmpty(plugin.Map.SteamSection.Title))
-            {
-                plugin.Map.SteamSection.Title = plugin.Map.BasicSection.Name;
+            if(string.IsNullOrEmpty(this.plugin.Map.SteamSection.Title)) {
+                this.plugin.Map.SteamSection.Title = this.plugin.Map.BasicSection.Name;
             }
 
-            if (!plugin.Save(saveFilename, fileType))
-            {
+            if(!this.plugin.Save(saveFilename, fileType)) {
                 return false;
             }
 
-            if (new FileInfo(saveFilename).Length > Globals.MaxMapSize)
-            {
+            if(new FileInfo(saveFilename).Length > Globals.MaxMapSize) {
                 MessageBox.Show(string.Format("Map file exceeds the maximum size of {0} bytes.", Globals.MaxMapSize), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            plugin.Dirty = false;
-            filename = saveFilename;
-            Text = string.Format("CnC TDRA Map Editor - {0}", filename);
+            this.plugin.Dirty = false;
+            this.filename = saveFilename;
+            this.Text = string.Format("CnC TDRA Map Editor - {0}", this.filename);
 
             return true;
         }
 
-        private void RefreshAvailableTools()
-        {
-            availableToolTypes = ToolType.None;
-            if (plugin != null)
-            {
-                availableToolTypes |= ToolType.Waypoint;
+        private void RefreshAvailableTools() {
+            this.availableToolTypes = ToolType.None;
+            if(this.plugin != null) {
+                this.availableToolTypes |= ToolType.Waypoint;
 
-                if (plugin.Map.TemplateTypes.Any()) availableToolTypes |= ToolType.Map;
-                if (plugin.Map.SmudgeTypes.Any()) availableToolTypes |= ToolType.Smudge;
-                if (plugin.Map.OverlayTypes.Any(t => t.IsPlaceable && ((t.Theaters == null) || t.Theaters.Contains(plugin.Map.Theater)))) availableToolTypes |= ToolType.Overlay;
-                if (plugin.Map.TerrainTypes.Any(t => t.Theaters.Contains(plugin.Map.Theater))) availableToolTypes |= ToolType.Terrain;
-                if (plugin.Map.InfantryTypes.Any()) availableToolTypes |= ToolType.Infantry;
-                if (plugin.Map.UnitTypes.Any()) availableToolTypes |= ToolType.Unit;
-                if (plugin.Map.BuildingTypes.Any()) availableToolTypes |= ToolType.Building;
-                if (plugin.Map.OverlayTypes.Any(t => t.IsResource)) availableToolTypes |= ToolType.Resources;
-                if (plugin.Map.OverlayTypes.Any(t => t.IsWall)) availableToolTypes |= ToolType.Wall;
-                if (plugin.Map.Triggers.Any()) availableToolTypes |= ToolType.CellTrigger;
+                if(this.plugin.Map.TemplateTypes.Any())
+                    this.availableToolTypes |= ToolType.Map;
+                if(this.plugin.Map.SmudgeTypes.Any())
+                    this.availableToolTypes |= ToolType.Smudge;
+                if(this.plugin.Map.OverlayTypes.Any(t => t.IsPlaceable && ((t.Theaters == null) || t.Theaters.Contains(this.plugin.Map.Theater))))
+                    this.availableToolTypes |= ToolType.Overlay;
+                if(this.plugin.Map.TerrainTypes.Any(t => t.Theaters.Contains(this.plugin.Map.Theater)))
+                    this.availableToolTypes |= ToolType.Terrain;
+                if(this.plugin.Map.InfantryTypes.Any())
+                    this.availableToolTypes |= ToolType.Infantry;
+                if(this.plugin.Map.UnitTypes.Any())
+                    this.availableToolTypes |= ToolType.Unit;
+                if(this.plugin.Map.BuildingTypes.Any())
+                    this.availableToolTypes |= ToolType.Building;
+                if(this.plugin.Map.OverlayTypes.Any(t => t.IsResource))
+                    this.availableToolTypes |= ToolType.Resources;
+                if(this.plugin.Map.OverlayTypes.Any(t => t.IsWall))
+                    this.availableToolTypes |= ToolType.Wall;
+                if(this.plugin.Map.Triggers.Any())
+                    this.availableToolTypes |= ToolType.CellTrigger;
             }
 
-            mapToolStripButton.Enabled = (availableToolTypes & ToolType.Map) != ToolType.None;
-            smudgeToolStripButton.Enabled = (availableToolTypes & ToolType.Smudge) != ToolType.None;
-            overlayToolStripButton.Enabled = (availableToolTypes & ToolType.Overlay) != ToolType.None;
-            terrainToolStripButton.Enabled = (availableToolTypes & ToolType.Terrain) != ToolType.None;
-            infantryToolStripButton.Enabled = (availableToolTypes & ToolType.Infantry) != ToolType.None;
-            unitToolStripButton.Enabled = (availableToolTypes & ToolType.Unit) != ToolType.None;
-            buildingToolStripButton.Enabled = (availableToolTypes & ToolType.Building) != ToolType.None;
-            resourcesToolStripButton.Enabled = (availableToolTypes & ToolType.Resources) != ToolType.None;
-            wallsToolStripButton.Enabled = (availableToolTypes & ToolType.Wall) != ToolType.None;
-            waypointsToolStripButton.Enabled = (availableToolTypes & ToolType.Waypoint) != ToolType.None;
-            cellTriggersToolStripButton.Enabled = (availableToolTypes & ToolType.CellTrigger) != ToolType.None;
+            this.mapToolStripButton.Enabled = (this.availableToolTypes & ToolType.Map) != ToolType.None;
+            this.smudgeToolStripButton.Enabled = (this.availableToolTypes & ToolType.Smudge) != ToolType.None;
+            this.overlayToolStripButton.Enabled = (this.availableToolTypes & ToolType.Overlay) != ToolType.None;
+            this.terrainToolStripButton.Enabled = (this.availableToolTypes & ToolType.Terrain) != ToolType.None;
+            this.infantryToolStripButton.Enabled = (this.availableToolTypes & ToolType.Infantry) != ToolType.None;
+            this.unitToolStripButton.Enabled = (this.availableToolTypes & ToolType.Unit) != ToolType.None;
+            this.buildingToolStripButton.Enabled = (this.availableToolTypes & ToolType.Building) != ToolType.None;
+            this.resourcesToolStripButton.Enabled = (this.availableToolTypes & ToolType.Resources) != ToolType.None;
+            this.wallsToolStripButton.Enabled = (this.availableToolTypes & ToolType.Wall) != ToolType.None;
+            this.waypointsToolStripButton.Enabled = (this.availableToolTypes & ToolType.Waypoint) != ToolType.None;
+            this.cellTriggersToolStripButton.Enabled = (this.availableToolTypes & ToolType.CellTrigger) != ToolType.None;
 
-            ActiveToolType = activeToolType;
+            this.ActiveToolType = this.activeToolType;
         }
 
-        private void ClearActiveTool()
-        {
-            activeTool?.Dispose();
-            activeTool = null;
+        private void ClearActiveTool() {
+            this.activeTool?.Dispose();
+            this.activeTool = null;
 
-            if (activeToolForm != null)
-            {
-                activeToolForm.ResizeEnd -= ActiveToolForm_ResizeEnd;
-                activeToolForm.Close();
-                activeToolForm = null;
+            if(this.activeToolForm != null) {
+                this.activeToolForm.ResizeEnd -= this.ActiveToolForm_ResizeEnd;
+                this.activeToolForm.Close();
+                this.activeToolForm = null;
             }
 
-            toolStatusLabel.Text = string.Empty;
+            this.toolStatusLabel.Text = string.Empty;
         }
 
-        private void RefreshActiveTool()
-        {
-            if (plugin == null)
-            {
+        private void RefreshActiveTool() {
+            if(this.plugin == null) {
                 return;
             }
 
-            if (activeTool == null)
-            {
-                activeLayers = MapLayerFlag.None;
+            if(this.activeTool == null) {
+                this.activeLayers = MapLayerFlag.None;
             }
 
-            ClearActiveTool();
+            this.ClearActiveTool();
 
-            switch (ActiveToolType)
-            {
-                case ToolType.Map:
-                    {
-                        TemplateToolDialog toolDialog = new TemplateToolDialog();
+            switch(this.ActiveToolType) {
+            case ToolType.Map: {
+                var toolDialog = new TemplateToolDialog();
 
-                        activeTool = new TemplateTool(mapPanel, ActiveLayers, toolStatusLabel, toolDialog.TemplateTypeListView, toolDialog.TemplateTypeMapPanel, mouseToolTip, plugin, url);
-                        activeToolForm = toolDialog;
-                        activeToolForm.Show(this);
-                    } break;
-                case ToolType.Smudge:
-                    {
-                        GenericToolDialog toolDialog = new GenericToolDialog
-                        {
-                            Text = "Smudge"
-                        };
+                this.activeTool = new TemplateTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.TemplateTypeListView, toolDialog.TemplateTypeMapPanel, this.mouseToolTip, this.plugin, this.url);
+                this.activeToolForm = toolDialog;
+                this.activeToolForm.Show(this);
+            }
+            break;
+            case ToolType.Smudge: {
+                var toolDialog = new GenericToolDialog {
+                    Text = "Smudge"
+                };
 
-                        toolDialog.GenericTypeComboBox.Types = plugin.Map.SmudgeTypes.Where(t => (t.Flag & SmudgeTypeFlag.Bib) == SmudgeTypeFlag.None).OrderBy(t => t.Name);
+                toolDialog.GenericTypeComboBox.Types = this.plugin.Map.SmudgeTypes.Where(t => (t.Flag & SmudgeTypeFlag.Bib) == SmudgeTypeFlag.None).OrderBy(t => t.Name);
 
-                        activeTool = new SmudgeTool(mapPanel, ActiveLayers, toolStatusLabel, toolDialog.GenericTypeComboBox, toolDialog.GenericTypeMapPanel, plugin, url);
-                        activeToolForm = toolDialog;
-                        activeToolForm.Show(this);
-                    }
-                    break;
-                case ToolType.Overlay:
-                    {
-                        GenericToolDialog toolDialog = new GenericToolDialog
-                        {
-                            Text = "Overlay"
-                        };
+                this.activeTool = new SmudgeTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.GenericTypeComboBox, toolDialog.GenericTypeMapPanel, this.plugin, this.url);
+                this.activeToolForm = toolDialog;
+                this.activeToolForm.Show(this);
+            }
+            break;
+            case ToolType.Overlay: {
+                var toolDialog = new GenericToolDialog {
+                    Text = "Overlay"
+                };
 
-                        toolDialog.GenericTypeComboBox.Types = plugin.Map.OverlayTypes.Where(t => t.IsPlaceable && ((t.Theaters == null) || t.Theaters.Contains(plugin.Map.Theater))).OrderBy(t => t.Name);
+                toolDialog.GenericTypeComboBox.Types = this.plugin.Map.OverlayTypes.Where(t => t.IsPlaceable && ((t.Theaters == null) || t.Theaters.Contains(this.plugin.Map.Theater))).OrderBy(t => t.Name);
 
-                        activeTool = new OverlaysTool(mapPanel, ActiveLayers, toolStatusLabel, toolDialog.GenericTypeComboBox, toolDialog.GenericTypeMapPanel, plugin, url);
-                        activeToolForm = toolDialog;
-                        activeToolForm.Show(this);
-                    }
-                    break;
-                case ToolType.Resources:
-                    {
-                        ResourcesToolDialog toolDialog = new ResourcesToolDialog();
+                this.activeTool = new OverlaysTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.GenericTypeComboBox, toolDialog.GenericTypeMapPanel, this.plugin, this.url);
+                this.activeToolForm = toolDialog;
+                this.activeToolForm.Show(this);
+            }
+            break;
+            case ToolType.Resources: {
+                var toolDialog = new ResourcesToolDialog();
 
-                        activeTool = new ResourcesTool(mapPanel, ActiveLayers, toolStatusLabel, toolDialog.TotalResourcesLbl, toolDialog.ResourceBrushSizeNud, toolDialog.GemsCheckBox, plugin, url);
-                        activeToolForm = toolDialog;
-                        activeToolForm.Show(this);
-                    }
-                    break;
-                case ToolType.Terrain:
-                    {
-                        TerrainToolDialog toolDialog = new TerrainToolDialog(plugin);
+                this.activeTool = new ResourcesTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.TotalResourcesLbl, toolDialog.ResourceBrushSizeNud, toolDialog.GemsCheckBox, this.plugin, this.url);
+                this.activeToolForm = toolDialog;
+                this.activeToolForm.Show(this);
+            }
+            break;
+            case ToolType.Terrain: {
+                var toolDialog = new TerrainToolDialog(this.plugin);
 
-                        toolDialog.TerrainTypeComboBox.Types = plugin.Map.TerrainTypes.Where(t => t.Theaters.Contains(plugin.Map.Theater)).OrderBy(t => t.Name);
+                toolDialog.TerrainTypeComboBox.Types = this.plugin.Map.TerrainTypes.Where(t => t.Theaters.Contains(this.plugin.Map.Theater)).OrderBy(t => t.Name);
 
-                        activeTool = new TerrainTool(mapPanel, ActiveLayers, toolStatusLabel, toolDialog.TerrainTypeComboBox, toolDialog.TerrainTypeMapPanel, toolDialog.TerrainProperties, plugin, url);
-                        activeToolForm = toolDialog;
-                        activeToolForm.Show(this);
-                    }
-                    break;
-                case ToolType.Infantry:
-                    {
-                        ObjectToolDialog toolDialog = new ObjectToolDialog(plugin)
-                        {
-                            Text = "Infantry"
-                        };
+                this.activeTool = new TerrainTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.TerrainTypeComboBox, toolDialog.TerrainTypeMapPanel, toolDialog.TerrainProperties, this.plugin, this.url);
+                this.activeToolForm = toolDialog;
+                this.activeToolForm.Show(this);
+            }
+            break;
+            case ToolType.Infantry: {
+                var toolDialog = new ObjectToolDialog(this.plugin) {
+                    Text = "Infantry"
+                };
 
-                        toolDialog.ObjectTypeComboBox.Types = plugin.Map.InfantryTypes.OrderBy(t => t.Name);
+                toolDialog.ObjectTypeComboBox.Types = this.plugin.Map.InfantryTypes.OrderBy(t => t.Name);
 
-                        activeTool = new InfantryTool(mapPanel, ActiveLayers, toolStatusLabel, toolDialog.ObjectTypeComboBox, toolDialog.ObjectTypeMapPanel, toolDialog.ObjectProperties, plugin, url);
-                        activeToolForm = toolDialog;
-                        activeToolForm.Show(this);
-                    }
-                    break;
-                case ToolType.Unit:
-                    {
-                        ObjectToolDialog toolDialog = new ObjectToolDialog(plugin)
-                        {
-                            Text = "Units"
-                        };
+                this.activeTool = new InfantryTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.ObjectTypeComboBox, toolDialog.ObjectTypeMapPanel, toolDialog.ObjectProperties, this.plugin, this.url);
+                this.activeToolForm = toolDialog;
+                this.activeToolForm.Show(this);
+            }
+            break;
+            case ToolType.Unit: {
+                var toolDialog = new ObjectToolDialog(this.plugin) {
+                    Text = "Units"
+                };
 
-                        toolDialog.ObjectTypeComboBox.Types = plugin.Map.UnitTypes
-                            .Where(t => !t.IsFixedWing)
-                            .OrderBy(t => t.Name);
+                toolDialog.ObjectTypeComboBox.Types = this.plugin.Map.UnitTypes
+                    .Where(t => !t.IsFixedWing)
+                    .OrderBy(t => t.Name);
 
-                        activeTool = new UnitTool(mapPanel, ActiveLayers, toolStatusLabel, toolDialog.ObjectTypeComboBox, toolDialog.ObjectTypeMapPanel, toolDialog.ObjectProperties, plugin, url);
-                        activeToolForm = toolDialog;
-                        activeToolForm.Show(this);
-                    }
-                    break;
-                case ToolType.Building:
-                    {
-                        ObjectToolDialog toolDialog = new ObjectToolDialog(plugin)
-                        {
-                            Text = "Structures"
-                        };
+                this.activeTool = new UnitTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.ObjectTypeComboBox, toolDialog.ObjectTypeMapPanel, toolDialog.ObjectProperties, this.plugin, this.url);
+                this.activeToolForm = toolDialog;
+                this.activeToolForm.Show(this);
+            }
+            break;
+            case ToolType.Building: {
+                var toolDialog = new ObjectToolDialog(this.plugin) {
+                    Text = "Structures"
+                };
 
-                        toolDialog.ObjectTypeComboBox.Types = plugin.Map.BuildingTypes
-                            .Where(t => (t.Theaters == null) || t.Theaters.Contains(plugin.Map.Theater))
-                            .OrderBy(t => t.IsFake)
-                            .ThenBy(t => t.Name);
+                toolDialog.ObjectTypeComboBox.Types = this.plugin.Map.BuildingTypes
+                    .Where(t => (t.Theaters == null) || t.Theaters.Contains(this.plugin.Map.Theater))
+                    .OrderBy(t => t.IsFake)
+                    .ThenBy(t => t.Name);
 
-                        activeTool = new BuildingTool(mapPanel, ActiveLayers, toolStatusLabel, toolDialog.ObjectTypeComboBox, toolDialog.ObjectTypeMapPanel, toolDialog.ObjectProperties, plugin, url);
-                        activeToolForm = toolDialog;
-                        activeToolForm.Show(this);
-                    }
-                    break;
-                case ToolType.Wall:
-                    {
-                        GenericToolDialog toolDialog = new GenericToolDialog
-                        {
-                            Text = "Walls"
-                        };
+                this.activeTool = new BuildingTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.ObjectTypeComboBox, toolDialog.ObjectTypeMapPanel, toolDialog.ObjectProperties, this.plugin, this.url);
+                this.activeToolForm = toolDialog;
+                this.activeToolForm.Show(this);
+            }
+            break;
+            case ToolType.Wall: {
+                var toolDialog = new GenericToolDialog {
+                    Text = "Walls"
+                };
 
-                        toolDialog.GenericTypeComboBox.Types = plugin.Map.OverlayTypes.Where(t => t.IsWall).OrderBy(t => t.Name);
+                toolDialog.GenericTypeComboBox.Types = this.plugin.Map.OverlayTypes.Where(t => t.IsWall).OrderBy(t => t.Name);
 
-                        activeTool = new WallsTool(mapPanel, ActiveLayers, toolStatusLabel, toolDialog.GenericTypeComboBox, toolDialog.GenericTypeMapPanel, plugin, url);
-                        activeToolForm = toolDialog;
-                        activeToolForm.Show(this);
-                    }
-                    break;
-                case ToolType.Waypoint:
-                    {
-                        WaypointsToolDialog toolDialog = new WaypointsToolDialog();
+                this.activeTool = new WallsTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.GenericTypeComboBox, toolDialog.GenericTypeMapPanel, this.plugin, this.url);
+                this.activeToolForm = toolDialog;
+                this.activeToolForm.Show(this);
+            }
+            break;
+            case ToolType.Waypoint: {
+                var toolDialog = new WaypointsToolDialog();
 
-                        toolDialog.WaypointCombo.DataSource = plugin.Map.Waypoints.Select(w => w.Name).ToArray();
+                toolDialog.WaypointCombo.DataSource = this.plugin.Map.Waypoints.Select(w => w.Name).ToArray();
 
-                        activeTool = new WaypointsTool(mapPanel, ActiveLayers, toolStatusLabel, toolDialog.WaypointCombo, plugin, url);
-                        activeToolForm = toolDialog;
-                        activeToolForm.Show(this);
-                    }
-                    break;
-                case ToolType.CellTrigger:
-                    {
-                        CellTriggersToolDialog toolDialog = new CellTriggersToolDialog();
+                this.activeTool = new WaypointsTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.WaypointCombo, this.plugin, this.url);
+                this.activeToolForm = toolDialog;
+                this.activeToolForm.Show(this);
+            }
+            break;
+            case ToolType.CellTrigger: {
+                var toolDialog = new CellTriggersToolDialog();
 
-                        toolDialog.TriggerCombo.DataSource = plugin.Map.Triggers.Select(t => t.Name).ToArray();
+                toolDialog.TriggerCombo.DataSource = this.plugin.Map.Triggers.Select(t => t.Name).ToArray();
 
-                        activeTool = new CellTriggersTool(mapPanel, ActiveLayers, toolStatusLabel, toolDialog.TriggerCombo, plugin, url);
-                        activeToolForm = toolDialog;
-                        activeToolForm.Show(this);
-                    }
-                    break;
+                this.activeTool = new CellTriggersTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.TriggerCombo, this.plugin, this.url);
+                this.activeToolForm = toolDialog;
+                this.activeToolForm.Show(this);
+            }
+            break;
             }
 
-            if (activeToolForm != null)
-            {
-                activeToolForm.ResizeEnd += ActiveToolForm_ResizeEnd;
-                clampActiveToolForm();
+            if(this.activeToolForm != null) {
+                this.activeToolForm.ResizeEnd += this.ActiveToolForm_ResizeEnd;
+                this.clampActiveToolForm();
             }
 
-            switch (plugin.GameType)
-            {
-                case GameType.TiberianDawn:
-                    mapPanel.MaxZoom = 8;
-                    mapPanel.ZoomStep = 1;
-                    break;
-                case GameType.RedAlert:
-                    mapPanel.MaxZoom = 16;
-                    mapPanel.ZoomStep = 2;
-                    break;
+            switch(this.plugin.GameType) {
+            case GameType.TiberianDawn:
+                this.mapPanel.MaxZoom = 8;
+                this.mapPanel.ZoomStep = 1;
+                break;
+            case GameType.RedAlert:
+                this.mapPanel.MaxZoom = 16;
+                this.mapPanel.ZoomStep = 2;
+                break;
             }
 
-            mapToolStripButton.Checked = ActiveToolType == ToolType.Map;
-            smudgeToolStripButton.Checked = ActiveToolType == ToolType.Smudge;
-            overlayToolStripButton.Checked = ActiveToolType == ToolType.Overlay;
-            terrainToolStripButton.Checked = ActiveToolType == ToolType.Terrain;
-            infantryToolStripButton.Checked = ActiveToolType == ToolType.Infantry;
-            unitToolStripButton.Checked = ActiveToolType == ToolType.Unit;
-            buildingToolStripButton.Checked = ActiveToolType == ToolType.Building;
-            resourcesToolStripButton.Checked = ActiveToolType == ToolType.Resources;
-            wallsToolStripButton.Checked = ActiveToolType == ToolType.Wall;
-            waypointsToolStripButton.Checked = ActiveToolType == ToolType.Waypoint;
-            cellTriggersToolStripButton.Checked = ActiveToolType == ToolType.CellTrigger;
+            this.mapToolStripButton.Checked = this.ActiveToolType == ToolType.Map;
+            this.smudgeToolStripButton.Checked = this.ActiveToolType == ToolType.Smudge;
+            this.overlayToolStripButton.Checked = this.ActiveToolType == ToolType.Overlay;
+            this.terrainToolStripButton.Checked = this.ActiveToolType == ToolType.Terrain;
+            this.infantryToolStripButton.Checked = this.ActiveToolType == ToolType.Infantry;
+            this.unitToolStripButton.Checked = this.ActiveToolType == ToolType.Unit;
+            this.buildingToolStripButton.Checked = this.ActiveToolType == ToolType.Building;
+            this.resourcesToolStripButton.Checked = this.ActiveToolType == ToolType.Resources;
+            this.wallsToolStripButton.Checked = this.ActiveToolType == ToolType.Wall;
+            this.waypointsToolStripButton.Checked = this.ActiveToolType == ToolType.Waypoint;
+            this.cellTriggersToolStripButton.Checked = this.ActiveToolType == ToolType.CellTrigger;
 
-            Focus();
+            this.Focus();
 
-            UpdateVisibleLayers();
-            mapPanel.Invalidate();
+            this.UpdateVisibleLayers();
+            this.mapPanel.Invalidate();
         }
 
-        private void clampActiveToolForm()
-        {
-            if (activeToolForm == null)
-            {
+        private void clampActiveToolForm() {
+            if(this.activeToolForm == null) {
                 return;
             }
 
-            Rectangle bounds = activeToolForm.DesktopBounds;
-            Rectangle workingArea = Screen.FromControl(this).WorkingArea;
-            if (bounds.Right > workingArea.Right)
-            {
+            var bounds = this.activeToolForm.DesktopBounds;
+            var workingArea = Screen.FromControl(this).WorkingArea;
+            if(bounds.Right > workingArea.Right) {
                 bounds.X = workingArea.Right - bounds.Width;
             }
-            if (bounds.X < workingArea.Left)
-            {
+            if(bounds.X < workingArea.Left) {
                 bounds.X = workingArea.Left;
             }
-            if (bounds.Bottom > workingArea.Bottom)
-            {
+            if(bounds.Bottom > workingArea.Bottom) {
                 bounds.Y = workingArea.Bottom - bounds.Height;
             }
-            if (bounds.Y < workingArea.Top)
-            {
+            if(bounds.Y < workingArea.Top) {
                 bounds.Y = workingArea.Top;
             }
-            activeToolForm.DesktopBounds = bounds;
+            this.activeToolForm.DesktopBounds = bounds;
         }
 
-        private void ActiveToolForm_ResizeEnd(object sender, EventArgs e)
-        {
-            clampActiveToolForm();
-        }
+        private void ActiveToolForm_ResizeEnd(object sender, EventArgs e) => this.clampActiveToolForm();
 
-        private void Triggers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            RefreshAvailableTools();
-        }
+        private void Triggers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => this.RefreshAvailableTools();
 
-        private void mainToolStripButton_Click(object sender, EventArgs e)
-        {
-            if (plugin == null)
-            {
+        private void mainToolStripButton_Click(object sender, EventArgs e) {
+            if(this.plugin == null) {
                 return;
             }
 
-            if (sender == mapToolStripButton)
-            {
-                ActiveToolType = ToolType.Map;
-            }
-            else if (sender == smudgeToolStripButton)
-            {
-                ActiveToolType = ToolType.Smudge;
-            }
-            else if (sender == overlayToolStripButton)
-            {
-                ActiveToolType = ToolType.Overlay;
-            }
-            else if (sender == terrainToolStripButton)
-            {
-                ActiveToolType = ToolType.Terrain;
-            }
-            else if (sender == infantryToolStripButton)
-            {
-                ActiveToolType = ToolType.Infantry;
-            }
-            else if (sender == unitToolStripButton)
-            {
-                ActiveToolType = ToolType.Unit;
-            }
-            else if (sender == buildingToolStripButton)
-            {
-                ActiveToolType = ToolType.Building;
-            }
-            else if (sender == resourcesToolStripButton)
-            {
-                ActiveToolType = ToolType.Resources;
-            }
-            else if (sender == wallsToolStripButton)
-            {
-                ActiveToolType = ToolType.Wall;
-            }
-            else if (sender == waypointsToolStripButton)
-            {
-                ActiveToolType = ToolType.Waypoint;
-            }
-            else if (sender == cellTriggersToolStripButton)
-            {
-                ActiveToolType = ToolType.CellTrigger;
+            if(sender == this.mapToolStripButton) {
+                this.ActiveToolType = ToolType.Map;
+            } else if(sender == this.smudgeToolStripButton) {
+                this.ActiveToolType = ToolType.Smudge;
+            } else if(sender == this.overlayToolStripButton) {
+                this.ActiveToolType = ToolType.Overlay;
+            } else if(sender == this.terrainToolStripButton) {
+                this.ActiveToolType = ToolType.Terrain;
+            } else if(sender == this.infantryToolStripButton) {
+                this.ActiveToolType = ToolType.Infantry;
+            } else if(sender == this.unitToolStripButton) {
+                this.ActiveToolType = ToolType.Unit;
+            } else if(sender == this.buildingToolStripButton) {
+                this.ActiveToolType = ToolType.Building;
+            } else if(sender == this.resourcesToolStripButton) {
+                this.ActiveToolType = ToolType.Resources;
+            } else if(sender == this.wallsToolStripButton) {
+                this.ActiveToolType = ToolType.Wall;
+            } else if(sender == this.waypointsToolStripButton) {
+                this.ActiveToolType = ToolType.Waypoint;
+            } else if(sender == this.cellTriggersToolStripButton) {
+                this.ActiveToolType = ToolType.CellTrigger;
             }
         }
 
-        private void UpdateVisibleLayers()
-        {
-            MapLayerFlag layers = MapLayerFlag.All;
-            if (!viewLayersBoundariesMenuItem.Checked)
-            {
+        private void UpdateVisibleLayers() {
+            var layers = MapLayerFlag.All;
+            if(!this.viewLayersBoundariesMenuItem.Checked) {
                 layers &= ~MapLayerFlag.Boundaries;
             }
-            if (!viewLayersOverlayMenuItem.Checked)
-            {
+            if(!this.viewLayersOverlayMenuItem.Checked) {
                 layers &= ~MapLayerFlag.OverlayAll;
             }
-            if (!viewLayersTerrainMenuItem.Checked)
-            {
+            if(!this.viewLayersTerrainMenuItem.Checked) {
                 layers &= ~MapLayerFlag.Terrain;
             }
-            if (!viewLayersWaypointsMenuItem.Checked)
-            {
+            if(!this.viewLayersWaypointsMenuItem.Checked) {
                 layers &= ~MapLayerFlag.Waypoints;
             }
-            if (!viewLayersCellTriggersMenuItem.Checked)
-            {
+            if(!this.viewLayersCellTriggersMenuItem.Checked) {
                 layers &= ~MapLayerFlag.CellTriggers;
             }
-            if (!viewLayersObjectTriggersMenuItem.Checked)
-            {
+            if(!this.viewLayersObjectTriggersMenuItem.Checked) {
                 layers &= ~MapLayerFlag.TechnoTriggers;
             }
-            ActiveLayers = layers;
+            this.ActiveLayers = layers;
         }
 
-        private void viewLayersMenuItem_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateVisibleLayers();
-        }
+        private void viewLayersMenuItem_CheckedChanged(object sender, EventArgs e) => this.UpdateVisibleLayers();
 
-        private void toolTabControl_Selected(object sender, TabControlEventArgs e)
-        {
-            if (plugin == null)
-            {
+        private void toolTabControl_Selected(object sender, TabControlEventArgs e) {
+            if(this.plugin == null) {
                 return;
             }
         }
 
-        private void developerGenerateMapPreviewMenuItem_Click(object sender, EventArgs e)
-        {
+        private void developerGenerateMapPreviewMenuItem_Click(object sender, EventArgs e) {
 #if DEVELOPER
-            if ((plugin == null) || string.IsNullOrEmpty(filename))
-            {
+            if((this.plugin == null) || string.IsNullOrEmpty(this.filename)) {
                 return;
             }
 
-            plugin.Map.GenerateMapPreview().Save(Path.ChangeExtension(filename, ".tga"));
+            this.plugin.Map.GenerateMapPreview().Save(Path.ChangeExtension(this.filename, ".tga"));
 #endif
         }
 
-        private void developerGoToINIMenuItem_Click(object sender, EventArgs e)
-        {
+        private void developerGoToINIMenuItem_Click(object sender, EventArgs e) {
 #if DEVELOPER
-            if ((plugin == null) || string.IsNullOrEmpty(filename))
-            {
+            if((this.plugin == null) || string.IsNullOrEmpty(this.filename)) {
                 return;
             }
 
-            var path = Path.ChangeExtension(filename, ".mpr");
-            if (!File.Exists(path))
-            {
-                path = Path.ChangeExtension(filename, ".ini");
+            var path = Path.ChangeExtension(this.filename, ".mpr");
+            if(!File.Exists(path)) {
+                path = Path.ChangeExtension(this.filename, ".ini");
             }
 
-            try
-            {
+            try {
                 Process.Start(path);
-            }
-            catch (Win32Exception)
-            {
+            } catch(Win32Exception) {
                 Process.Start("notepad.exe", path);
-            }
-            catch (Exception) { }
+            } catch(Exception) { }
 #endif
         }
 
-        private void developerGenerateMapPreviewDirectoryMenuItem_Click(object sender, EventArgs e)
-        {
+        private void developerGenerateMapPreviewDirectoryMenuItem_Click(object sender, EventArgs e) {
 #if DEVELOPER
-            FolderBrowserDialog fbd = new FolderBrowserDialog
-            {
+            var fbd = new FolderBrowserDialog {
                 ShowNewFolderButton = false
             };
-            if (fbd.ShowDialog() == DialogResult.OK)
-            {
+            if(fbd.ShowDialog() == DialogResult.OK) {
                 var extensions = new string[] { ".ini", ".mpr" };
-                foreach (var file in Directory.EnumerateFiles(fbd.SelectedPath).Where(file => extensions.Contains(Path.GetExtension(file).ToLower())))
-                {
-                    GameType gameType = GameType.None;
+                foreach(var file in Directory.EnumerateFiles(fbd.SelectedPath).Where(file => extensions.Contains(Path.GetExtension(file).ToLower()))) {
+                    var gameType = GameType.None;
 
                     var ini = new INI();
-                    using (var reader = new StreamReader(file))
-                    {
+                    using(var reader = new StreamReader(file)) {
                         ini.Parse(reader);
                     }
                     gameType = ini.Sections.Contains("MapPack") ? GameType.RedAlert : GameType.TiberianDawn;
 
-                    if (gameType == GameType.None)
-                    {
+                    if(gameType == GameType.None) {
                         continue;
                     }
 
                     IGamePlugin plugin = null;
-                    switch (gameType)
-                    {
-                        case GameType.TiberianDawn:
-                            {
-                                plugin = new TiberianDawn.GamePlugin(false);
-                            }
-                            break;
-                        case GameType.RedAlert:
-                            {
-                                plugin = new RedAlert.GamePlugin(false);
-                            }
-                            break;
+                    switch(gameType) {
+                    case GameType.TiberianDawn: {
+                        plugin = new TiberianDawn.GamePlugin(false);
+                    }
+                    break;
+                    case GameType.RedAlert: {
+                        plugin = new RedAlert.GamePlugin(false);
+                    }
+                    break;
                     }
 
                     plugin.Load(file, FileType.INI);
@@ -1333,80 +1083,60 @@ namespace MobiusEditor
 #endif
         }
 
-        private void developerDebugShowOverlapCellsMenuItem_CheckedChanged(object sender, EventArgs e)
-        {
+        private void developerDebugShowOverlapCellsMenuItem_CheckedChanged(object sender, EventArgs e) =>
 #if DEVELOPER
-            Globals.Developer.ShowOverlapCells = developerDebugShowOverlapCellsMenuItem.Checked;
+            Globals.Developer.ShowOverlapCells = this.developerDebugShowOverlapCellsMenuItem.Checked;
 #endif
-        }
 
-        private void filePublishMenuItem_Click(object sender, EventArgs e)
-        {
-            if (plugin == null)
-            {
+
+        private void filePublishMenuItem_Click(object sender, EventArgs e) {
+            if(this.plugin == null) {
                 return;
             }
 
-            if (!PromptSaveMap())
-            {
+            if(!this.PromptSaveMap()) {
                 return;
             }
 
-            if (plugin.Dirty)
-            {
+            if(this.plugin.Dirty) {
                 MessageBox.Show("Map must be saved before publishing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (new FileInfo(filename).Length > Globals.MaxMapSize)
-            {
+            if(new FileInfo(this.filename).Length > Globals.MaxMapSize) {
                 return;
             }
 
-            using (var sd = new SteamDialog(plugin))
-            {
+            using(var sd = new SteamDialog(this.plugin)) {
                 sd.ShowDialog();
             }
 
-            fileSaveMenuItem.PerformClick();
+            this.fileSaveMenuItem.PerformClick();
         }
 
-        private void mainToolStrip_MouseMove(object sender, MouseEventArgs e)
-        {
-            mainToolStrip.Focus();
-        }
+        private void mainToolStrip_MouseMove(object sender, MouseEventArgs e) => this.mainToolStrip.Focus();
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            e.Cancel = !PromptSaveMap();
-        }
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e) => e.Cancel = !this.PromptSaveMap();
 
-        private bool PromptSaveMap()
-        {
-            bool cancel = false;
-            if (plugin?.Dirty ?? false)
-            {
-                var message = string.IsNullOrEmpty(filename) ? "Save new map?" : string.Format("Save map '{0}'?", filename);
+        private bool PromptSaveMap() {
+            var cancel = false;
+            if(this.plugin?.Dirty ?? false) {
+                var message = string.IsNullOrEmpty(this.filename) ? "Save new map?" : string.Format("Save map '{0}'?", this.filename);
                 var result = MessageBox.Show(message, "Save", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                switch (result)
-                {
-                    case DialogResult.Yes:
-                        {
-                            if (string.IsNullOrEmpty(filename))
-                            {
-                                fileSaveAsMenuItem.PerformClick();
-                            }
-                            else
-                            {
-                                fileSaveMenuItem.PerformClick();
-                            }
-                        }
-                        break;
-                    case DialogResult.No:
-                        break;
-                    case DialogResult.Cancel:
-                        cancel = true;
-                        break;
+                switch(result) {
+                case DialogResult.Yes: {
+                    if(string.IsNullOrEmpty(this.filename)) {
+                        this.fileSaveAsMenuItem.PerformClick();
+                    } else {
+                        this.fileSaveMenuItem.PerformClick();
+                    }
+                }
+                break;
+                case DialogResult.No:
+                    break;
+                case DialogResult.Cancel:
+                    cancel = true;
+                    break;
                 }
             }
             return !cancel;

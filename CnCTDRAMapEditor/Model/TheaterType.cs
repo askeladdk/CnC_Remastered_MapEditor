@@ -15,49 +15,40 @@
 using System;
 using System.Collections.Generic;
 
-namespace MobiusEditor.Model
-{
-    public class TheaterType
-    {
-        public sbyte ID { get; private set; }
-
-        public string Name { get; private set; }
-
-        public IEnumerable<string> Tilesets { get; private set; }
-
-        public TheaterType(sbyte id, string name, IEnumerable<string> tilesets)
-        {
-            ID = id;
-            Name = name;
-            Tilesets = tilesets;
+namespace MobiusEditor.Model {
+    public class TheaterType {
+        public sbyte ID {
+            get; private set;
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is TheaterType)
-            {
+        public string Name {
+            get; private set;
+        }
+
+        public IEnumerable<string> Tilesets {
+            get; private set;
+        }
+
+        public TheaterType(sbyte id, string name, IEnumerable<string> tilesets) {
+            this.ID = id;
+            this.Name = name;
+            this.Tilesets = tilesets;
+        }
+
+        public override bool Equals(object obj) {
+            if(obj is TheaterType) {
                 return this == obj;
-            }
-            else if (obj is sbyte)
-            {
-                return ID == (sbyte)obj;
-            }
-            else if (obj is string)
-            {
-                return string.Equals(Name, obj as string, StringComparison.OrdinalIgnoreCase);
+            } else if(obj is sbyte) {
+                return this.ID == (sbyte)obj;
+            } else if(obj is string) {
+                return string.Equals(this.Name, obj as string, StringComparison.OrdinalIgnoreCase);
             }
 
             return base.Equals(obj);
         }
 
-        public override int GetHashCode()
-        {
-            return ID.GetHashCode();
-        }
+        public override int GetHashCode() => this.ID.GetHashCode();
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => this.Name;
     }
 }

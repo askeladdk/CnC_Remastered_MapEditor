@@ -19,88 +19,69 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace MobiusEditor.Utility
-{
-    public class MegafileBuilder : IDisposable
-    {
+namespace MobiusEditor.Utility {
+    public class MegafileBuilder : IDisposable {
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    Out.Dispose();
+        protected virtual void Dispose(bool disposing) {
+            if(!this.disposedValue) {
+                if(disposing) {
+                    this.Out.Dispose();
                 }
 
-                disposedValue = true;
+                this.disposedValue = true;
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        public void Dispose() => this.Dispose(true);
         #endregion
 
         private const float Version = 0.99f;
 
-        public string RootPath { get; private set; }
-
-        private Stream Out { get; set; }
-
-        private List<(string, object)> Files = new List<(string, object)>();
-
-        public MegafileBuilder(string rootPath, string outFile)
-        {
-            RootPath = rootPath.ToUpper();
-            Out = new FileStream(outFile, FileMode.Create);
+        public string RootPath {
+            get; private set;
         }
 
-        public void AddFile(string path)
-        {
-            if (File.Exists(path))
-            {
-                Files.Add((Path.GetFileName(path), path));
+        private Stream Out {
+            get; set;
+        }
+
+        private readonly List<(string, object)> Files = new List<(string, object)>();
+
+        public MegafileBuilder(string rootPath, string outFile) {
+            this.RootPath = rootPath.ToUpper();
+            this.Out = new FileStream(outFile, FileMode.Create);
+        }
+
+        public void AddFile(string path) {
+            if(File.Exists(path)) {
+                this.Files.Add((Path.GetFileName(path), path));
             }
         }
 
-        public void AddFile(string path, Stream stream)
-        {
-            Files.Add((Path.GetFileName(path), stream));
-        }
+        public void AddFile(string path, Stream stream) => this.Files.Add((Path.GetFileName(path), stream));
 
-        public void AddDirectory(string path)
-        {
-            AddDirectory(path, "*.*");
-        }
+        public void AddDirectory(string path) => this.AddDirectory(path, "*.*");
 
-        public void AddDirectory(string path, string searchPattern)
-        {
+        public void AddDirectory(string path, string searchPattern) {
             var uriPath = new Uri(path);
-            foreach (var file in Directory.GetFiles(path, searchPattern, SearchOption.AllDirectories))
-            {
+            foreach(var file in Directory.GetFiles(path, searchPattern, SearchOption.AllDirectories)) {
                 var relativePath = Uri.UnescapeDataString(uriPath.MakeRelativeUri(new Uri(file)).ToString()).Replace('/', Path.DirectorySeparatorChar);
-                Files.Add((relativePath, file));
+                this.Files.Add((relativePath, file));
             }
         }
 
-        public void Write()
-        {
+        public void Write() {
             var headerSize = sizeof(uint) * 6U;
-            headerSize += SubFileData.Size * (uint)Files.Count;
+            headerSize += SubFileData.Size * (uint)this.Files.Count;
 
             var strings = new List<string>();
-            Func<string, ushort> stringIndex = (string value) =>
-            {
+            Func<string, ushort> stringIndex = (string value) => {
                 var index = strings.IndexOf(value);
-                if (index < 0)
-                {
+                if(index < 0) {
                     index = strings.Count;
-                    if (index > ushort.MaxValue)
-                    {
+                    if(index > ushort.MaxValue) {
                         throw new IndexOutOfRangeException();
                     }
                     strings.Add(value);
@@ -109,22 +90,17 @@ namespace MobiusEditor.Utility
             };
 
             var files = new List<(ushort index, uint crc, Stream stream, bool dispose)>();
-            foreach (var (filename, source) in Files)
-            {
+            foreach(var (filename, source) in this.Files) {
                 var name = Encoding.ASCII.GetBytes(filename);
                 var crc = CRC.Calculate(name);
 
-                if (source is string)
-                {
+                if(source is string) {
                     var file = source as string;
-                    if (File.Exists(file))
-                    {
-                        files.Add((stringIndex(Path.Combine(RootPath, filename).ToUpper()), crc, new FileStream(file, FileMode.Open, FileAccess.Read), true));
+                    if(File.Exists(file)) {
+                        files.Add((stringIndex(Path.Combine(this.RootPath, filename).ToUpper()), crc, new FileStream(file, FileMode.Open, FileAccess.Read), true));
                     }
-                }
-                else if (source is Stream)
-                {
-                    files.Add((stringIndex(Path.Combine(RootPath, filename).ToUpper()), crc, source as Stream, false));
+                } else if(source is Stream) {
+                    files.Add((stringIndex(Path.Combine(this.RootPath, filename).ToUpper()), crc, source as Stream, false));
                 }
             }
             files = files.OrderBy(x => x.crc).ToList();
@@ -134,26 +110,22 @@ namespace MobiusEditor.Utility
             headerSize += stringsSize;
 
             var subfileImageOffset = headerSize;
-            using (var writer = new BinaryWriter(Out))
-            {
+            using(var writer = new BinaryWriter(this.Out)) {
                 writer.Write(0xFFFFFFFF);
                 writer.Write(Version);
                 writer.Write(headerSize);
 
-                writer.Write((uint)Files.Count);
+                writer.Write((uint)this.Files.Count);
                 writer.Write((uint)strings.Count);
                 writer.Write(stringsSize);
 
-                foreach (var item in strings)
-                {
+                foreach(var item in strings) {
                     writer.Write((ushort)item.Length);
                     writer.Write(item.ToCharArray());
                 }
 
-                using (var fileStream = new MemoryStream())
-                {
-                    for (var i = 0; i < files.Count; ++i)
-                    {
+                using(var fileStream = new MemoryStream()) {
+                    for(var i = 0; i < files.Count; ++i) {
                         var (index, crc, stream, dispose) = files[i];
 
                         var fileSize = (uint)(stream.Length - stream.Position);
@@ -161,13 +133,11 @@ namespace MobiusEditor.Utility
                         stream.Read(fileBytes, 0, fileBytes.Length);
                         fileStream.Write(fileBytes, 0, fileBytes.Length);
 
-                        if (dispose)
-                        {
+                        if(dispose) {
                             stream.Dispose();
                         }
 
-                        SubFileData data = new SubFileData
-                        {
+                        var data = new SubFileData {
                             Flags = 0,
                             CRCValue = crc,
                             SubfileIndex = i,

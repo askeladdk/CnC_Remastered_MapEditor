@@ -15,23 +15,31 @@
 using Steamworks;
 using System.ComponentModel;
 
-namespace MobiusEditor.Model
-{
-    public class SteamSection
-    {
+namespace MobiusEditor.Model {
+    public class SteamSection {
         [DefaultValue(null)]
-        public string Title { get; set; }
+        public string Title {
+            get; set;
+        }
 
         [DefaultValue(null)]
-        public string Description { get; set; }
+        public string Description {
+            get; set;
+        }
 
         [DefaultValue(null)]
-        public string PreviewFile { get; set; }
+        public string PreviewFile {
+            get; set;
+        }
 
         [DefaultValue(ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPublic)]
-        public ERemoteStoragePublishedFileVisibility Visibility { get; set; }
+        public ERemoteStoragePublishedFileVisibility Visibility {
+            get; set;
+        }
 
         [DefaultValue(typeof(ulong), "0")]
-        public ulong PublishedFileId { get; set; }
+        public ulong PublishedFileId {
+            get; set;
+        }
     }
 }

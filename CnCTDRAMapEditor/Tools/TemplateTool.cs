@@ -26,10 +26,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools
-{
-    public class TemplateTool : ViewTool
-    {
+namespace MobiusEditor.Tools {
+    public class TemplateTool : ViewTool {
         private static readonly Regex CategoryRegex = new Regex(@"^([a-z]*)", RegexOptions.Compiled);
 
         private readonly ListView templateTypeListView;
@@ -40,7 +38,7 @@ namespace MobiusEditor.Tools
         private readonly Dictionary<int, Template> redoTemplates = new Dictionary<int, Template>();
 
         private Map previewMap;
-        protected override Map RenderMap => previewMap;
+        protected override Map RenderMap => this.previewMap;
 
         private bool placementMode;
 
@@ -49,73 +47,56 @@ namespace MobiusEditor.Tools
         private int dragEdge = -1;
 
         private TemplateType selectedTemplateType;
-        private TemplateType SelectedTemplateType
-        {
-            get => selectedTemplateType;
-            set
-            {
-                if (selectedTemplateType != value)
-                {
-                    if (placementMode && (selectedTemplateType != null))
-                    {
-                        for (var y = 0; y < selectedTemplateType.IconHeight; ++y)
-                        {
-                            for (var x = 0; x < selectedTemplateType.IconWidth; ++x)
-                            {
-                                mapPanel.Invalidate(map, new Point(navigationWidget.MouseCell.X + x, navigationWidget.MouseCell.Y + y));
+        private TemplateType SelectedTemplateType {
+            get => this.selectedTemplateType;
+            set {
+                if(this.selectedTemplateType != value) {
+                    if(this.placementMode && (this.selectedTemplateType != null)) {
+                        for(var y = 0; y < this.selectedTemplateType.IconHeight; ++y) {
+                            for(var x = 0; x < this.selectedTemplateType.IconWidth; ++x) {
+                                this.mapPanel.Invalidate(this.map, new Point(this.navigationWidget.MouseCell.X + x, this.navigationWidget.MouseCell.Y + y));
                             }
                         }
                     }
 
-                    selectedTemplateType = value;
+                    this.selectedTemplateType = value;
 
-                    templateTypeListView.BeginUpdate();
-                    templateTypeListView.SelectedIndexChanged -= TemplateTypeListView_SelectedIndexChanged;
-                    foreach (ListViewItem item in templateTypeListView.Items)
-                    {
-                        item.Selected = item.Tag == selectedTemplateType;
+                    this.templateTypeListView.BeginUpdate();
+                    this.templateTypeListView.SelectedIndexChanged -= this.TemplateTypeListView_SelectedIndexChanged;
+                    foreach(ListViewItem item in this.templateTypeListView.Items) {
+                        item.Selected = item.Tag == this.selectedTemplateType;
                     }
-                    if (templateTypeListView.SelectedIndices.Count > 0)
-                    {
-                        templateTypeListView.EnsureVisible(templateTypeListView.SelectedIndices[0]);
+                    if(this.templateTypeListView.SelectedIndices.Count > 0) {
+                        this.templateTypeListView.EnsureVisible(this.templateTypeListView.SelectedIndices[0]);
                     }
-                    templateTypeListView.SelectedIndexChanged += TemplateTypeListView_SelectedIndexChanged;
-                    templateTypeListView.EndUpdate();
+                    this.templateTypeListView.SelectedIndexChanged += this.TemplateTypeListView_SelectedIndexChanged;
+                    this.templateTypeListView.EndUpdate();
 
-                    if (placementMode && (selectedTemplateType != null))
-                    {
-                        for (var y = 0; y < selectedTemplateType.IconHeight; ++y)
-                        {
-                            for (var x = 0; x < selectedTemplateType.IconWidth; ++x)
-                            {
-                                mapPanel.Invalidate(map, new Point(navigationWidget.MouseCell.X + x, navigationWidget.MouseCell.Y + y));
+                    if(this.placementMode && (this.selectedTemplateType != null)) {
+                        for(var y = 0; y < this.selectedTemplateType.IconHeight; ++y) {
+                            for(var x = 0; x < this.selectedTemplateType.IconWidth; ++x) {
+                                this.mapPanel.Invalidate(this.map, new Point(this.navigationWidget.MouseCell.X + x, this.navigationWidget.MouseCell.Y + y));
                             }
                         }
                     }
 
-                    RefreshMapPanel();
+                    this.RefreshMapPanel();
                 }
             }
         }
 
         private Point? selectedIcon;
-        private Point? SelectedIcon
-        {
-            get => selectedIcon;
-            set
-            {
-                if (selectedIcon != value)
-                {
-                    selectedIcon = value;
-                    templateTypeMapPanel.Invalidate();
+        private Point? SelectedIcon {
+            get => this.selectedIcon;
+            set {
+                if(this.selectedIcon != value) {
+                    this.selectedIcon = value;
+                    this.templateTypeMapPanel.Invalidate();
 
-                    if (placementMode && (SelectedTemplateType != null))
-                    {
-                        for (var y = 0; y < SelectedTemplateType.IconHeight; ++y)
-                        {
-                            for (var x = 0; x < SelectedTemplateType.IconWidth; ++x)
-                            {
-                                mapPanel.Invalidate(map, new Point(navigationWidget.MouseCell.X + x, navigationWidget.MouseCell.Y + y));
+                    if(this.placementMode && (this.SelectedTemplateType != null)) {
+                        for(var y = 0; y < this.SelectedTemplateType.IconHeight; ++y) {
+                            for(var x = 0; x < this.SelectedTemplateType.IconWidth; ++x) {
+                                this.mapPanel.Invalidate(this.map, new Point(this.navigationWidget.MouseCell.X + x, this.navigationWidget.MouseCell.Y + y));
                             }
                         }
                     }
@@ -126,21 +107,19 @@ namespace MobiusEditor.Tools
         private NavigationWidget templateTypeNavigationWidget;
 
         public TemplateTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView templateTypeListView, MapPanel templateTypeMapPanel, ToolTip mouseTooltip, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
-            : base(mapPanel, layers, statusLbl, plugin, url)
-        {
-            previewMap = map;
+            : base(mapPanel, layers, statusLbl, plugin, url) {
+            this.previewMap = this.map;
 
-            this.mapPanel.MouseDown += MapPanel_MouseDown;
-            this.mapPanel.MouseUp += MapPanel_MouseUp;
-            this.mapPanel.MouseMove += MapPanel_MouseMove;
-            (this.mapPanel as Control).KeyDown += TemplateTool_KeyDown;
-            (this.mapPanel as Control).KeyUp += TemplateTool_KeyUp;
+            this.mapPanel.MouseDown += this.MapPanel_MouseDown;
+            this.mapPanel.MouseUp += this.MapPanel_MouseUp;
+            this.mapPanel.MouseMove += this.MapPanel_MouseMove;
+            (this.mapPanel as Control).KeyDown += this.TemplateTool_KeyDown;
+            (this.mapPanel as Control).KeyUp += this.TemplateTool_KeyUp;
 
             this.templateTypeListView = templateTypeListView;
-            this.templateTypeListView.SelectedIndexChanged += TemplateTypeListView_SelectedIndexChanged;
+            this.templateTypeListView.SelectedIndexChanged += this.TemplateTypeListView_SelectedIndexChanged;
 
-            string templateCategory(TemplateType template)
-            {
+            string templateCategory(TemplateType template) {
                 var m = CategoryRegex.Match(template.Name);
                 return m.Success ? m.Groups[1].Value : string.Empty;
             }
@@ -165,14 +144,11 @@ namespace MobiusEditor.Tools
             this.templateTypeListView.LargeImageList = imageList;
 
             var imageIndex = 0;
-            foreach (var templateTypeGroup in templateTypes)
-            {
+            foreach(var templateTypeGroup in templateTypes) {
                 var group = new ListViewGroup(templateTypeGroup.Key);
                 this.templateTypeListView.Groups.Add(group);
-                foreach (var templateType in templateTypeGroup)
-                {
-                    var item = new ListViewItem(templateType.DisplayName, imageIndex++)
-                    {
+                foreach(var templateType in templateTypeGroup) {
+                    var item = new ListViewItem(templateType.DisplayName, imageIndex++) {
                         Group = group,
                         Tag = templateType
                     };
@@ -182,97 +158,79 @@ namespace MobiusEditor.Tools
             this.templateTypeListView.EndUpdate();
 
             this.templateTypeMapPanel = templateTypeMapPanel;
-            this.templateTypeMapPanel.MouseDown += TemplateTypeMapPanel_MouseDown;
-            this.templateTypeMapPanel.PostRender += TemplateTypeMapPanel_PostRender;
+            this.templateTypeMapPanel.MouseDown += this.TemplateTypeMapPanel_MouseDown;
+            this.templateTypeMapPanel.PostRender += this.TemplateTypeMapPanel_PostRender;
             this.templateTypeMapPanel.BackColor = Color.Black;
             this.templateTypeMapPanel.MaxZoom = 1;
 
             this.mouseTooltip = mouseTooltip;
 
-            navigationWidget.MouseCellChanged += MouseoverWidget_MouseCellChanged;
+            this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
 
-            url.Undone += Url_Undone;
-            url.Redone += Url_Redone;
+            url.Undone += this.Url_Undone;
+            url.Redone += this.Url_Redone;
 
-            SelectedTemplateType = templateTypes.First().First();
+            this.SelectedTemplateType = templateTypes.First().First();
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void Url_Redone(object sender, EventArgs e)
-        {
-            if (boundsMode && (map.Bounds != dragBounds))
-            {
-                dragBounds = map.Bounds;
-                dragEdge = -1;
+        private void Url_Redone(object sender, EventArgs e) {
+            if(this.boundsMode && (this.map.Bounds != this.dragBounds)) {
+                this.dragBounds = this.map.Bounds;
+                this.dragEdge = -1;
 
-                UpdateTooltip();
-                mapPanel.Invalidate();
+                this.UpdateTooltip();
+                this.mapPanel.Invalidate();
             }
         }
 
-        private void Url_Undone(object sender, EventArgs e)
-        {
-            if (boundsMode && (map.Bounds != dragBounds))
-            {
-                dragBounds = map.Bounds;
-                dragEdge = -1;
+        private void Url_Undone(object sender, EventArgs e) {
+            if(this.boundsMode && (this.map.Bounds != this.dragBounds)) {
+                this.dragBounds = this.map.Bounds;
+                this.dragEdge = -1;
 
-                UpdateTooltip();
-                mapPanel.Invalidate();
+                this.UpdateTooltip();
+                this.mapPanel.Invalidate();
             }
         }
 
-        private void TemplateTypeMapPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if ((SelectedTemplateType == null) || ((SelectedTemplateType.IconWidth * SelectedTemplateType.IconHeight) == 1))
-            {
-                SelectedIcon = null;
-            }
-            else
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    var templateTypeMouseCell = templateTypeNavigationWidget.MouseCell;
-                    if ((templateTypeMouseCell.X >= 0) && (templateTypeMouseCell.X < SelectedTemplateType.IconWidth))
-                    {
-                        if ((templateTypeMouseCell.Y >= 0) && (templateTypeMouseCell.Y < SelectedTemplateType.IconHeight))
-                        {
-                            if (SelectedTemplateType.IconMask[templateTypeMouseCell.X, templateTypeMouseCell.Y])
-                            {
-                                SelectedIcon = templateTypeMouseCell;
+        private void TemplateTypeMapPanel_MouseDown(object sender, MouseEventArgs e) {
+            if((this.SelectedTemplateType == null) || ((this.SelectedTemplateType.IconWidth * this.SelectedTemplateType.IconHeight) == 1)) {
+                this.SelectedIcon = null;
+            } else {
+                if(e.Button == MouseButtons.Left) {
+                    var templateTypeMouseCell = this.templateTypeNavigationWidget.MouseCell;
+                    if((templateTypeMouseCell.X >= 0) && (templateTypeMouseCell.X < this.SelectedTemplateType.IconWidth)) {
+                        if((templateTypeMouseCell.Y >= 0) && (templateTypeMouseCell.Y < this.SelectedTemplateType.IconHeight)) {
+                            if(this.SelectedTemplateType.IconMask[templateTypeMouseCell.X, templateTypeMouseCell.Y]) {
+                                this.SelectedIcon = templateTypeMouseCell;
                             }
                         }
                     }
-                }
-                else if (e.Button == MouseButtons.Right)
-                {
-                    SelectedIcon = null;
+                } else if(e.Button == MouseButtons.Right) {
+                    this.SelectedIcon = null;
                 }
             }
         }
 
-        private void TemplateTypeMapPanel_PostRender(object sender, RenderEventArgs e)
-        {
-            if (SelectedIcon.HasValue)
-            {
+        private void TemplateTypeMapPanel_PostRender(object sender, RenderEventArgs e) {
+            if(this.SelectedIcon.HasValue) {
                 var selectedIconPen = new Pen(Color.Yellow, 2);
                 var cellSize = new Size(Globals.OriginalTileWidth / 4, Globals.OriginalTileHeight / 4);
-                var rect = new Rectangle(new Point(SelectedIcon.Value.X * cellSize.Width, SelectedIcon.Value.Y * cellSize.Height), cellSize);
+                var rect = new Rectangle(new Point(this.SelectedIcon.Value.X * cellSize.Width, this.SelectedIcon.Value.Y * cellSize.Height), cellSize);
                 e.Graphics.DrawRectangle(selectedIconPen, rect);
             }
 
-            if (SelectedTemplateType != null)
-            {
-                var sizeStringFormat = new StringFormat
-                {
+            if(this.SelectedTemplateType != null) {
+                var sizeStringFormat = new StringFormat {
                     Alignment = StringAlignment.Center,
                     LineAlignment = StringAlignment.Center
                 };
                 var sizeBackgroundBrush = new SolidBrush(Color.FromArgb(128, Color.Black));
                 var sizeTextBrush = new SolidBrush(Color.White);
 
-                var text = string.Format("{0} ({1}x{2})", SelectedTemplateType.DisplayName, SelectedTemplateType.IconWidth, SelectedTemplateType.IconHeight);
+                var text = string.Format("{0} ({1}x{2})", this.SelectedTemplateType.DisplayName, this.SelectedTemplateType.IconWidth, this.SelectedTemplateType.IconHeight);
                 var textSize = e.Graphics.MeasureString(text, SystemFonts.CaptionFont) + new SizeF(6.0f, 6.0f);
                 var textBounds = new RectangleF(new PointF(0, 0), textSize);
                 e.Graphics.Transform = new Matrix();
@@ -281,302 +239,232 @@ namespace MobiusEditor.Tools
             }
         }
 
-        private void TemplateTool_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ShiftKey)
-            {
-                EnterPlacementMode();
-            }
-            else if (e.KeyCode == Keys.ControlKey)
-            {
-                EnterBoundsMode();
+        private void TemplateTool_KeyDown(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.ShiftKey) {
+                this.EnterPlacementMode();
+            } else if(e.KeyCode == Keys.ControlKey) {
+                this.EnterBoundsMode();
             }
         }
 
-        private void TemplateTool_KeyUp(object sender, KeyEventArgs e)
-        {
-            if ((e.KeyCode == Keys.ShiftKey) || (e.KeyCode == Keys.ControlKey))
-            {
-                ExitAllModes();
+        private void TemplateTool_KeyUp(object sender, KeyEventArgs e) {
+            if((e.KeyCode == Keys.ShiftKey) || (e.KeyCode == Keys.ControlKey)) {
+                this.ExitAllModes();
             }
         }
 
-        private void TemplateTypeListView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SelectedTemplateType = (templateTypeListView.SelectedItems.Count > 0) ? (templateTypeListView.SelectedItems[0].Tag as TemplateType) : null;
-            SelectedIcon = null;
+        private void TemplateTypeListView_SelectedIndexChanged(object sender, EventArgs e) {
+            this.SelectedTemplateType = (this.templateTypeListView.SelectedItems.Count > 0) ? (this.templateTypeListView.SelectedItems[0].Tag as TemplateType) : null;
+            this.SelectedIcon = null;
         }
 
-        private void MapPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (boundsMode)
-            {
-                dragEdge = DetectDragEdge();
+        private void MapPanel_MouseDown(object sender, MouseEventArgs e) {
+            if(this.boundsMode) {
+                this.dragEdge = this.DetectDragEdge();
 
-                UpdateStatus();
-            }
-            else if (placementMode)
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    SetTemplate(navigationWidget.MouseCell);
+                this.UpdateStatus();
+            } else if(this.placementMode) {
+                if(e.Button == MouseButtons.Left) {
+                    this.SetTemplate(this.navigationWidget.MouseCell);
+                } else if(e.Button == MouseButtons.Right) {
+                    this.RemoveTemplate(this.navigationWidget.MouseCell);
                 }
-                else if (e.Button == MouseButtons.Right)
-                {
-                    RemoveTemplate(navigationWidget.MouseCell);
-                }
-            }
-            else if ((e.Button == MouseButtons.Left) || (e.Button == MouseButtons.Right))
-            {
-                PickTemplate(navigationWidget.MouseCell, e.Button == MouseButtons.Left);
+            } else if((e.Button == MouseButtons.Left) || (e.Button == MouseButtons.Right)) {
+                this.PickTemplate(this.navigationWidget.MouseCell, e.Button == MouseButtons.Left);
             }
         }
 
-        private void MapPanel_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (boundsMode)
-            {
-                if (dragBounds != map.Bounds)
-                {
-                    var oldBounds = map.Bounds;
-                    void undoAction(UndoRedoEventArgs ure)
-                    {
+        private void MapPanel_MouseUp(object sender, MouseEventArgs e) {
+            if(this.boundsMode) {
+                if(this.dragBounds != this.map.Bounds) {
+                    var oldBounds = this.map.Bounds;
+                    void undoAction(UndoRedoEventArgs ure) {
                         ure.Map.Bounds = oldBounds;
                         ure.MapPanel.Invalidate();
                     }
 
-                    void redoAction(UndoRedoEventArgs ure)
-                    {
-                        ure.Map.Bounds = dragBounds;
+                    void redoAction(UndoRedoEventArgs ure) {
+                        ure.Map.Bounds = this.dragBounds;
                         ure.MapPanel.Invalidate();
                     }
 
-                    map.Bounds = dragBounds;
+                    this.map.Bounds = this.dragBounds;
 
-                    url.Track(undoAction, redoAction);
-                    mapPanel.Invalidate();
+                    this.url.Track(undoAction, redoAction);
+                    this.mapPanel.Invalidate();
                 }
 
-                dragEdge = -1;
+                this.dragEdge = -1;
 
-                UpdateStatus();
-            }
-            else
-            {
-                if ((undoTemplates.Count > 0) || (redoTemplates.Count > 0))
-                {
-                    CommitChange();
+                this.UpdateStatus();
+            } else {
+                if((this.undoTemplates.Count > 0) || (this.redoTemplates.Count > 0)) {
+                    this.CommitChange();
                 }
             }
         }
 
-        private void MapPanel_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (!placementMode && (Control.ModifierKeys == Keys.Shift))
-            {
-                EnterPlacementMode();
-            }
-            else if (!boundsMode && (Control.ModifierKeys == Keys.Control))
-            {
-                EnterBoundsMode();
-            }
-            else if ((placementMode || boundsMode) && (Control.ModifierKeys == Keys.None))
-            {
-                ExitAllModes();
+        private void MapPanel_MouseMove(object sender, MouseEventArgs e) {
+            if(!this.placementMode && (Control.ModifierKeys == Keys.Shift)) {
+                this.EnterPlacementMode();
+            } else if(!this.boundsMode && (Control.ModifierKeys == Keys.Control)) {
+                this.EnterBoundsMode();
+            } else if((this.placementMode || this.boundsMode) && (Control.ModifierKeys == Keys.None)) {
+                this.ExitAllModes();
             }
 
             var cursor = Cursors.Default;
-            if (boundsMode)
-            {
-                switch ((dragEdge >= 0) ? dragEdge : DetectDragEdge())
-                {
-                    case 0:
-                    case 4:
-                        cursor = Cursors.SizeNS;
-                        break;
-                    case 2:
-                    case 6:
-                        cursor = Cursors.SizeWE;
-                        break;
-                    case 1:
-                    case 5:
-                        cursor = Cursors.SizeNESW;
-                        break;
-                    case 3:
-                    case 7:
-                        cursor = Cursors.SizeNWSE;
-                        break;
+            if(this.boundsMode) {
+                switch((this.dragEdge >= 0) ? this.dragEdge : this.DetectDragEdge()) {
+                case 0:
+                case 4:
+                    cursor = Cursors.SizeNS;
+                    break;
+                case 2:
+                case 6:
+                    cursor = Cursors.SizeWE;
+                    break;
+                case 1:
+                case 5:
+                    cursor = Cursors.SizeNESW;
+                    break;
+                case 3:
+                case 7:
+                    cursor = Cursors.SizeNWSE;
+                    break;
                 }
             }
             Cursor.Current = cursor;
 
-            UpdateTooltip();
+            this.UpdateTooltip();
         }
 
-        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e)
-        {
-            if (dragEdge >= 0)
-            {
-                var endDrag = navigationWidget.MouseCell;
-                map.Metrics.Clip(ref endDrag, new Size(1, 1), Size.Empty);
+        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e) {
+            if(this.dragEdge >= 0) {
+                var endDrag = this.navigationWidget.MouseCell;
+                this.map.Metrics.Clip(ref endDrag, new Size(1, 1), Size.Empty);
 
-                switch (dragEdge)
-                {
-                    case 0:
-                    case 1:
-                    case 7:
-                        if (endDrag.Y < dragBounds.Bottom)
-                        {
-                            dragBounds.Height = dragBounds.Bottom - endDrag.Y;
-                            dragBounds.Y = endDrag.Y;
-                        }
-                        break;
+                switch(this.dragEdge) {
+                case 0:
+                case 1:
+                case 7:
+                    if(endDrag.Y < this.dragBounds.Bottom) {
+                        this.dragBounds.Height = this.dragBounds.Bottom - endDrag.Y;
+                        this.dragBounds.Y = endDrag.Y;
+                    }
+                    break;
                 }
 
-                switch (dragEdge)
-                {
-                    case 5:
-                    case 6:
-                    case 7:
-                        if (endDrag.X < dragBounds.Right)
-                        {
-                            dragBounds.Width = dragBounds.Right - endDrag.X;
-                            dragBounds.X = endDrag.X;
-                        }
-                        break;
+                switch(this.dragEdge) {
+                case 5:
+                case 6:
+                case 7:
+                    if(endDrag.X < this.dragBounds.Right) {
+                        this.dragBounds.Width = this.dragBounds.Right - endDrag.X;
+                        this.dragBounds.X = endDrag.X;
+                    }
+                    break;
                 }
 
-                switch (dragEdge)
-                {
-                    case 3:
-                    case 4:
-                    case 5:
-                        if (endDrag.Y > dragBounds.Top)
-                        {
-                            dragBounds.Height = endDrag.Y - dragBounds.Top;
-                        }
-                        break;
+                switch(this.dragEdge) {
+                case 3:
+                case 4:
+                case 5:
+                    if(endDrag.Y > this.dragBounds.Top) {
+                        this.dragBounds.Height = endDrag.Y - this.dragBounds.Top;
+                    }
+                    break;
                 }
 
-                switch (dragEdge)
-                {
-                    case 1:
-                    case 2:
-                    case 3:
-                        if (endDrag.X > dragBounds.Left)
-                        {
-                            dragBounds.Width = endDrag.X - dragBounds.Left;
-                        }
-                        break;
+                switch(this.dragEdge) {
+                case 1:
+                case 2:
+                case 3:
+                    if(endDrag.X > this.dragBounds.Left) {
+                        this.dragBounds.Width = endDrag.X - this.dragBounds.Left;
+                    }
+                    break;
                 }
 
-                mapPanel.Invalidate();
-            }
-            else if (placementMode)
-            {
-                if (Control.MouseButtons == MouseButtons.Right)
-                {
-                    RemoveTemplate(navigationWidget.MouseCell);
+                this.mapPanel.Invalidate();
+            } else if(this.placementMode) {
+                if(Control.MouseButtons == MouseButtons.Right) {
+                    this.RemoveTemplate(this.navigationWidget.MouseCell);
                 }
 
-                if (SelectedTemplateType != null)
-                {
-                    foreach (var location in new Point[] { e.OldCell, e.NewCell })
-                    {
-                        for (var y = 0; y < SelectedTemplateType.IconHeight; ++y)
-                        {
-                            for (var x = 0; x < SelectedTemplateType.IconWidth; ++x)
-                            {
-                                mapPanel.Invalidate(map, new Point(location.X + x, location.Y + y));
+                if(this.SelectedTemplateType != null) {
+                    foreach(var location in new Point[] { e.OldCell, e.NewCell }) {
+                        for(var y = 0; y < this.SelectedTemplateType.IconHeight; ++y) {
+                            for(var x = 0; x < this.SelectedTemplateType.IconWidth; ++x) {
+                                this.mapPanel.Invalidate(this.map, new Point(location.X + x, location.Y + y));
                             }
                         }
                     }
                 }
-            }
-            else if((Control.MouseButtons == MouseButtons.Left) || (Control.MouseButtons == MouseButtons.Right))
-            {
-                PickTemplate(navigationWidget.MouseCell, Control.MouseButtons == MouseButtons.Left);
+            } else if((Control.MouseButtons == MouseButtons.Left) || (Control.MouseButtons == MouseButtons.Right)) {
+                this.PickTemplate(this.navigationWidget.MouseCell, Control.MouseButtons == MouseButtons.Left);
             }
         }
 
-        private void RefreshMapPanel()
-        {
-            if (templateTypeNavigationWidget != null)
-            {
-                templateTypeNavigationWidget.Dispose();
-                templateTypeNavigationWidget = null;
+        private void RefreshMapPanel() {
+            if(this.templateTypeNavigationWidget != null) {
+                this.templateTypeNavigationWidget.Dispose();
+                this.templateTypeNavigationWidget = null;
             }
 
-            if (SelectedTemplateType != null)
-            {
-                templateTypeMapPanel.MapImage = SelectedTemplateType.Thumbnail;
+            if(this.SelectedTemplateType != null) {
+                this.templateTypeMapPanel.MapImage = this.SelectedTemplateType.Thumbnail;
 
-                var templateTypeMetrics = new CellMetrics(SelectedTemplateType.IconWidth, SelectedTemplateType.IconHeight);
-                templateTypeNavigationWidget = new NavigationWidget(templateTypeMapPanel, templateTypeMetrics,
-                    new Size(Globals.OriginalTileWidth / 4, Globals.OriginalTileHeight / 4));
-                templateTypeNavigationWidget.MouseoverSize = Size.Empty;
-            }
-            else
-            {
-                templateTypeMapPanel.MapImage = null;
+                var templateTypeMetrics = new CellMetrics(this.SelectedTemplateType.IconWidth, this.SelectedTemplateType.IconHeight);
+                this.templateTypeNavigationWidget = new NavigationWidget(this.templateTypeMapPanel, templateTypeMetrics,
+                    new Size(Globals.OriginalTileWidth / 4, Globals.OriginalTileHeight / 4)) {
+                    MouseoverSize = Size.Empty
+                };
+            } else {
+                this.templateTypeMapPanel.MapImage = null;
             }
         }
 
-        private void SetTemplate(Point location)
-        {
-            if (SelectedTemplateType != null)
-            {
-                if (SelectedIcon.HasValue)
-                {
-                    if (map.Metrics.GetCell(location, out int cell))
-                    {
-                        if (!undoTemplates.ContainsKey(cell))
-                        {
-                            undoTemplates[cell] = map.Templates[location];
+        private void SetTemplate(Point location) {
+            if(this.SelectedTemplateType != null) {
+                if(this.SelectedIcon.HasValue) {
+                    if(this.map.Metrics.GetCell(location, out var cell)) {
+                        if(!this.undoTemplates.ContainsKey(cell)) {
+                            this.undoTemplates[cell] = this.map.Templates[location];
                         }
 
-                        var icon = (SelectedIcon.Value.Y * SelectedTemplateType.IconWidth) + SelectedIcon.Value.X;
+                        var icon = (this.SelectedIcon.Value.Y * this.SelectedTemplateType.IconWidth) + this.SelectedIcon.Value.X;
                         var template = new Template { Type = SelectedTemplateType, Icon = icon };
-                        map.Templates[cell] = template;
-                        redoTemplates[cell] = template;
-                        mapPanel.Invalidate(map, cell);
-                        plugin.Dirty = true;
+                        this.map.Templates[cell] = template;
+                        this.redoTemplates[cell] = template;
+                        this.mapPanel.Invalidate(this.map, cell);
+                        this.plugin.Dirty = true;
                     }
-                }
-                else
-                {
-                    for (int y = 0, icon = 0; y < SelectedTemplateType.IconHeight; ++y)
-                    {
-                        for (var x = 0; x < SelectedTemplateType.IconWidth; ++x, ++icon)
-                        {
+                } else {
+                    for(int y = 0, icon = 0; y < this.SelectedTemplateType.IconHeight; ++y) {
+                        for(var x = 0; x < this.SelectedTemplateType.IconWidth; ++x, ++icon) {
                             var subLocation = new Point(location.X + x, location.Y + y);
-                            if (map.Metrics.GetCell(subLocation, out int cell))
-                            {
-                                if (!undoTemplates.ContainsKey(cell))
-                                {
-                                    undoTemplates[cell] = map.Templates[subLocation];
+                            if(this.map.Metrics.GetCell(subLocation, out var cell)) {
+                                if(!this.undoTemplates.ContainsKey(cell)) {
+                                    this.undoTemplates[cell] = this.map.Templates[subLocation];
                                 }
                             }
                         }
                     }
 
-                    for (int y = 0, icon = 0; y < SelectedTemplateType.IconHeight; ++y)
-                    {
-                        for (var x = 0; x < SelectedTemplateType.IconWidth; ++x, ++icon)
-                        {
-                            if (!SelectedTemplateType.IconMask[x, y])
-                            {
+                    for(int y = 0, icon = 0; y < this.SelectedTemplateType.IconHeight; ++y) {
+                        for(var x = 0; x < this.SelectedTemplateType.IconWidth; ++x, ++icon) {
+                            if(!this.SelectedTemplateType.IconMask[x, y]) {
                                 continue;
                             }
 
                             var subLocation = new Point(location.X + x, location.Y + y);
-                            if (map.Metrics.GetCell(subLocation, out int cell))
-                            {
+                            if(this.map.Metrics.GetCell(subLocation, out var cell)) {
                                 var template = new Template { Type = SelectedTemplateType, Icon = icon };
-                                map.Templates[cell] = template;
-                                redoTemplates[cell] = template;
-                                mapPanel.Invalidate(map, cell);
-                                plugin.Dirty = true;
+                                this.map.Templates[cell] = template;
+                                this.redoTemplates[cell] = template;
+                                this.mapPanel.Invalidate(this.map, cell);
+                                this.plugin.Dirty = true;
                             }
                         }
                     }
@@ -584,53 +472,39 @@ namespace MobiusEditor.Tools
             }
         }
 
-        private void RemoveTemplate(Point location)
-        {
-            if (SelectedTemplateType != null)
-            {
-                if (SelectedIcon.HasValue)
-                {
-                    if (map.Metrics.GetCell(location, out int cell))
-                    {
-                        if (!undoTemplates.ContainsKey(cell))
-                        {
-                            undoTemplates[cell] = map.Templates[location];
+        private void RemoveTemplate(Point location) {
+            if(this.SelectedTemplateType != null) {
+                if(this.SelectedIcon.HasValue) {
+                    if(this.map.Metrics.GetCell(location, out var cell)) {
+                        if(!this.undoTemplates.ContainsKey(cell)) {
+                            this.undoTemplates[cell] = this.map.Templates[location];
                         }
 
-                        map.Templates[cell] = null;
-                        redoTemplates[cell] = null;
-                        mapPanel.Invalidate(map, cell);
-                        plugin.Dirty = true;
+                        this.map.Templates[cell] = null;
+                        this.redoTemplates[cell] = null;
+                        this.mapPanel.Invalidate(this.map, cell);
+                        this.plugin.Dirty = true;
                     }
-                }
-                else
-                {
-                    for (int y = 0, icon = 0; y < SelectedTemplateType.IconHeight; ++y)
-                    {
-                        for (var x = 0; x < SelectedTemplateType.IconWidth; ++x, ++icon)
-                        {
+                } else {
+                    for(int y = 0, icon = 0; y < this.SelectedTemplateType.IconHeight; ++y) {
+                        for(var x = 0; x < this.SelectedTemplateType.IconWidth; ++x, ++icon) {
                             var subLocation = new Point(location.X + x, location.Y + y);
-                            if (map.Metrics.GetCell(subLocation, out int cell))
-                            {
-                                if (!undoTemplates.ContainsKey(cell))
-                                {
-                                    undoTemplates[cell] = map.Templates[subLocation];
+                            if(this.map.Metrics.GetCell(subLocation, out var cell)) {
+                                if(!this.undoTemplates.ContainsKey(cell)) {
+                                    this.undoTemplates[cell] = this.map.Templates[subLocation];
                                 }
                             }
                         }
                     }
 
-                    for (int y = 0, icon = 0; y < SelectedTemplateType.IconHeight; ++y)
-                    {
-                        for (var x = 0; x < SelectedTemplateType.IconWidth; ++x, ++icon)
-                        {
+                    for(int y = 0, icon = 0; y < this.SelectedTemplateType.IconHeight; ++y) {
+                        for(var x = 0; x < this.SelectedTemplateType.IconWidth; ++x, ++icon) {
                             var subLocation = new Point(location.X + x, location.Y + y);
-                            if (map.Metrics.GetCell(subLocation, out int cell))
-                            {
-                                map.Templates[cell] = null;
-                                redoTemplates[cell] = null;
-                                mapPanel.Invalidate(map, cell);
-                                plugin.Dirty = true;
+                            if(this.map.Metrics.GetCell(subLocation, out var cell)) {
+                                this.map.Templates[cell] = null;
+                                this.redoTemplates[cell] = null;
+                                this.mapPanel.Invalidate(this.map, cell);
+                                this.plugin.Dirty = true;
                             }
                         }
                     }
@@ -638,300 +512,226 @@ namespace MobiusEditor.Tools
             }
         }
 
-        private void EnterPlacementMode()
-        {
-            if (placementMode || boundsMode)
-            {
+        private void EnterPlacementMode() {
+            if(this.placementMode || this.boundsMode) {
                 return;
             }
 
-            placementMode = true;
+            this.placementMode = true;
 
-            navigationWidget.MouseoverSize = Size.Empty;
+            this.navigationWidget.MouseoverSize = Size.Empty;
 
-            if (SelectedTemplateType != null)
-            {
-                for (var y = 0; y < SelectedTemplateType.IconHeight; ++y)
-                {
-                    for (var x = 0; x < SelectedTemplateType.IconWidth; ++x)
-                    {
-                        mapPanel.Invalidate(map, new Point(navigationWidget.MouseCell.X + x, navigationWidget.MouseCell.Y + y));
+            if(this.SelectedTemplateType != null) {
+                for(var y = 0; y < this.SelectedTemplateType.IconHeight; ++y) {
+                    for(var x = 0; x < this.SelectedTemplateType.IconWidth; ++x) {
+                        this.mapPanel.Invalidate(this.map, new Point(this.navigationWidget.MouseCell.X + x, this.navigationWidget.MouseCell.Y + y));
                     }
                 }
             }
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void EnterBoundsMode()
-        {
-            if (boundsMode || placementMode)
-            {
+        private void EnterBoundsMode() {
+            if(this.boundsMode || this.placementMode) {
                 return;
             }
 
-            boundsMode = true;
-            dragBounds = map.Bounds;
+            this.boundsMode = true;
+            this.dragBounds = this.map.Bounds;
 
-            navigationWidget.MouseoverSize = Size.Empty;
+            this.navigationWidget.MouseoverSize = Size.Empty;
 
-            if (SelectedTemplateType != null)
-            {
-                for (var y = 0; y < SelectedTemplateType.IconHeight; ++y)
-                {
-                    for (var x = 0; x < SelectedTemplateType.IconWidth; ++x)
-                    {
-                        mapPanel.Invalidate(map, new Point(navigationWidget.MouseCell.X + x, navigationWidget.MouseCell.Y + y));
+            if(this.SelectedTemplateType != null) {
+                for(var y = 0; y < this.SelectedTemplateType.IconHeight; ++y) {
+                    for(var x = 0; x < this.SelectedTemplateType.IconWidth; ++x) {
+                        this.mapPanel.Invalidate(this.map, new Point(this.navigationWidget.MouseCell.X + x, this.navigationWidget.MouseCell.Y + y));
                     }
                 }
             }
 
-            UpdateTooltip();
-            UpdateStatus();
+            this.UpdateTooltip();
+            this.UpdateStatus();
         }
 
-        private void ExitAllModes()
-        {
-            if (!placementMode && !boundsMode)
-            {
+        private void ExitAllModes() {
+            if(!this.placementMode && !this.boundsMode) {
                 return;
             }
 
-            boundsMode = false;
-            dragEdge = -1;
-            dragBounds = Rectangle.Empty;
-            placementMode = false;
+            this.boundsMode = false;
+            this.dragEdge = -1;
+            this.dragBounds = Rectangle.Empty;
+            this.placementMode = false;
 
-            navigationWidget.MouseoverSize = new Size(1, 1);
+            this.navigationWidget.MouseoverSize = new Size(1, 1);
 
-            if (SelectedTemplateType != null)
-            {
-                for (var y = 0; y < SelectedTemplateType.IconHeight; ++y)
-                {
-                    for (var x = 0; x < SelectedTemplateType.IconWidth; ++x)
-                    {
-                        mapPanel.Invalidate(map, new Point(navigationWidget.MouseCell.X + x, navigationWidget.MouseCell.Y + y));
+            if(this.SelectedTemplateType != null) {
+                for(var y = 0; y < this.SelectedTemplateType.IconHeight; ++y) {
+                    for(var x = 0; x < this.SelectedTemplateType.IconWidth; ++x) {
+                        this.mapPanel.Invalidate(this.map, new Point(this.navigationWidget.MouseCell.X + x, this.navigationWidget.MouseCell.Y + y));
                     }
                 }
             }
 
-            UpdateTooltip();
-            UpdateStatus();
+            this.UpdateTooltip();
+            this.UpdateStatus();
         }
 
-        private void UpdateTooltip()
-        {
-            if (boundsMode)
-            {
-                var tooltip = string.Format("X = {0}\nY = {1}\nWidth = {2}\nHeight = {3}", dragBounds.Left, dragBounds.Top, dragBounds.Width, dragBounds.Height);
+        private void UpdateTooltip() {
+            if(this.boundsMode) {
+                var tooltip = string.Format("X = {0}\nY = {1}\nWidth = {2}\nHeight = {3}", this.dragBounds.Left, this.dragBounds.Top, this.dragBounds.Width, this.dragBounds.Height);
                 var textSize = TextRenderer.MeasureText(tooltip, SystemFonts.CaptionFont);
                 var tooltipSize = new Size(textSize.Width + 6, textSize.Height + 6);
 
-                var tooltipPosition = mapPanel.PointToClient(Control.MousePosition);
-                switch (dragEdge)
-                {
-                    case -1:
-                    case 0:
-                    case 1:
-                    case 7:
-                        tooltipPosition.Y -= tooltipSize.Height;
-                        break;
+                var tooltipPosition = this.mapPanel.PointToClient(Control.MousePosition);
+                switch(this.dragEdge) {
+                case -1:
+                case 0:
+                case 1:
+                case 7:
+                    tooltipPosition.Y -= tooltipSize.Height;
+                    break;
                 }
-                switch (dragEdge)
-                {
-                    case -1:
-                    case 5:
-                    case 6:
-                    case 7:
-                        tooltipPosition.X -= tooltipSize.Width;
-                        break;
+                switch(this.dragEdge) {
+                case -1:
+                case 5:
+                case 6:
+                case 7:
+                    tooltipPosition.X -= tooltipSize.Width;
+                    break;
                 }
 
-                var screenPosition = mapPanel.PointToScreen(tooltipPosition);
-                var screen = Screen.FromControl(mapPanel);
+                var screenPosition = this.mapPanel.PointToScreen(tooltipPosition);
+                var screen = Screen.FromControl(this.mapPanel);
                 screenPosition.X = Math.Max(0, Math.Min(screen.WorkingArea.Width - tooltipSize.Width, screenPosition.X));
                 screenPosition.Y = Math.Max(0, Math.Min(screen.WorkingArea.Height - tooltipSize.Height, screenPosition.Y));
-                tooltipPosition = mapPanel.PointToClient(screenPosition);
+                tooltipPosition = this.mapPanel.PointToClient(screenPosition);
 
-                mouseTooltip.Show(tooltip, mapPanel, tooltipPosition.X, tooltipPosition.Y);
-            }
-            else
-            {
-                mouseTooltip.Hide(mapPanel);
+                this.mouseTooltip.Show(tooltip, this.mapPanel, tooltipPosition.X, tooltipPosition.Y);
+            } else {
+                this.mouseTooltip.Hide(this.mapPanel);
             }
         }
 
-        private void PickTemplate(Point location, bool wholeTemplate)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                var template = map.Templates[cell];
-                if (template != null)
-                {
-                    SelectedTemplateType = template.Type;
-                }
-                else
-                {
-                    SelectedTemplateType = map.TemplateTypes.Where(t => t.Equals("clear1")).FirstOrDefault();
+        private void PickTemplate(Point location, bool wholeTemplate) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                var template = this.map.Templates[cell];
+                if(template != null) {
+                    this.SelectedTemplateType = template.Type;
+                } else {
+                    this.SelectedTemplateType = this.map.TemplateTypes.Where(t => t.Equals("clear1")).FirstOrDefault();
                 }
 
-                if (!wholeTemplate && ((SelectedTemplateType.IconWidth * SelectedTemplateType.IconHeight) > 1))
-                {
+                if(!wholeTemplate && ((this.SelectedTemplateType.IconWidth * this.SelectedTemplateType.IconHeight) > 1)) {
                     var icon = template?.Icon ?? 0;
-                    SelectedIcon = new Point(icon % SelectedTemplateType.IconWidth, icon / SelectedTemplateType.IconWidth);
-                }
-                else
-                {
-                    SelectedIcon = null;
+                    this.SelectedIcon = new Point(icon % this.SelectedTemplateType.IconWidth, icon / this.SelectedTemplateType.IconWidth);
+                } else {
+                    this.SelectedIcon = null;
                 }
             }
         }
 
-        private int DetectDragEdge()
-        {
-            var mouseCell = navigationWidget.MouseCell;
-            var mousePixel = navigationWidget.MouseSubPixel;
+        private int DetectDragEdge() {
+            var mouseCell = this.navigationWidget.MouseCell;
+            var mousePixel = this.navigationWidget.MouseSubPixel;
             var topEdge =
-                ((mouseCell.Y == dragBounds.Top) && (mousePixel.Y <= (Globals.PixelHeight / 4))) ||
-                ((mouseCell.Y == dragBounds.Top - 1) && (mousePixel.Y >= (3 * Globals.PixelHeight / 4)));
+                ((mouseCell.Y == this.dragBounds.Top) && (mousePixel.Y <= (Globals.PixelHeight / 4))) ||
+                ((mouseCell.Y == this.dragBounds.Top - 1) && (mousePixel.Y >= (3 * Globals.PixelHeight / 4)));
             var bottomEdge =
-                ((mouseCell.Y == dragBounds.Bottom) && (mousePixel.Y <= (Globals.PixelHeight / 4))) ||
-                ((mouseCell.Y == dragBounds.Bottom - 1) && (mousePixel.Y >= (3 * Globals.PixelHeight / 4)));
+                ((mouseCell.Y == this.dragBounds.Bottom) && (mousePixel.Y <= (Globals.PixelHeight / 4))) ||
+                ((mouseCell.Y == this.dragBounds.Bottom - 1) && (mousePixel.Y >= (3 * Globals.PixelHeight / 4)));
             var leftEdge =
-                 ((mouseCell.X == dragBounds.Left) && (mousePixel.X <= (Globals.PixelWidth / 4))) ||
-                 ((mouseCell.X == dragBounds.Left - 1) && (mousePixel.X >= (3 * Globals.PixelWidth / 4)));
+                 ((mouseCell.X == this.dragBounds.Left) && (mousePixel.X <= (Globals.PixelWidth / 4))) ||
+                 ((mouseCell.X == this.dragBounds.Left - 1) && (mousePixel.X >= (3 * Globals.PixelWidth / 4)));
             var rightEdge =
-                ((mouseCell.X == dragBounds.Right) && (mousePixel.X <= (Globals.PixelHeight / 4))) ||
-                ((mouseCell.X == dragBounds.Right - 1) && (mousePixel.X >= (3 * Globals.PixelHeight / 4)));
-            if (topEdge)
-            {
-                if (rightEdge)
-                {
+                ((mouseCell.X == this.dragBounds.Right) && (mousePixel.X <= (Globals.PixelHeight / 4))) ||
+                ((mouseCell.X == this.dragBounds.Right - 1) && (mousePixel.X >= (3 * Globals.PixelHeight / 4)));
+            if(topEdge) {
+                if(rightEdge) {
                     return 1;
-                }
-                else if (leftEdge)
-                {
+                } else if(leftEdge) {
                     return 7;
-                }
-                else
-                {
+                } else {
                     return 0;
                 }
-            }
-            else if (bottomEdge)
-            {
-                if (rightEdge)
-                {
+            } else if(bottomEdge) {
+                if(rightEdge) {
                     return 3;
-                }
-                else if (leftEdge)
-                {
+                } else if(leftEdge) {
                     return 5;
-                }
-                else
-                {
+                } else {
                     return 4;
                 }
-            }
-            else if (rightEdge)
-            {
+            } else if(rightEdge) {
                 return 2;
-            }
-            else if (leftEdge)
-            {
+            } else if(leftEdge) {
                 return 6;
-            }
-            else
-            {
+            } else {
                 return -1;
             }
         }
 
-        private void CommitChange()
-        {
-            var undoTemplates2 = new Dictionary<int, Template>(undoTemplates);
-            void undoAction(UndoRedoEventArgs e)
-            {
-                foreach (var kv in undoTemplates2)
-                {
+        private void CommitChange() {
+            var undoTemplates2 = new Dictionary<int, Template>(this.undoTemplates);
+            void undoAction(UndoRedoEventArgs e) {
+                foreach(var kv in undoTemplates2) {
                     e.Map.Templates[kv.Key] = kv.Value;
                 }
                 e.MapPanel.Invalidate(e.Map, undoTemplates2.Keys);
             }
 
-            var redoTemplates2 = new Dictionary<int, Template>(redoTemplates);
-            void redoAction(UndoRedoEventArgs e)
-            {
-                foreach (var kv in redoTemplates2)
-                {
+            var redoTemplates2 = new Dictionary<int, Template>(this.redoTemplates);
+            void redoAction(UndoRedoEventArgs e) {
+                foreach(var kv in redoTemplates2) {
                     e.Map.Templates[kv.Key] = kv.Value;
                 }
                 e.MapPanel.Invalidate(e.Map, redoTemplates2.Keys);
             }
 
-            undoTemplates.Clear();
-            redoTemplates.Clear();
+            this.undoTemplates.Clear();
+            this.redoTemplates.Clear();
 
-            url.Track(undoAction, redoAction);
+            this.url.Track(undoAction, redoAction);
         }
 
-        private void UpdateStatus()
-        {
-            if (placementMode)
-            {
-                statusLbl.Text = "Left-Click to place template, Right-Click to clear template";
-            }
-            else if (boundsMode)
-            {
-                if (dragEdge >= 0)
-                {
-                    statusLbl.Text = "Release left button to end dragging map bounds edge";
+        private void UpdateStatus() {
+            if(this.placementMode) {
+                this.statusLbl.Text = "Left-Click to place template, Right-Click to clear template";
+            } else if(this.boundsMode) {
+                if(this.dragEdge >= 0) {
+                    this.statusLbl.Text = "Release left button to end dragging map bounds edge";
+                } else {
+                    this.statusLbl.Text = "Left-Click a map bounds edge to start dragging";
                 }
-                else
-                {
-                    statusLbl.Text = "Left-Click a map bounds edge to start dragging";
-                }
-            }
-            else
-            {
-                statusLbl.Text = "Shift to enter placement mode, Ctrl to enter map bounds mode, Left-Click to pick whole template, Right-Click to pick individual template tile";
+            } else {
+                this.statusLbl.Text = "Shift to enter placement mode, Ctrl to enter map bounds mode, Left-Click to pick whole template, Right-Click to pick individual template tile";
             }
         }
 
-        protected override void PreRenderMap()
-        {
+        protected override void PreRenderMap() {
             base.PreRenderMap();
 
-            previewMap = map.Clone();
-            if (placementMode)
-            {
-                var location = navigationWidget.MouseCell;
-                if (SelectedTemplateType != null)
-                {
-                    if (SelectedIcon.HasValue)
-                    {
-                        if (previewMap.Metrics.GetCell(location, out int cell))
-                        {
-                            var icon = (SelectedIcon.Value.Y * SelectedTemplateType.IconWidth) + SelectedIcon.Value.X;
-                            previewMap.Templates[cell] = new Template { Type = SelectedTemplateType, Icon = icon };
+            this.previewMap = this.map.Clone();
+            if(this.placementMode) {
+                var location = this.navigationWidget.MouseCell;
+                if(this.SelectedTemplateType != null) {
+                    if(this.SelectedIcon.HasValue) {
+                        if(this.previewMap.Metrics.GetCell(location, out var cell)) {
+                            var icon = (this.SelectedIcon.Value.Y * this.SelectedTemplateType.IconWidth) + this.SelectedIcon.Value.X;
+                            this.previewMap.Templates[cell] = new Template { Type = SelectedTemplateType, Icon = icon };
                         }
-                    }
-                    else
-                    {
-                        int icon = 0;
-                        for (var y = 0; y < SelectedTemplateType.IconHeight; ++y)
-                        {
-                            for (var x = 0; x < SelectedTemplateType.IconWidth; ++x, ++icon)
-                            {
-                                if (!SelectedTemplateType.IconMask[x, y])
-                                {
+                    } else {
+                        var icon = 0;
+                        for(var y = 0; y < this.SelectedTemplateType.IconHeight; ++y) {
+                            for(var x = 0; x < this.SelectedTemplateType.IconWidth; ++x, ++icon) {
+                                if(!this.SelectedTemplateType.IconMask[x, y]) {
                                     continue;
                                 }
 
                                 var subLocation = new Point(location.X + x, location.Y + y);
-                                if (previewMap.Metrics.GetCell(subLocation, out int cell))
-                                {
-                                    previewMap.Templates[cell] = new Template { Type = SelectedTemplateType, Icon = icon };
+                                if(this.previewMap.Metrics.GetCell(subLocation, out var cell)) {
+                                    this.previewMap.Templates[cell] = new Template { Type = SelectedTemplateType, Icon = icon };
                                 }
                             }
                         }
@@ -940,33 +740,28 @@ namespace MobiusEditor.Tools
             }
         }
 
-        protected override void PostRenderMap(Graphics graphics)
-        {
+        protected override void PostRenderMap(Graphics graphics) {
             base.PostRenderMap(graphics);
 
-            if (boundsMode)
-            {
+            if(this.boundsMode) {
                 var bounds = Rectangle.FromLTRB(
-                    dragBounds.Left * Globals.TileWidth,
-                    dragBounds.Top * Globals.TileHeight,
-                    dragBounds.Right * Globals.TileWidth,
-                    dragBounds.Bottom * Globals.TileHeight
+                    this.dragBounds.Left * Globals.TileWidth,
+                    this.dragBounds.Top * Globals.TileHeight,
+                    this.dragBounds.Right * Globals.TileWidth,
+                    this.dragBounds.Bottom * Globals.TileHeight
                 );
 
                 var boundsPen = new Pen(Color.Red, 8.0f);
                 graphics.DrawRectangle(boundsPen, bounds);
-            }
-            else if (placementMode)
-            {
-                var location = navigationWidget.MouseCell;
-                if (SelectedTemplateType != null)
-                {
+            } else if(this.placementMode) {
+                var location = this.navigationWidget.MouseCell;
+                if(this.SelectedTemplateType != null) {
                     var previewPen = new Pen(Color.Green, 4.0f);
                     var previewBounds = new Rectangle(
                         location.X * Globals.TileWidth,
                         location.Y * Globals.TileHeight,
-                        (SelectedIcon.HasValue ? 1 : SelectedTemplateType.IconWidth) * Globals.TileWidth,
-                        (SelectedIcon.HasValue ? 1 : SelectedTemplateType.IconHeight) * Globals.TileHeight
+                        (this.SelectedIcon.HasValue ? 1 : this.SelectedTemplateType.IconWidth) * Globals.TileWidth,
+                        (this.SelectedIcon.HasValue ? 1 : this.SelectedTemplateType.IconHeight) * Globals.TileHeight
                     );
                     graphics.DrawRectangle(previewPen, previewBounds);
                 }
@@ -976,29 +771,26 @@ namespace MobiusEditor.Tools
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    mapPanel.MouseDown -= MapPanel_MouseDown;
-                    mapPanel.MouseUp -= MapPanel_MouseUp;
-                    mapPanel.MouseMove -= MapPanel_MouseMove;
-                    (mapPanel as Control).KeyDown -= TemplateTool_KeyDown;
-                    (mapPanel as Control).KeyUp -= TemplateTool_KeyUp;
+        protected override void Dispose(bool disposing) {
+            if(!this.disposedValue) {
+                if(disposing) {
+                    this.mapPanel.MouseDown -= this.MapPanel_MouseDown;
+                    this.mapPanel.MouseUp -= this.MapPanel_MouseUp;
+                    this.mapPanel.MouseMove -= this.MapPanel_MouseMove;
+                    (this.mapPanel as Control).KeyDown -= this.TemplateTool_KeyDown;
+                    (this.mapPanel as Control).KeyUp -= this.TemplateTool_KeyUp;
 
-                    templateTypeListView.SelectedIndexChanged -= TemplateTypeListView_SelectedIndexChanged;
+                    this.templateTypeListView.SelectedIndexChanged -= this.TemplateTypeListView_SelectedIndexChanged;
 
-                    templateTypeMapPanel.MouseDown -= TemplateTypeMapPanel_MouseDown;
-                    templateTypeMapPanel.PostRender -= TemplateTypeMapPanel_PostRender;
+                    this.templateTypeMapPanel.MouseDown -= this.TemplateTypeMapPanel_MouseDown;
+                    this.templateTypeMapPanel.PostRender -= this.TemplateTypeMapPanel_PostRender;
 
-                    navigationWidget.MouseCellChanged -= MouseoverWidget_MouseCellChanged;
+                    this.navigationWidget.MouseCellChanged -= this.MouseoverWidget_MouseCellChanged;
 
-                    url.Undone -= Url_Undone;
-                    url.Redone -= Url_Redone;
+                    this.url.Undone -= this.Url_Undone;
+                    this.url.Redone -= this.Url_Redone;
                 }
-                disposedValue = true;
+                this.disposedValue = true;
             }
 
             base.Dispose(disposing);

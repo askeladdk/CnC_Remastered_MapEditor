@@ -14,10 +14,10 @@
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using System.Drawing;
 
-namespace MobiusEditor.Interface
-{
-    public interface ICellOverlapper
-    {
-        Rectangle OverlapBounds { get; }
+namespace MobiusEditor.Interface {
+    public interface ICellOverlapper {
+        Rectangle OverlapBounds {
+            get;
+        }
     }
 }

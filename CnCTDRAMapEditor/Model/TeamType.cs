@@ -17,81 +17,99 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MobiusEditor.Model
-{
-    public class TeamTypeClass : ICloneable
-    {
-        public ITechnoType Type { get; set; }
-
-        public byte Count { get; set; }
-
-        public TeamTypeClass Clone()
-        {
-            return new TeamTypeClass()
-            {
-                Type = Type,
-                Count = Count
-            };
+namespace MobiusEditor.Model {
+    public class TeamTypeClass : ICloneable {
+        public ITechnoType Type {
+            get; set;
         }
 
-        object ICloneable.Clone()
-        {
-            return Clone();
+        public byte Count {
+            get; set;
         }
+
+        public TeamTypeClass Clone() => new TeamTypeClass() {
+            Type = Type,
+            Count = Count
+        };
+
+        object ICloneable.Clone() => this.Clone();
     }
 
-    public class TeamTypeMission : ICloneable
-    {
-        public string Mission { get; set; }
-
-        public int Argument { get; set; }
-
-        public TeamTypeMission Clone()
-        {
-            return new TeamTypeMission()
-            {
-                Mission = Mission,
-                Argument = Argument
-            };
+    public class TeamTypeMission : ICloneable {
+        public string Mission {
+            get; set;
         }
 
-        object ICloneable.Clone()
-        {
-            return Clone();
+        public int Argument {
+            get; set;
         }
+
+        public TeamTypeMission Clone() => new TeamTypeMission() {
+            Mission = Mission,
+            Argument = Argument
+        };
+
+        object ICloneable.Clone() => this.Clone();
     }
 
-    public class TeamType : INamedType, ICloneable
-    {
+    public class TeamType : INamedType, ICloneable {
         public static readonly string None = "None";
 
-        public string Name { get; set; }
+        public string Name {
+            get; set;
+        }
 
-        public HouseType House { get; set; }
+        public HouseType House {
+            get; set;
+        }
 
-        public bool IsRoundAbout { get; set; }
+        public bool IsRoundAbout {
+            get; set;
+        }
 
-        public bool IsLearning { get; set; }
+        public bool IsLearning {
+            get; set;
+        }
 
-        public bool IsSuicide { get; set; }
+        public bool IsSuicide {
+            get; set;
+        }
 
-        public bool IsAutocreate { get; set; }
+        public bool IsAutocreate {
+            get; set;
+        }
 
-        public bool IsMercenary { get; set; }
+        public bool IsMercenary {
+            get; set;
+        }
 
-        public int RecruitPriority { get; set; }
+        public int RecruitPriority {
+            get; set;
+        }
 
-        public byte MaxAllowed { get; set; }
+        public byte MaxAllowed {
+            get; set;
+        }
 
-        public byte InitNum { get; set; }
+        public byte InitNum {
+            get; set;
+        }
 
-        public byte Fear { get; set; }
+        public byte Fear {
+            get; set;
+        }
 
-        public bool IsReinforcable { get; set; }
+        public bool IsReinforcable {
+            get; set;
+        }
 
-        public bool IsPrebuilt { get; set; }
+        public bool IsPrebuilt {
+            get; set;
+        }
 
-        public int Origin { get; set; }
+        public int Origin {
+            get; set;
+        }
 
         public string Trigger { get; set; } = Model.Trigger.None;
 
@@ -99,10 +117,8 @@ namespace MobiusEditor.Model
 
         public List<TeamTypeMission> Missions { get; } = new List<TeamTypeMission>();
 
-        public TeamType Clone()
-        {
-            var teamType = new TeamType()
-            {
+        public TeamType Clone() {
+            var teamType = new TeamType() {
                 Name = Name,
                 House = House,
                 IsRoundAbout = IsRoundAbout,
@@ -120,39 +136,26 @@ namespace MobiusEditor.Model
                 Trigger = Trigger
             };
 
-            teamType.Classes.AddRange(Classes.Select(c => c.Clone()));
-            teamType.Missions.AddRange(Missions.Select(m => m.Clone()));
+            teamType.Classes.AddRange(this.Classes.Select(c => c.Clone()));
+            teamType.Missions.AddRange(this.Missions.Select(m => m.Clone()));
 
             return teamType;
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is TeamType)
-            {
+        public override bool Equals(object obj) {
+            if(obj is TeamType) {
                 return this == obj;
-            }
-            else if (obj is string)
-            {
-                return string.Equals(Name, obj as string, StringComparison.OrdinalIgnoreCase);
+            } else if(obj is string) {
+                return string.Equals(this.Name, obj as string, StringComparison.OrdinalIgnoreCase);
             }
 
             return base.Equals(obj);
         }
 
-        public override int GetHashCode()
-        {
-            return Name.GetHashCode();
-        }
+        public override int GetHashCode() => this.Name.GetHashCode();
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => this.Name;
 
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
     }
 }

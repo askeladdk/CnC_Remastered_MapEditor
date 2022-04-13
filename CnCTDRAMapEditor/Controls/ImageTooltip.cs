@@ -16,47 +16,36 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Controls
-{
-    public partial class ImageTooltip : ToolTip
-    {
+namespace MobiusEditor.Controls {
+    public partial class ImageTooltip : ToolTip {
         public Size MaxSize { get; set; } = Size.Empty;
 
-        public ImageTooltip()
-        {
-            InitializeComponent();
+        public ImageTooltip() {
+            this.InitializeComponent();
 
-            OwnerDraw = true;
-            Popup += ImageTooltip_Popup;
-            Draw += ImageTooltip_Draw;
+            this.OwnerDraw = true;
+            Popup += this.ImageTooltip_Popup;
+            Draw += this.ImageTooltip_Draw;
         }
 
-        private void ImageTooltip_Popup(object sender, PopupEventArgs e)
-        {
-            if (e.AssociatedControl.Tag is Image image)
-            {
+        private void ImageTooltip_Popup(object sender, PopupEventArgs e) {
+            if(e.AssociatedControl.Tag is Image image) {
                 var size = image.Size;
-                if (MaxSize.Width > 0)
-                {
-                    size.Width = Math.Min(MaxSize.Width, size.Width);
+                if(this.MaxSize.Width > 0) {
+                    size.Width = Math.Min(this.MaxSize.Width, size.Width);
                 }
-                if (MaxSize.Height > 0)
-                {
-                    size.Height = Math.Min(MaxSize.Height, size.Height);
+                if(this.MaxSize.Height > 0) {
+                    size.Height = Math.Min(this.MaxSize.Height, size.Height);
                 }
 
                 e.ToolTipSize = size;
-            }
-            else
-            {
+            } else {
                 e.Cancel = true;
             }
         }
 
-        private void ImageTooltip_Draw(object sender, DrawToolTipEventArgs e)
-        {
-            if (e.AssociatedControl.Tag is Image image)
-            {
+        private void ImageTooltip_Draw(object sender, DrawToolTipEventArgs e) {
+            if(e.AssociatedControl.Tag is Image image) {
                 e.Graphics.DrawImage(image, e.Bounds);
             }
         }

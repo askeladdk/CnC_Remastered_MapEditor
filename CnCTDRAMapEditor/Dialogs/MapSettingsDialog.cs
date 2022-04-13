@@ -24,26 +24,23 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Dialogs
-{
-    public partial class MapSettingsDialog : Form
-    {
+namespace MobiusEditor.Dialogs {
+    public partial class MapSettingsDialog : Form {
         private const int TVIF_STATE = 0x8;
         private const int TVIS_STATEIMAGEMASK = 0xF000;
         private const int TV_FIRST = 0x1100;
         private const int TVM_SETITEM = TV_FIRST + 63;
 
         [DllImport("user32.dll")]
-        static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
-        private struct TVITEM
-        {
+        private struct TVITEM {
             public int mask;
             public IntPtr hItem;
             public int state;
             public int stateMask;
             [MarshalAs(UnmanagedType.LPTStr)]
-            public String lpszText;
+            public string lpszText;
             public int cchTextMax;
             public int iImage;
             public int iSelectedImage;
@@ -58,77 +55,63 @@ namespace MobiusEditor.Dialogs
         private readonly TreeNode playersNode;
 
         public MapSettingsDialog(IGamePlugin plugin, PropertyTracker<BasicSection> basicSettingsTracker, PropertyTracker<BriefingSection> briefingSettingsTracker,
-            IDictionary<House, PropertyTracker<House>> houseSettingsTrackers)
-        {
-            InitializeComponent();
+            IDictionary<House, PropertyTracker<House>> houseSettingsTrackers) {
+            this.InitializeComponent();
 
             this.plugin = plugin;
             this.basicSettingsTracker = basicSettingsTracker;
             this.briefingSettingsTracker = briefingSettingsTracker;
             this.houseSettingsTrackers = houseSettingsTrackers;
 
-            settingsTreeView.BeginUpdate();
-            settingsTreeView.Nodes.Clear();
-            settingsTreeView.Nodes.Add("BASIC", "Basic");
-            settingsTreeView.Nodes.Add("BRIEFING", "Briefing");
+            this.settingsTreeView.BeginUpdate();
+            this.settingsTreeView.Nodes.Clear();
+            this.settingsTreeView.Nodes.Add("BASIC", "Basic");
+            this.settingsTreeView.Nodes.Add("BRIEFING", "Briefing");
 
-            playersNode = settingsTreeView.Nodes.Add("Players");
-            foreach (var player in plugin.Map.Houses)
-            {
-                var playerNode = playersNode.Nodes.Add(player.Type.Name, player.Type.Name);
+            this.playersNode = this.settingsTreeView.Nodes.Add("Players");
+            foreach(var player in plugin.Map.Houses) {
+                var playerNode = this.playersNode.Nodes.Add(player.Type.Name, player.Type.Name);
                 playerNode.Checked = player.Enabled;
             }
-            playersNode.Expand();
+            this.playersNode.Expand();
 
-            settingsTreeView.EndUpdate();
-            settingsTreeView.SelectedNode = settingsTreeView.Nodes[0];
+            this.settingsTreeView.EndUpdate();
+            this.settingsTreeView.SelectedNode = this.settingsTreeView.Nodes[0];
         }
 
-        private void settingsTreeView_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            settingsPanel.Controls.Clear();
+        private void settingsTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
+            this.settingsPanel.Controls.Clear();
 
-            switch (settingsTreeView.SelectedNode.Name)
-            {
-                case "BASIC":
-                    {
-                        settingsPanel.Controls.Add(new BasicSettings(plugin, basicSettingsTracker));
-                    }
-                    break;
-                case "BRIEFING":
-                    {
-                        settingsPanel.Controls.Add(new BriefingSettings(plugin, briefingSettingsTracker));
-                    }
-                    break;
-                default:
-                    {
-                        var player = plugin.Map.Houses.Where(h => h.Type.Name == settingsTreeView.SelectedNode.Name).FirstOrDefault();
-                        if (player != null)
-                        {
-                            settingsPanel.Controls.Add(new PlayerSettings(plugin, houseSettingsTrackers[player]));
-                        }
-                    }
-                    break;
+            switch(this.settingsTreeView.SelectedNode.Name) {
+            case "BASIC": {
+                this.settingsPanel.Controls.Add(new BasicSettings(this.plugin, this.basicSettingsTracker));
+            }
+            break;
+            case "BRIEFING": {
+                this.settingsPanel.Controls.Add(new BriefingSettings(this.plugin, this.briefingSettingsTracker));
+            }
+            break;
+            default: {
+                var player = this.plugin.Map.Houses.Where(h => h.Type.Name == this.settingsTreeView.SelectedNode.Name).FirstOrDefault();
+                if(player != null) {
+                    this.settingsPanel.Controls.Add(new PlayerSettings(this.plugin, this.houseSettingsTrackers[player]));
+                }
+            }
+            break;
             }
         }
 
-        private void settingsTreeView_DrawNode(object sender, DrawTreeNodeEventArgs e)
-        {
-            if (!playersNode.Nodes.Contains(e.Node))
-            {
-                HideCheckBox(e.Node);
+        private void settingsTreeView_DrawNode(object sender, DrawTreeNodeEventArgs e) {
+            if(!this.playersNode.Nodes.Contains(e.Node)) {
+                this.HideCheckBox(e.Node);
                 e.DrawDefault = true;
-            }
-            else
-            {
-                e.Graphics.DrawString(e.Node.Text, e.Node.TreeView.Font, new SolidBrush(settingsTreeView.ForeColor), e.Node.Bounds.X, e.Node.Bounds.Y);
+            } else {
+                e.Graphics.DrawString(e.Node.Text, e.Node.TreeView.Font, new SolidBrush(this.settingsTreeView.ForeColor), e.Node.Bounds.X, e.Node.Bounds.Y);
             }
         }
 
-        private void HideCheckBox(TreeNode node)
-        {
-            TVITEM tvi = new TVITEM
-            {
+        private void HideCheckBox(TreeNode node) {
+            var tvi = new TVITEM {
                 hItem = node.Handle,
                 mask = TVIF_STATE,
                 stateMask = TVIS_STATEIMAGEMASK,
@@ -140,17 +123,15 @@ namespace MobiusEditor.Dialogs
                 cChildren = 0,
                 lParam = IntPtr.Zero
             };
-            IntPtr lparam = Marshal.AllocHGlobal(Marshal.SizeOf(tvi));
+            var lparam = Marshal.AllocHGlobal(Marshal.SizeOf(tvi));
             Marshal.StructureToPtr(tvi, lparam, false);
             SendMessage(node.TreeView.Handle, TVM_SETITEM, IntPtr.Zero, lparam);
         }
 
-        private void settingsTreeView_AfterCheck(object sender, TreeViewEventArgs e)
-        {
-            var player = plugin.Map.Houses.Where(h => h.Type.Name == e.Node.Name).FirstOrDefault();
-            if (player != null)
-            {
-                ((dynamic)houseSettingsTrackers[player]).Enabled = e.Node.Checked;
+        private void settingsTreeView_AfterCheck(object sender, TreeViewEventArgs e) {
+            var player = this.plugin.Map.Houses.Where(h => h.Type.Name == e.Node.Name).FirstOrDefault();
+            if(player != null) {
+                ((dynamic)this.houseSettingsTrackers[player]).Enabled = e.Node.Checked;
             }
         }
     }

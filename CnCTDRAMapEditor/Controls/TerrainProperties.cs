@@ -16,143 +16,116 @@ using MobiusEditor.Interface;
 using MobiusEditor.Model;
 using MobiusEditor.Utility;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Controls
-{
-    public partial class TerrainProperties : UserControl
-    {
+namespace MobiusEditor.Controls {
+    public partial class TerrainProperties : UserControl {
         private bool isMockObject;
 
-        public IGamePlugin Plugin { get; private set; }
+        public IGamePlugin Plugin {
+            get; private set;
+        }
 
         private Terrain terrain;
-        public Terrain Terrain
-        {
-            get => terrain;
-            set
-            {
-                if (terrain != value)
-                {
-                    terrain = value;
-                    Rebind();
+        public Terrain Terrain {
+            get => this.terrain;
+            set {
+                if(this.terrain != value) {
+                    this.terrain = value;
+                    this.Rebind();
                 }
             }
         }
 
-        public TerrainProperties()
-        {
-            InitializeComponent();
-        }
+        public TerrainProperties() => this.InitializeComponent();
 
-        public void Initialize(IGamePlugin plugin, bool isMockObject)
-        {
+        public void Initialize(IGamePlugin plugin, bool isMockObject) {
             this.isMockObject = isMockObject;
 
-            Plugin = plugin;
-            plugin.Map.Triggers.CollectionChanged += Triggers_CollectionChanged;
+            this.Plugin = plugin;
+            plugin.Map.Triggers.CollectionChanged += this.Triggers_CollectionChanged;
 
-            UpdateDataSource();
+            this.UpdateDataSource();
 
-            Disposed += (sender, e) =>
-            {
-                Terrain = null;
-                plugin.Map.Triggers.CollectionChanged -= Triggers_CollectionChanged;
+            Disposed += (sender, e) => {
+                this.Terrain = null;
+                plugin.Map.Triggers.CollectionChanged -= this.Triggers_CollectionChanged;
             };
         }
 
-        private void Triggers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            UpdateDataSource();
-        }
+        private void Triggers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => this.UpdateDataSource();
 
-        private void UpdateDataSource()
-        {
-            triggerComboBox.DataSource = Trigger.None.Yield().Concat(Plugin.Map.Triggers.Select(t => t.Name).Distinct()).ToArray();
-        }
+        private void UpdateDataSource() => this.triggerComboBox.DataSource = Trigger.None.Yield().Concat(this.Plugin.Map.Triggers.Select(t => t.Name).Distinct()).ToArray();
 
-        private void Rebind()
-        {
-            triggerComboBox.DataBindings.Clear();
+        private void Rebind() {
+            this.triggerComboBox.DataBindings.Clear();
 
-            if (terrain == null)
-            {
+            if(this.terrain == null) {
                 return;
             }
 
-            triggerComboBox.DataBindings.Add("SelectedItem", terrain, "Trigger");
+            this.triggerComboBox.DataBindings.Add("SelectedItem", this.terrain, "Trigger");
         }
 
-        private void Obj_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "Type":
-                    {
-                        Rebind();
-                    }
-                    break;
+        private void Obj_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            switch(e.PropertyName) {
+            case "Type": {
+                this.Rebind();
+            }
+            break;
             }
 
-            if (!isMockObject)
-            {
-                Plugin.Dirty = true;
+            if(!this.isMockObject) {
+                this.Plugin.Dirty = true;
             }
         }
 
-        private void comboBox_SelectedValueChanged(object sender, EventArgs e)
-        {
-            foreach (Binding binding in (sender as ComboBox).DataBindings)
-            {
+        private void comboBox_SelectedValueChanged(object sender, EventArgs e) {
+            foreach(Binding binding in (sender as ComboBox).DataBindings) {
                 binding.WriteValue();
             }
         }
 
-        private void nud_ValueChanged(object sender, EventArgs e)
-        {
-            foreach (Binding binding in (sender as NumericUpDown).DataBindings)
-            {
+        private void nud_ValueChanged(object sender, EventArgs e) {
+            foreach(Binding binding in (sender as NumericUpDown).DataBindings) {
                 binding.WriteValue();
             }
         }
     }
 
-    public class TerrainPropertiesPopup : ToolStripDropDown
-    {
+    public class TerrainPropertiesPopup : ToolStripDropDown {
         private readonly ToolStripControlHost host;
 
-        public TerrainProperties TerrainProperties { get; private set; }
+        public TerrainProperties TerrainProperties {
+            get; private set;
+        }
 
-        public TerrainPropertiesPopup(IGamePlugin plugin, Terrain terrain)
-        {
-            TerrainProperties = new TerrainProperties();
-            TerrainProperties.Initialize(plugin, false);
-            TerrainProperties.Terrain = terrain;
+        public TerrainPropertiesPopup(IGamePlugin plugin, Terrain terrain) {
+            this.TerrainProperties = new TerrainProperties();
+            this.TerrainProperties.Initialize(plugin, false);
+            this.TerrainProperties.Terrain = terrain;
 
-            host = new ToolStripControlHost(TerrainProperties);
-            Padding = Margin = host.Padding = host.Margin = Padding.Empty;
-            MinimumSize = TerrainProperties.MinimumSize;
-            TerrainProperties.MinimumSize = TerrainProperties.Size;
-            MaximumSize = TerrainProperties.MaximumSize;
-            TerrainProperties.MaximumSize = TerrainProperties.Size;
-            Size = TerrainProperties.Size;
-            Items.Add(host);
-            TerrainProperties.Disposed += (sender, e) =>
-            {
-                TerrainProperties = null;
-                Dispose(true);
+            this.host = new ToolStripControlHost(this.TerrainProperties);
+            this.Padding = this.Margin = this.host.Padding = this.host.Margin = Padding.Empty;
+            this.MinimumSize = this.TerrainProperties.MinimumSize;
+            this.TerrainProperties.MinimumSize = this.TerrainProperties.Size;
+            this.MaximumSize = this.TerrainProperties.MaximumSize;
+            this.TerrainProperties.MaximumSize = this.TerrainProperties.Size;
+            this.Size = this.TerrainProperties.Size;
+            this.Items.Add(this.host);
+            this.TerrainProperties.Disposed += (sender, e) => {
+                this.TerrainProperties = null;
+                this.Dispose(true);
             };
         }
 
-        protected override void OnClosed(ToolStripDropDownClosedEventArgs e)
-        {
+        protected override void OnClosed(ToolStripDropDownClosedEventArgs e) {
             base.OnClosed(e);
 
-            TerrainProperties.Terrain = null;
+            this.TerrainProperties.Terrain = null;
         }
     }
 }

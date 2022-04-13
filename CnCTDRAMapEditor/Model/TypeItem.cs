@@ -12,18 +12,19 @@
 // distributed with this program. You should have received a copy of the 
 // GNU General Public License along with permitted additional restrictions 
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
-namespace MobiusEditor.Model
-{
-    public class TypeItem<T>
-    {
-        public string Name { get; private set; }
+namespace MobiusEditor.Model {
+    public class TypeItem<T> {
+        public string Name {
+            get; private set;
+        }
 
-        public T Type { get; private set; }
+        public T Type {
+            get; private set;
+        }
 
-        public TypeItem(string name, T type)
-        {
-            Name = name;
-            Type = type;
+        public TypeItem(string name, T type) {
+            this.Name = name;
+            this.Type = type;
         }
     }
 }

@@ -17,108 +17,100 @@ using MobiusEditor.Utility;
 using System;
 using System.Drawing;
 
-namespace MobiusEditor.Model
-{
+namespace MobiusEditor.Model {
     [Flags]
-    public enum TemplateTypeFlag
-    {
-        None    = 0,
-        Clear   = (1 << 1),
-        Water   = (1 << 2),
+    public enum TemplateTypeFlag {
+        None = 0,
+        Clear = (1 << 1),
+        Water = (1 << 2),
         OreMine = (1 << 3),
     }
 
-    public class TemplateType : IBrowsableType
-    {
-        public ushort ID { get; private set; }
+    public class TemplateType : IBrowsableType {
+        public ushort ID {
+            get; private set;
+        }
 
-        public string Name { get; private set; }
+        public string Name {
+            get; private set;
+        }
 
-        public string DisplayName => Name;
+        public string DisplayName => this.Name;
 
-        public int IconWidth { get; private set; }
+        public int IconWidth {
+            get; private set;
+        }
 
-        public int IconHeight { get; private set; }
+        public int IconHeight {
+            get; private set;
+        }
 
-        public Size IconSize => new Size(IconWidth, IconHeight);
+        public Size IconSize => new Size(this.IconWidth, this.IconHeight);
 
-        public int NumIcons => IconWidth * IconHeight;
+        public int NumIcons => this.IconWidth * this.IconHeight;
 
-        public bool[,] IconMask { get; set; }
+        public bool[,] IconMask {
+            get; set;
+        }
 
-        public Image Thumbnail { get; set; }
+        public Image Thumbnail {
+            get; set;
+        }
 
-        public TheaterType[] Theaters { get; private set; }
+        public TheaterType[] Theaters {
+            get; private set;
+        }
 
-        public TemplateTypeFlag Flag { get; private set; }
+        public TemplateTypeFlag Flag {
+            get; private set;
+        }
 
-        public TemplateType(ushort id, string name, int iconWidth, int iconHeight, TheaterType[] theaters, TemplateTypeFlag flag)
-        {
-            ID = id;
-            Name = name;
-            IconWidth = iconWidth;
-            IconHeight = iconHeight;
-            Theaters = theaters;
-            Flag = flag;
+        public TemplateType(ushort id, string name, int iconWidth, int iconHeight, TheaterType[] theaters, TemplateTypeFlag flag) {
+            this.ID = id;
+            this.Name = name;
+            this.IconWidth = iconWidth;
+            this.IconHeight = iconHeight;
+            this.Theaters = theaters;
+            this.Flag = flag;
         }
 
         public TemplateType(ushort id, string name, int iconWidth, int iconHeight, TheaterType[] theaters)
-            : this(id, name, iconWidth, iconHeight, theaters, TemplateTypeFlag.None)
-        {
+            : this(id, name, iconWidth, iconHeight, theaters, TemplateTypeFlag.None) {
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is TemplateType)
-            {
+        public override bool Equals(object obj) {
+            if(obj is TemplateType) {
                 return this == obj;
-            }
-            else if (obj is byte)
-            {
-                return ID == (byte)obj;
-            }
-            else if (obj is ushort)
-            {
-                return ID == (ushort)obj;
-            }
-            else if (obj is string)
-            {
-                return string.Equals(Name, obj as string, StringComparison.OrdinalIgnoreCase);
+            } else if(obj is byte) {
+                return this.ID == (byte)obj;
+            } else if(obj is ushort) {
+                return this.ID == (ushort)obj;
+            } else if(obj is string) {
+                return string.Equals(this.Name, obj as string, StringComparison.OrdinalIgnoreCase);
             }
 
             return base.Equals(obj);
         }
 
-        public override int GetHashCode()
-        {
-            return ID.GetHashCode();
-        }
+        public override int GetHashCode() => this.ID.GetHashCode();
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => this.Name;
 
-        public void Init(TheaterType theater)
-        {
+        public void Init(TheaterType theater) {
             var size = new Size(Globals.OriginalTileWidth / 4, Globals.OriginalTileWidth / 4);
-            var iconSize = Math.Max(IconWidth, IconHeight);
+            var iconSize = Math.Max(this.IconWidth, this.IconHeight);
             var thumbnail = new Bitmap(iconSize * size.Width, iconSize * size.Height);
-            var mask = new bool[IconWidth, IconHeight];
+            var mask = new bool[this.IconWidth, this.IconHeight];
             Array.Clear(mask, 0, mask.Length);
 
-            bool found = false;
-            using (var g = Graphics.FromImage(thumbnail))
-            {
+            var found = false;
+            using(var g = Graphics.FromImage(thumbnail)) {
                 g.Clear(Color.Transparent);
 
-                int icon = 0;
-                for (var y = 0; y < IconHeight; ++y)
-                {
-                    for (var x = 0; x < IconWidth; ++x, ++icon)
-                    {
-                        if (Globals.TheTilesetManager.GetTileData(theater.Tilesets, Name, icon, out Tile tile))
-                        {
+                var icon = 0;
+                for(var y = 0; y < this.IconHeight; ++y) {
+                    for(var x = 0; x < this.IconWidth; ++x, ++icon) {
+                        if(Globals.TheTilesetManager.GetTileData(theater.Tilesets, this.Name, icon, out Tile tile)) {
                             g.DrawImage(tile.Image, x * size.Width, y * size.Height, size.Width, size.Height);
                             found = mask[x, y] = true;
                         }
@@ -126,8 +118,8 @@ namespace MobiusEditor.Model
                 }
             }
 
-            Thumbnail = found ? thumbnail : null;
-            IconMask = mask;
+            this.Thumbnail = found ? thumbnail : null;
+            this.IconMask = mask;
         }
     }
 }

@@ -15,24 +15,20 @@
 using System;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools.Dialogs
-{
-    public partial class WaypointsToolDialog : Form
-    {
-        public ComboBox WaypointCombo => waypointCombo;
+namespace MobiusEditor.Tools.Dialogs {
+    public partial class WaypointsToolDialog : Form {
+        public ComboBox WaypointCombo => this.waypointCombo;
 
-        public WaypointsToolDialog()
-        {
-            InitializeComponent();
+        public WaypointsToolDialog() {
+            this.InitializeComponent();
 
-            Location = Properties.Settings.Default.ToolDialogPosition;
+            this.Location = Properties.Settings.Default.ToolDialogPosition;
         }
 
-        protected override void OnMove(EventArgs e)
-        {
+        protected override void OnMove(EventArgs e) {
             base.OnMove(e);
 
-            Properties.Settings.Default.ToolDialogPosition = Location;
+            Properties.Settings.Default.ToolDialogPosition = this.Location;
             Properties.Settings.Default.Save();
         }
     }

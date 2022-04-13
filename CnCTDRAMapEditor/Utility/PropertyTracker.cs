@@ -19,192 +19,129 @@ using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.Utility
-{
-    public class TrackablePropertyDescriptor<T> : PropertyDescriptor
-    {
+namespace MobiusEditor.Utility {
+    public class TrackablePropertyDescriptor<T> : PropertyDescriptor {
         private readonly T obj;
         private readonly PropertyInfo propertyInfo;
         private readonly Dictionary<string, object> propertyValues;
 
-        public override Type ComponentType => obj.GetType();
+        public override Type ComponentType => this.obj.GetType();
 
         public override bool IsReadOnly => false;
 
-        public override Type PropertyType => propertyInfo.PropertyType;
+        public override Type PropertyType => this.propertyInfo.PropertyType;
 
         public TrackablePropertyDescriptor(string name, T obj, PropertyInfo propertyInfo, Dictionary<string, object> propertyValues)
-            : base(name, null)
-        {
+            : base(name, null) {
             this.obj = obj;
             this.propertyInfo = propertyInfo;
             this.propertyValues = propertyValues;
         }
 
-        public override bool CanResetValue(object component)
-        {
-            return propertyValues.ContainsKey(Name);
-        }
+        public override bool CanResetValue(object component) => this.propertyValues.ContainsKey(this.Name);
 
-        public override object GetValue(object component)
-        {
-            if (propertyValues.TryGetValue(Name, out object result))
-            {
+        public override object GetValue(object component) {
+            if(this.propertyValues.TryGetValue(this.Name, out var result)) {
                 return result;
             }
-            return propertyInfo.GetValue(obj);
+            return this.propertyInfo.GetValue(this.obj);
         }
 
-        public override void ResetValue(object component)
-        {
-            propertyValues.Remove(Name);
-        }
+        public override void ResetValue(object component) => this.propertyValues.Remove(this.Name);
 
-        public override void SetValue(object component, object value)
-        {
-            if (Equals(propertyInfo.GetValue(obj), value))
-            {
-                propertyValues.Remove(Name);
-            }
-            else
-            {
-                propertyValues[Name] = value;
+        public override void SetValue(object component, object value) {
+            if(Equals(this.propertyInfo.GetValue(this.obj), value)) {
+                this.propertyValues.Remove(this.Name);
+            } else {
+                this.propertyValues[this.Name] = value;
             }
         }
 
-        public override bool ShouldSerializeValue(object component)
-        {
-            return false;
-        }
+        public override bool ShouldSerializeValue(object component) => false;
     }
 
-    public class PropertyTracker<T> : DynamicObject, ICustomTypeDescriptor
-    {
+    public class PropertyTracker<T> : DynamicObject, ICustomTypeDescriptor {
         private readonly Dictionary<string, PropertyInfo> trackableProperties;
         private readonly Dictionary<string, object> propertyValues = new Dictionary<string, object>();
 
-        public T Object { get; private set; }
-        
-        public PropertyTracker(T obj)
-        {
-            Object = obj;
+        public T Object {
+            get; private set;
+        }
 
-            trackableProperties = Object.GetType()
+        public PropertyTracker(T obj) {
+            this.Object = obj;
+
+            this.trackableProperties = this.Object.GetType()
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => (p.GetGetMethod() != null) && (p.GetSetMethod() != null))
                 .ToDictionary(k => k.Name, v => v);
         }
 
-        public void Revert() => propertyValues.Clear();
+        public void Revert() => this.propertyValues.Clear();
 
-        public void Commit()
-        {
-            foreach (var propertyValue in propertyValues)
-            {
-                trackableProperties[propertyValue.Key].SetValue(Object, propertyValue.Value);
+        public void Commit() {
+            foreach(var propertyValue in this.propertyValues) {
+                this.trackableProperties[propertyValue.Key].SetValue(this.Object, propertyValue.Value);
             }
-            propertyValues.Clear();
+            this.propertyValues.Clear();
         }
 
-        public IDictionary<string, object> GetUndoValues() => propertyValues.ToDictionary(kv => kv.Key, kv => trackableProperties[kv.Key].GetValue(Object));
+        public IDictionary<string, object> GetUndoValues() => this.propertyValues.ToDictionary(kv => kv.Key, kv => this.trackableProperties[kv.Key].GetValue(this.Object));
 
-        public IDictionary<string, object> GetRedoValues() => new Dictionary<string, object>(propertyValues);
+        public IDictionary<string, object> GetRedoValues() => new Dictionary<string, object>(this.propertyValues);
 
-        public override bool TryGetMember(GetMemberBinder binder, out object result)
-        {
-            if (!trackableProperties.TryGetValue(binder.Name, out PropertyInfo property))
-            {
+        public override bool TryGetMember(GetMemberBinder binder, out object result) {
+            if(!this.trackableProperties.TryGetValue(binder.Name, out var property)) {
                 result = null;
                 return false;
             }
 
-            if (!propertyValues.TryGetValue(binder.Name, out result))
-            {
-                result = property.GetValue(Object);
+            if(!this.propertyValues.TryGetValue(binder.Name, out result)) {
+                result = property.GetValue(this.Object);
             }
             return true;
         }
 
-        public override bool TrySetMember(SetMemberBinder binder, object value)
-        {
-            if (!trackableProperties.TryGetValue(binder.Name, out PropertyInfo property))
-            {
+        public override bool TrySetMember(SetMemberBinder binder, object value) {
+            if(!this.trackableProperties.TryGetValue(binder.Name, out var property)) {
                 return false;
             }
 
-            if (Equals(property.GetValue(Object), value))
-            {
-                propertyValues.Remove(binder.Name);
-            }
-            else
-            {
-                propertyValues[binder.Name] = value;
+            if(Equals(property.GetValue(this.Object), value)) {
+                this.propertyValues.Remove(binder.Name);
+            } else {
+                this.propertyValues[binder.Name] = value;
             }
             return true;
         }
 
-        public AttributeCollection GetAttributes()
-        {
-            return TypeDescriptor.GetAttributes(Object.GetType());
-        }
+        public AttributeCollection GetAttributes() => TypeDescriptor.GetAttributes(this.Object.GetType());
 
-        public string GetClassName()
-        {
-            return TypeDescriptor.GetClassName(Object.GetType());
-        }
+        public string GetClassName() => TypeDescriptor.GetClassName(this.Object.GetType());
 
-        public string GetComponentName()
-        {
-            return TypeDescriptor.GetComponentName(Object.GetType());
-        }
+        public string GetComponentName() => TypeDescriptor.GetComponentName(this.Object.GetType());
 
-        public TypeConverter GetConverter()
-        {
-            return TypeDescriptor.GetConverter(Object.GetType());
-        }
+        public TypeConverter GetConverter() => TypeDescriptor.GetConverter(this.Object.GetType());
 
-        public EventDescriptor GetDefaultEvent()
-        {
-            return TypeDescriptor.GetDefaultEvent(Object.GetType());
-        }
+        public EventDescriptor GetDefaultEvent() => TypeDescriptor.GetDefaultEvent(this.Object.GetType());
 
-        public PropertyDescriptor GetDefaultProperty()
-        {
-            return TypeDescriptor.GetDefaultProperty(Object.GetType());
-        }
+        public PropertyDescriptor GetDefaultProperty() => TypeDescriptor.GetDefaultProperty(this.Object.GetType());
 
-        public object GetEditor(Type editorBaseType)
-        {
-            return TypeDescriptor.GetEditor(Object.GetType(), editorBaseType);
-        }
+        public object GetEditor(Type editorBaseType) => TypeDescriptor.GetEditor(this.Object.GetType(), editorBaseType);
 
-        public EventDescriptorCollection GetEvents()
-        {
-            return TypeDescriptor.GetEvents(Object.GetType());
-        }
+        public EventDescriptorCollection GetEvents() => TypeDescriptor.GetEvents(this.Object.GetType());
 
-        public EventDescriptorCollection GetEvents(Attribute[] attributes)
-        {
-            return TypeDescriptor.GetEvents(Object.GetType(), attributes);
-        }
+        public EventDescriptorCollection GetEvents(Attribute[] attributes) => TypeDescriptor.GetEvents(this.Object.GetType(), attributes);
 
-        public PropertyDescriptorCollection GetProperties()
-        {
-            var propertyDescriptors = trackableProperties.Select(kv =>
-            {
-                return new TrackablePropertyDescriptor<T>(kv.Key, Object, kv.Value, propertyValues);
+        public PropertyDescriptorCollection GetProperties() {
+            var propertyDescriptors = this.trackableProperties.Select(kv => {
+                return new TrackablePropertyDescriptor<T>(kv.Key, this.Object, kv.Value, this.propertyValues);
             }).ToArray();
             return new PropertyDescriptorCollection(propertyDescriptors);
         }
 
-        public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
-        {
-            return GetProperties();
-        }
+        public PropertyDescriptorCollection GetProperties(Attribute[] attributes) => this.GetProperties();
 
-        public object GetPropertyOwner(PropertyDescriptor pd)
-        {
-            return Object;
-        }
+        public object GetPropertyOwner(PropertyDescriptor pd) => this.Object;
     }
 }

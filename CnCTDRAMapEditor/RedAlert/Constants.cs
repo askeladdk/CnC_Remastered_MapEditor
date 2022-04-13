@@ -12,14 +12,11 @@
 // distributed with this program. You should have received a copy of the 
 // GNU General Public License along with permitted additional restrictions 
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
-using System;
 using System.Drawing;
 using System.IO;
 
-namespace MobiusEditor.RedAlert
-{
-    public static class Constants
-    {
+namespace MobiusEditor.RedAlert {
+    public static class Constants {
         public static readonly string SaveDirectory = Path.Combine(Globals.RootSaveDirectory, "Red_Alert");
 
         public static readonly Size MaxSize = new Size(128, 128);

@@ -18,10 +18,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Utility
-{
-    public class MRU
-    {
+namespace MobiusEditor.Utility {
+    public class MRU {
         private readonly RegistryKey registryKey;
         private readonly int maxFiles;
 
@@ -32,104 +30,86 @@ namespace MobiusEditor.Utility
 
         public event EventHandler<FileInfo> FileSelected;
 
-        public MRU(string registryPath, int maxFiles, ToolStripMenuItem menu)
-        {
+        public MRU(string registryPath, int maxFiles, ToolStripMenuItem menu) {
             var subKey = Registry.CurrentUser;
-            foreach (var key in registryPath.Split('\\'))
-            {
+            foreach(var key in registryPath.Split('\\')) {
                 subKey = subKey.CreateSubKey(key, true);
             }
-            registryKey = subKey.CreateSubKey("MRU");
+            this.registryKey = subKey.CreateSubKey("MRU");
 
             this.maxFiles = maxFiles;
             this.menu = menu;
             this.menu.DropDownItems.Clear();
 
-            fileItems = new ToolStripMenuItem[maxFiles];
-            for (var i = 0; i < fileItems.Length; ++i)
-            {
-                var fileItem = fileItems[i] = new ToolStripMenuItem();
+            this.fileItems = new ToolStripMenuItem[maxFiles];
+            for(var i = 0; i < this.fileItems.Length; ++i) {
+                var fileItem = this.fileItems[i] = new ToolStripMenuItem();
                 fileItem.Visible = false;
                 menu.DropDownItems.Add(fileItem);
             }
 
-            LoadMRU();
-            ShowMRU();
+            this.LoadMRU();
+            this.ShowMRU();
         }
 
-        public void Add(FileInfo file)
-        {
-            files.RemoveAll(f => f.FullName == file.FullName);
-            files.Insert(0, file);
+        public void Add(FileInfo file) {
+            this.files.RemoveAll(f => f.FullName == file.FullName);
+            this.files.Insert(0, file);
 
-            if (files.Count > maxFiles)
-            {
-                files.RemoveAt(files.Count - 1);
+            if(this.files.Count > this.maxFiles) {
+                this.files.RemoveAt(this.files.Count - 1);
             }
 
-            SaveMRU();
-            ShowMRU();
+            this.SaveMRU();
+            this.ShowMRU();
         }
 
-        public void Remove(FileInfo file)
-        {
-            files.RemoveAll(f => f.FullName == file.FullName);
+        public void Remove(FileInfo file) {
+            this.files.RemoveAll(f => f.FullName == file.FullName);
 
-            SaveMRU();
-            ShowMRU();
+            this.SaveMRU();
+            this.ShowMRU();
         }
 
-        private void LoadMRU()
-        {
-            files.Clear();
-            for (var i = 0; i < maxFiles; ++i)
-            {
-                string fileName = registryKey.GetValue(i.ToString()) as string;
-                if (!string.IsNullOrEmpty(fileName))
-                {
-                    files.Add(new FileInfo(fileName));
+        private void LoadMRU() {
+            this.files.Clear();
+            for(var i = 0; i < this.maxFiles; ++i) {
+                var fileName = this.registryKey.GetValue(i.ToString()) as string;
+                if(!string.IsNullOrEmpty(fileName)) {
+                    this.files.Add(new FileInfo(fileName));
                 }
             }
         }
 
-        private void SaveMRU()
-        {
-            for (var i = 0; i < files.Count; ++i)
-            {
-                registryKey.SetValue(i.ToString(), files[i].FullName);
+        private void SaveMRU() {
+            for(var i = 0; i < this.files.Count; ++i) {
+                this.registryKey.SetValue(i.ToString(), this.files[i].FullName);
             }
-            for (var i = files.Count; i < maxFiles; ++i)
-            {
-                registryKey.DeleteValue(i.ToString(), false);
+            for(var i = this.files.Count; i < this.maxFiles; ++i) {
+                this.registryKey.DeleteValue(i.ToString(), false);
             }
         }
 
-        private void ShowMRU()
-        {
-            for (var i = 0; i < files.Count; ++i)
-            {
-                var file = files[i];
-                var fileItem = fileItems[i];
+        private void ShowMRU() {
+            for(var i = 0; i < this.files.Count; ++i) {
+                var file = this.files[i];
+                var fileItem = this.fileItems[i];
 
                 fileItem.Text = string.Format("&{0} {1}", i + 1, file.FullName);
                 fileItem.Tag = file;
-                fileItem.Click -= FileItem_Click;
-                fileItem.Click += FileItem_Click;
+                fileItem.Click -= this.FileItem_Click;
+                fileItem.Click += this.FileItem_Click;
                 fileItem.Visible = true;
             }
-            for (var i = files.Count; i < maxFiles; ++i)
-            {
-                var fileItem = fileItems[i];
+            for(var i = this.files.Count; i < this.maxFiles; ++i) {
+                var fileItem = this.fileItems[i];
 
                 fileItem.Visible = false;
-                fileItem.Click -= FileItem_Click;
+                fileItem.Click -= this.FileItem_Click;
             }
-            menu.Enabled = files.Count > 0;
+            this.menu.Enabled = this.files.Count > 0;
         }
 
-        private void FileItem_Click(object sender, EventArgs e)
-        {
-            FileSelected?.Invoke(this, (sender as ToolStripMenuItem).Tag as FileInfo);
-        }
+        private void FileItem_Click(object sender, EventArgs e) => FileSelected?.Invoke(this, (sender as ToolStripMenuItem).Tag as FileInfo);
     }
 }

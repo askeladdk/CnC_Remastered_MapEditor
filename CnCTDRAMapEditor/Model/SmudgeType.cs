@@ -17,11 +17,9 @@ using MobiusEditor.Utility;
 using System;
 using System.Drawing;
 
-namespace MobiusEditor.Model
-{
+namespace MobiusEditor.Model {
     [Flags]
-    public enum SmudgeTypeFlag
-    {
+    public enum SmudgeTypeFlag {
         None = 0,
         Bib = 1,
         Bib1 = 3,
@@ -29,87 +27,78 @@ namespace MobiusEditor.Model
         Bib3 = 9,
     }
 
-    public class SmudgeType : IBrowsableType
-    {
-        public sbyte ID { get; private set; }
+    public class SmudgeType : IBrowsableType {
+        public sbyte ID {
+            get; private set;
+        }
 
-        public string Name { get; private set; }
+        public string Name {
+            get; private set;
+        }
 
-        public string DisplayName => Name;
+        public string DisplayName => this.Name;
 
-        public Size Size { get; set; }
+        public Size Size {
+            get; set;
+        }
 
-        public SmudgeTypeFlag Flag { get; private set; }
+        public SmudgeTypeFlag Flag {
+            get; private set;
+        }
 
-        public Size RenderSize { get; set; }
+        public Size RenderSize {
+            get; set;
+        }
 
-        public Image Thumbnail { get; set; }
+        public Image Thumbnail {
+            get; set;
+        }
 
-        public SmudgeType(sbyte id, string name, Size size, SmudgeTypeFlag flag)
-        {
-            ID = id;
-            Name = name;
-            Size = size;
-            Flag = flag;
+        public SmudgeType(sbyte id, string name, Size size, SmudgeTypeFlag flag) {
+            this.ID = id;
+            this.Name = name;
+            this.Size = size;
+            this.Flag = flag;
         }
 
         public SmudgeType(sbyte id, string name, Size size)
-            : this(id, name, size, SmudgeTypeFlag.None)
-        {
+            : this(id, name, size, SmudgeTypeFlag.None) {
         }
 
         public SmudgeType(sbyte id, string name)
-            : this(id, name, new Size(1, 1), SmudgeTypeFlag.None)
-        {
+            : this(id, name, new Size(1, 1), SmudgeTypeFlag.None) {
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is SmudgeType)
-            {
+        public override bool Equals(object obj) {
+            if(obj is SmudgeType) {
                 return this == obj;
-            }
-            else if (obj is sbyte)
-            {
-                return ID == (sbyte)obj;
-            }
-            else if (obj is string)
-            {
-                return string.Equals(Name, obj as string, StringComparison.OrdinalIgnoreCase);
+            } else if(obj is sbyte) {
+                return this.ID == (sbyte)obj;
+            } else if(obj is string) {
+                return string.Equals(this.Name, obj as string, StringComparison.OrdinalIgnoreCase);
             }
 
             return base.Equals(obj);
         }
 
-        public override int GetHashCode()
-        {
-            return ID.GetHashCode();
-        }
+        public override int GetHashCode() => this.ID.GetHashCode();
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => this.Name;
 
-        public void Init(TheaterType theater)
-        {
-            if (Globals.TheTilesetManager.GetTileData(theater.Tilesets, Name, 0, out Tile tile))
-            {
-                if ((tile.Image.Width * Globals.TileHeight) > (tile.Image.Height * Globals.TileWidth))
-                {
-                    RenderSize = new Size(
+        public void Init(TheaterType theater) {
+            if(Globals.TheTilesetManager.GetTileData(theater.Tilesets, this.Name, 0, out Tile tile)) {
+                if((tile.Image.Width * Globals.TileHeight) > (tile.Image.Height * Globals.TileWidth)) {
+                    this.RenderSize = new Size(
                         tile.Image.Width * Globals.TileWidth / tile.Image.Width,
                         tile.Image.Height * Globals.TileWidth / tile.Image.Width
                     );
-                }
-                else
-                {
-                    RenderSize = new Size(
+                } else {
+                    this.RenderSize = new Size(
                         tile.Image.Width * Globals.TileHeight / tile.Image.Height,
                         tile.Image.Height * Globals.TileHeight / tile.Image.Height
                     );
                 }
-                Thumbnail = new Bitmap(tile.Image, tile.Image.Width, tile.Image.Height);
+                this.Thumbnail = new Bitmap(tile.Image, tile.Image.Width, tile.Image.Height);
             }
         }
     }

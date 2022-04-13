@@ -19,11 +19,9 @@ using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
 
-namespace MobiusEditor.Utility
-{
+namespace MobiusEditor.Utility {
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    struct SubFileData
-    {
+    internal struct SubFileData {
         public ushort Flags;
         public uint CRCValue;
         public int SubfileIndex;
@@ -34,18 +32,16 @@ namespace MobiusEditor.Utility
         public static readonly uint Size = (uint)Marshal.SizeOf(typeof(SubFileData));
     }
 
-    public class Megafile : IEnumerable<string>, IEnumerable, IDisposable
-    {
+    public class Megafile : IEnumerable<string>, IEnumerable, IDisposable {
         private readonly MemoryMappedFile megafileMap;
 
         private readonly string[] stringTable;
 
         private readonly Dictionary<string, SubFileData> fileTable = new Dictionary<string, SubFileData>();
 
-        public Megafile(string megafilePath)
-        {
-            megafileMap = MemoryMappedFile.CreateFromFile(
-                new FileStream(megafilePath, FileMode.Open, FileAccess.Read, FileShare.Read) , null, 0, MemoryMappedFileAccess.Read, HandleInheritability.None, false
+        public Megafile(string megafilePath) {
+            this.megafileMap = MemoryMappedFile.CreateFromFile(
+                new FileStream(megafilePath, FileMode.Open, FileAccess.Read, FileShare.Read), null, 0, MemoryMappedFileAccess.Read, HandleInheritability.None, false
             );
 
             var numFiles = 0U;
@@ -54,19 +50,16 @@ namespace MobiusEditor.Utility
             var fileTableSize = 0U;
 
             var readOffset = 0U;
-            using (var magicNumberReader = new BinaryReader(megafileMap.CreateViewStream(readOffset, 4, MemoryMappedFileAccess.Read)))
-            {
+            using(var magicNumberReader = new BinaryReader(this.megafileMap.CreateViewStream(readOffset, 4, MemoryMappedFileAccess.Read))) {
                 var magicNumber = magicNumberReader.ReadUInt32();
-                if ((magicNumber == 0xFFFFFFFF) || (magicNumber == 0x8FFFFFFF))
-                {
+                if((magicNumber == 0xFFFFFFFF) || (magicNumber == 0x8FFFFFFF)) {
                     // Skip header size and version
                     readOffset += 8;
                 }
             }
 
             readOffset += 4U;
-            using (var headerReader = new BinaryReader(megafileMap.CreateViewStream(readOffset, 12, MemoryMappedFileAccess.Read)))
-            {
+            using(var headerReader = new BinaryReader(this.megafileMap.CreateViewStream(readOffset, 12, MemoryMappedFileAccess.Read))) {
                 numFiles = headerReader.ReadUInt32();
                 numStrings = headerReader.ReadUInt32();
                 stringTableSize = headerReader.ReadUInt32();
@@ -74,71 +67,54 @@ namespace MobiusEditor.Utility
             }
 
             readOffset += 12U;
-            using (var stringReader = new BinaryReader(megafileMap.CreateViewStream(readOffset, stringTableSize, MemoryMappedFileAccess.Read)))
-            {
-                stringTable = new string[numStrings];
+            using(var stringReader = new BinaryReader(this.megafileMap.CreateViewStream(readOffset, stringTableSize, MemoryMappedFileAccess.Read))) {
+                this.stringTable = new string[numStrings];
 
-                for (var i = 0U; i < numStrings; ++i)
-                {
+                for(var i = 0U; i < numStrings; ++i) {
                     var stringSize = stringReader.ReadUInt16();
-                    stringTable[i] = new string(stringReader.ReadChars(stringSize));
+                    this.stringTable[i] = new string(stringReader.ReadChars(stringSize));
                 }
             }
 
             readOffset += stringTableSize;
-            using (var subFileAccessor = megafileMap.CreateViewAccessor(readOffset, fileTableSize, MemoryMappedFileAccess.Read))
-            {
-                for (var i = 0U; i < numFiles; ++i)
-                {
+            using(var subFileAccessor = this.megafileMap.CreateViewAccessor(readOffset, fileTableSize, MemoryMappedFileAccess.Read)) {
+                for(var i = 0U; i < numFiles; ++i) {
                     subFileAccessor.Read(i * SubFileData.Size, out SubFileData subFile);
-                    var fullName = stringTable[subFile.SubfileNameIndex];
-                    fileTable[fullName] = subFile;
+                    var fullName = this.stringTable[subFile.SubfileNameIndex];
+                    this.fileTable[fullName] = subFile;
                 }
             }
         }
 
-        public Stream Open(string path)
-        {
-            if (!fileTable.TryGetValue(path, out SubFileData subFile))
-            {
+        public Stream Open(string path) {
+            if(!this.fileTable.TryGetValue(path, out var subFile)) {
                 return null;
             }
 
-            return megafileMap.CreateViewStream(subFile.SubfileImageDataOffset, subFile.SubfileSize, MemoryMappedFileAccess.Read);
+            return this.megafileMap.CreateViewStream(subFile.SubfileImageDataOffset, subFile.SubfileSize, MemoryMappedFileAccess.Read);
         }
 
-        public IEnumerator<string> GetEnumerator()
-        {
-            foreach (var file in stringTable)
-            {
+        public IEnumerator<string> GetEnumerator() {
+            foreach(var file in this.stringTable) {
                 yield return file;
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    megafileMap.Dispose();
+        protected virtual void Dispose(bool disposing) {
+            if(!this.disposedValue) {
+                if(disposing) {
+                    this.megafileMap.Dispose();
                 }
-                disposedValue = true;
+                this.disposedValue = true;
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        public void Dispose() => this.Dispose(true);
         #endregion
     }
 }

@@ -6,60 +6,38 @@
 // Changes to this file will be reverted when you update Steamworks.NET
 
 #if UNITY_ANDROID || UNITY_IOS || UNITY_TIZEN || UNITY_TVOS || UNITY_WEBGL || UNITY_WSA || UNITY_PS4 || UNITY_WII || UNITY_XBOXONE || UNITY_SWITCH
-	#define DISABLESTEAMWORKS
+#define DISABLESTEAMWORKS
 #endif
 
 #if !DISABLESTEAMWORKS
 
-using System.Runtime.InteropServices;
-using IntPtr = System.IntPtr;
 
 namespace Steamworks {
-	[System.Serializable]
-	public struct HTTPCookieContainerHandle : System.IEquatable<HTTPCookieContainerHandle>, System.IComparable<HTTPCookieContainerHandle> {
-		public static readonly HTTPCookieContainerHandle Invalid = new HTTPCookieContainerHandle(0);
-		public uint m_HTTPCookieContainerHandle;
+    [System.Serializable]
+    public struct HTTPCookieContainerHandle : System.IEquatable<HTTPCookieContainerHandle>, System.IComparable<HTTPCookieContainerHandle> {
+        public static readonly HTTPCookieContainerHandle Invalid = new HTTPCookieContainerHandle(0);
+        public uint m_HTTPCookieContainerHandle;
 
-		public HTTPCookieContainerHandle(uint value) {
-			m_HTTPCookieContainerHandle = value;
-		}
+        public HTTPCookieContainerHandle(uint value) => this.m_HTTPCookieContainerHandle = value;
 
-		public override string ToString() {
-			return m_HTTPCookieContainerHandle.ToString();
-		}
+        public override string ToString() => this.m_HTTPCookieContainerHandle.ToString();
 
-		public override bool Equals(object other) {
-			return other is HTTPCookieContainerHandle && this == (HTTPCookieContainerHandle)other;
-		}
+        public override bool Equals(object other) => other is HTTPCookieContainerHandle && this == (HTTPCookieContainerHandle)other;
 
-		public override int GetHashCode() {
-			return m_HTTPCookieContainerHandle.GetHashCode();
-		}
+        public override int GetHashCode() => this.m_HTTPCookieContainerHandle.GetHashCode();
 
-		public static bool operator ==(HTTPCookieContainerHandle x, HTTPCookieContainerHandle y) {
-			return x.m_HTTPCookieContainerHandle == y.m_HTTPCookieContainerHandle;
-		}
+        public static bool operator ==(HTTPCookieContainerHandle x, HTTPCookieContainerHandle y) => x.m_HTTPCookieContainerHandle == y.m_HTTPCookieContainerHandle;
 
-		public static bool operator !=(HTTPCookieContainerHandle x, HTTPCookieContainerHandle y) {
-			return !(x == y);
-		}
+        public static bool operator !=(HTTPCookieContainerHandle x, HTTPCookieContainerHandle y) => !(x == y);
 
-		public static explicit operator HTTPCookieContainerHandle(uint value) {
-			return new HTTPCookieContainerHandle(value);
-		}
+        public static explicit operator HTTPCookieContainerHandle(uint value) => new HTTPCookieContainerHandle(value);
 
-		public static explicit operator uint(HTTPCookieContainerHandle that) {
-			return that.m_HTTPCookieContainerHandle;
-		}
+        public static explicit operator uint(HTTPCookieContainerHandle that) => that.m_HTTPCookieContainerHandle;
 
-		public bool Equals(HTTPCookieContainerHandle other) {
-			return m_HTTPCookieContainerHandle == other.m_HTTPCookieContainerHandle;
-		}
+        public bool Equals(HTTPCookieContainerHandle other) => this.m_HTTPCookieContainerHandle == other.m_HTTPCookieContainerHandle;
 
-		public int CompareTo(HTTPCookieContainerHandle other) {
-			return m_HTTPCookieContainerHandle.CompareTo(other.m_HTTPCookieContainerHandle);
-		}
-	}
+        public int CompareTo(HTTPCookieContainerHandle other) => this.m_HTTPCookieContainerHandle.CompareTo(other.m_HTTPCookieContainerHandle);
+    }
 }
 
 #endif // !DISABLESTEAMWORKS

@@ -14,12 +14,12 @@
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using System.ComponentModel;
 
-namespace MobiusEditor.TiberianDawn
-{
-    public class BasicSection : Model.BasicSection
-    {
+namespace MobiusEditor.TiberianDawn {
+    public class BasicSection : Model.BasicSection {
         private int buildLevel;
         [DefaultValue(99)]
-        public int BuildLevel { get => buildLevel; set => SetField(ref buildLevel, value); }
+        public int BuildLevel {
+            get => this.buildLevel; set => this.SetField(ref this.buildLevel, value);
+        }
     }
 }

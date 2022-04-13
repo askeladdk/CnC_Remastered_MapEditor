@@ -21,66 +21,59 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Controls
-{
-    public partial class PlayerSettings : UserControl
-    {
+namespace MobiusEditor.Controls {
+    public partial class PlayerSettings : UserControl {
         private readonly PropertyTracker<House> houseSettingsTracker;
         private readonly dynamic house;
 
-        public PlayerSettings(IGamePlugin plugin, PropertyTracker<House> houseSettingsTracker)
-        {
+        public PlayerSettings(IGamePlugin plugin, PropertyTracker<House> houseSettingsTracker) {
             this.houseSettingsTracker = houseSettingsTracker;
-            house = houseSettingsTracker;
+            this.house = houseSettingsTracker;
 
-            InitializeComponent();
+            this.InitializeComponent();
 
-            edgeComboBox.Items.Clear();
-            edgeComboBox.Items.AddRange(new string[] { "North", "South", "West", "East" });
+            this.edgeComboBox.Items.Clear();
+            this.edgeComboBox.Items.AddRange(new string[] { "North", "South", "West", "East" });
 
-            creditsNud.DataBindings.Add("Value", houseSettingsTracker, "Credits");
-            maxBuildingsNud.DataBindings.Add("Value", houseSettingsTracker, "MaxBuilding");
-            maxUnitsNud.DataBindings.Add("Value", houseSettingsTracker, "MaxUnit");
-            edgeComboBox.DataBindings.Add("SelectedItem", houseSettingsTracker, "Edge");
+            this.creditsNud.DataBindings.Add("Value", houseSettingsTracker, "Credits");
+            this.maxBuildingsNud.DataBindings.Add("Value", houseSettingsTracker, "MaxBuilding");
+            this.maxUnitsNud.DataBindings.Add("Value", houseSettingsTracker, "MaxUnit");
+            this.edgeComboBox.DataBindings.Add("SelectedItem", houseSettingsTracker, "Edge");
 
-            switch (plugin.GameType)
-            {
-                case GameType.TiberianDawn:
-                    maxInfantryNud.Visible = maxInfantryLbl.Visible = false;
-                    maxVesselsNud.Visible = maxVesselsLbl.Visible = false;
-                    techLevelNud.Visible = techLevelLbl.Visible = false;
-                    iqNud.Visible = iqLbl.Visible = false;
-                    playerControlCheckBox.Visible = playerControlLbl.Visible = false;
-                    break;
-                case GameType.RedAlert:
-                    maxInfantryNud.DataBindings.Add("Value", houseSettingsTracker, "MaxInfantry");
-                    maxVesselsNud.DataBindings.Add("Value", houseSettingsTracker, "MaxVessel");
-                    techLevelNud.DataBindings.Add("Value", houseSettingsTracker, "TechLevel");
-                    iqNud.DataBindings.Add("Value", houseSettingsTracker, "IQ");
-                    playerControlCheckBox.DataBindings.Add("Checked", houseSettingsTracker, "PlayerControl");
-                    break;
+            switch(plugin.GameType) {
+            case GameType.TiberianDawn:
+                this.maxInfantryNud.Visible = this.maxInfantryLbl.Visible = false;
+                this.maxVesselsNud.Visible = this.maxVesselsLbl.Visible = false;
+                this.techLevelNud.Visible = this.techLevelLbl.Visible = false;
+                this.iqNud.Visible = this.iqLbl.Visible = false;
+                this.playerControlCheckBox.Visible = this.playerControlLbl.Visible = false;
+                break;
+            case GameType.RedAlert:
+                this.maxInfantryNud.DataBindings.Add("Value", houseSettingsTracker, "MaxInfantry");
+                this.maxVesselsNud.DataBindings.Add("Value", houseSettingsTracker, "MaxVessel");
+                this.techLevelNud.DataBindings.Add("Value", houseSettingsTracker, "TechLevel");
+                this.iqNud.DataBindings.Add("Value", houseSettingsTracker, "IQ");
+                this.playerControlCheckBox.DataBindings.Add("Checked", houseSettingsTracker, "PlayerControl");
+                break;
             }
 
-            playersListBox.Items.Clear();
-            playersListBox.Items.AddRange(plugin.Map.Houses.Select(h => h.Type.Name).ToArray());
+            this.playersListBox.Items.Clear();
+            this.playersListBox.Items.AddRange(plugin.Map.Houses.Select(h => h.Type.Name).ToArray());
 
             var selectedIndices = new List<int>();
-            foreach (var id in house.Allies)
-            {
-                playersListBox.SetSelected(id, true);
+            foreach(var id in this.house.Allies) {
+                this.playersListBox.SetSelected(id, true);
             }
 
-            playersListBox.SelectedIndexChanged += playersListBox_SelectedIndexChanged;
+            this.playersListBox.SelectedIndexChanged += this.playersListBox_SelectedIndexChanged;
         }
 
-        private void playersListBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
+        private void playersListBox_SelectedIndexChanged(object sender, EventArgs e) {
             var allies = 0;
-            foreach (int selectedIndex in playersListBox.SelectedIndices)
-            {
+            foreach(int selectedIndex in this.playersListBox.SelectedIndices) {
                 allies |= 1 << selectedIndex;
             }
-            house.Allies = new AlliesMask(allies);
+            this.house.Allies = new AlliesMask(allies);
         }
     }
 }

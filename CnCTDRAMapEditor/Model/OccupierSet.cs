@@ -19,226 +19,188 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace MobiusEditor.Model
-{
-    public class OccupierAddedEventArgs<T> : EventArgs
-    {
+namespace MobiusEditor.Model {
+    public class OccupierAddedEventArgs<T> : EventArgs {
         public readonly int Cell;
 
         public readonly Point Location;
 
         public readonly T Occupier;
 
-        public OccupierAddedEventArgs(CellMetrics metrics, int cell, T occupier)
-        {
-            Cell = cell;
-            metrics.GetLocation(cell, out Location);
-            Occupier = occupier;
+        public OccupierAddedEventArgs(CellMetrics metrics, int cell, T occupier) {
+            this.Cell = cell;
+            metrics.GetLocation(cell, out this.Location);
+            this.Occupier = occupier;
         }
 
-        public OccupierAddedEventArgs(CellMetrics metrics, Point location, T occupier)
-        {
-            Location = location;
-            metrics.GetCell(location, out Cell);
-            Occupier = occupier;
+        public OccupierAddedEventArgs(CellMetrics metrics, Point location, T occupier) {
+            this.Location = location;
+            metrics.GetCell(location, out this.Cell);
+            this.Occupier = occupier;
         }
     }
 
-    public class OccupierRemovedEventArgs<T> : EventArgs
-    {
+    public class OccupierRemovedEventArgs<T> : EventArgs {
         public readonly int Cell;
 
         public readonly Point Location;
 
         public readonly T Occupier;
 
-        public OccupierRemovedEventArgs(CellMetrics metrics, int cell, T occupier)
-        {
-            Cell = cell;
-            metrics.GetLocation(cell, out Location);
-            Occupier = occupier;
+        public OccupierRemovedEventArgs(CellMetrics metrics, int cell, T occupier) {
+            this.Cell = cell;
+            metrics.GetLocation(cell, out this.Location);
+            this.Occupier = occupier;
         }
 
-        public OccupierRemovedEventArgs(CellMetrics metrics, Point location, T occupier)
-        {
-            Location = location;
-            metrics.GetCell(location, out Cell);
-            Occupier = occupier;
+        public OccupierRemovedEventArgs(CellMetrics metrics, Point location, T occupier) {
+            this.Location = location;
+            metrics.GetCell(location, out this.Cell);
+            this.Occupier = occupier;
         }
     }
 
-    public class OccupierSet<T> : IEnumerable<(Point Location, T Occupier)>, IEnumerable where T : class, ICellOccupier
-    {
+    public class OccupierSet<T> : IEnumerable<(Point Location, T Occupier)>, IEnumerable where T : class, ICellOccupier {
         private readonly CellMetrics metrics;
         private readonly Dictionary<T, Point> occupiers = new Dictionary<T, Point>();
         private readonly T[,] occupierCells;
 
         public T this[Point location] => this[location.X, location.Y];
 
-        public T this[int x, int y] => Contains(x, y) ? occupierCells[y, x] : null;
+        public T this[int x, int y] => this.Contains(x, y) ? this.occupierCells[y, x] : null;
 
-        public T this[int cell] => metrics.GetLocation(cell, out Point location) ? this[location] : null;
+        public T this[int cell] => this.metrics.GetLocation(cell, out var location) ? this[location] : null;
 
-        public Point? this[T occupier] => occupiers.ContainsKey(occupier) ? occupiers[occupier] : default;
+        public Point? this[T occupier] => this.occupiers.ContainsKey(occupier) ? this.occupiers[occupier] : default;
 
-        public IEnumerable<T> Occupiers => occupiers.Keys;
+        public IEnumerable<T> Occupiers => this.occupiers.Keys;
 
         public event EventHandler<OccupierAddedEventArgs<T>> OccupierAdded;
         public event EventHandler<OccupierRemovedEventArgs<T>> OccupierRemoved;
         public event EventHandler<EventArgs> Cleared;
 
-        public OccupierSet(CellMetrics metrics)
-        {
+        public OccupierSet(CellMetrics metrics) {
             this.metrics = metrics;
-            occupierCells = new T[metrics.Height, metrics.Width];
+            this.occupierCells = new T[metrics.Height, metrics.Width];
         }
 
-        public bool CanAdd(Point location, T occupier, bool[,] occupyMask)
-        {
-            if ((occupier == null) || Contains(occupier))
-            {
+        public bool CanAdd(Point location, T occupier, bool[,] occupyMask) {
+            if((occupier == null) || this.Contains(occupier)) {
                 return false;
             }
 
             var occupyPoints = GetOccupyPoints(location, occupyMask).ToArray();
-            return !occupyPoints.Any(p => !Contains(p) || (this[p] != null));
+            return !occupyPoints.Any(p => !this.Contains(p) || (this[p] != null));
         }
 
-        public bool CanAdd(int x, int y, T occupier, bool[,] occupyMask) => CanAdd(new Point(x, y), occupier, occupyMask);
+        public bool CanAdd(int x, int y, T occupier, bool[,] occupyMask) => this.CanAdd(new Point(x, y), occupier, occupyMask);
 
-        public bool CanAdd(int cell, T occupier, bool[,] occupyMask) => metrics.GetLocation(cell, out Point location) ? CanAdd(location, occupier, occupyMask) : false;
+        public bool CanAdd(int cell, T occupier, bool[,] occupyMask) => this.metrics.GetLocation(cell, out var location) ? this.CanAdd(location, occupier, occupyMask) : false;
 
-        public bool CanAdd(Point location, T occupier) => (occupier != null) ? CanAdd(location, occupier, occupier.OccupyMask) : false;
+        public bool CanAdd(Point location, T occupier) => (occupier != null) ? this.CanAdd(location, occupier, occupier.OccupyMask) : false;
 
-        public bool CanAdd(int x, int y, T occupier) => (occupier != null) ? CanAdd(x, y, occupier, occupier.OccupyMask) : false;
+        public bool CanAdd(int x, int y, T occupier) => (occupier != null) ? this.CanAdd(x, y, occupier, occupier.OccupyMask) : false;
 
-        public bool CanAdd(int cell, T occupier) => (occupier != null) ? CanAdd(cell, occupier, occupier.OccupyMask) : false;
+        public bool CanAdd(int cell, T occupier) => (occupier != null) ? this.CanAdd(cell, occupier, occupier.OccupyMask) : false;
 
-        public bool Add(Point location, T occupier, bool[,] occupyMask)
-        {
-            if (!DoAdd(location, occupier, occupyMask))
-            {
+        public bool Add(Point location, T occupier, bool[,] occupyMask) {
+            if(!this.DoAdd(location, occupier, occupyMask)) {
                 return false;
             }
 
-            OnOccupierAdded(new OccupierAddedEventArgs<T>(metrics, location, occupier));
+            this.OnOccupierAdded(new OccupierAddedEventArgs<T>(this.metrics, location, occupier));
             return true;
         }
 
-        public bool Add(int x, int y, T occupier, bool[,] occupyMask) => Add(new Point(x, y), occupier, occupyMask);
+        public bool Add(int x, int y, T occupier, bool[,] occupyMask) => this.Add(new Point(x, y), occupier, occupyMask);
 
-        public bool Add(int cell, T occupier, bool[,] occupyMask) => metrics.GetLocation(cell, out Point location) ? Add(location, occupier, occupyMask) : false;
+        public bool Add(int cell, T occupier, bool[,] occupyMask) => this.metrics.GetLocation(cell, out var location) ? this.Add(location, occupier, occupyMask) : false;
 
-        public bool Add(Point location, T occupier) => (occupier != null) ? Add(location, occupier, occupier.OccupyMask) : false;
+        public bool Add(Point location, T occupier) => (occupier != null) ? this.Add(location, occupier, occupier.OccupyMask) : false;
 
-        public bool Add(int x, int y, T occupier) => (occupier != null) ? Add(x, y, occupier, occupier.OccupyMask) : false;
+        public bool Add(int x, int y, T occupier) => (occupier != null) ? this.Add(x, y, occupier, occupier.OccupyMask) : false;
 
-        public bool Add(int cell, T occupier) => (occupier != null) ? Add(cell, occupier, occupier.OccupyMask) : false;
+        public bool Add(int cell, T occupier) => (occupier != null) ? this.Add(cell, occupier, occupier.OccupyMask) : false;
 
-        public void Clear()
-        {
-            occupiers.Clear();
-            Array.Clear(occupierCells, 0, occupierCells.Length);
-            OnCleared();
+        public void Clear() {
+            this.occupiers.Clear();
+            Array.Clear(this.occupierCells, 0, this.occupierCells.Length);
+            this.OnCleared();
         }
 
-        public bool Contains(int x, int y) => ((x >= 0) && (x < occupierCells.GetLength(1)) && (y >= 0) && (y < occupierCells.GetLength(0)));
+        public bool Contains(int x, int y) => ((x >= 0) && (x < this.occupierCells.GetLength(1)) && (y >= 0) && (y < this.occupierCells.GetLength(0)));
 
-        public bool Contains(Point location) => Contains(location.X, location.Y);
+        public bool Contains(Point location) => this.Contains(location.X, location.Y);
 
-        public bool Contains(int cell) => metrics.GetLocation(cell, out Point location) ? Contains(location) : false;
+        public bool Contains(int cell) => this.metrics.GetLocation(cell, out var location) ? this.Contains(location) : false;
 
-        public bool Contains(T occupier) => occupiers.ContainsKey(occupier);
+        public bool Contains(T occupier) => this.occupiers.ContainsKey(occupier);
 
-        public IEnumerator<(Point Location, T Occupier)> GetEnumerator() => occupiers.Select(kv => (kv.Value, kv.Key)).GetEnumerator();
+        public IEnumerator<(Point Location, T Occupier)> GetEnumerator() => this.occupiers.Select(kv => (kv.Value, kv.Key)).GetEnumerator();
 
-        public bool Remove(T occupier)
-        {
+        public bool Remove(T occupier) {
             var oldLocation = this[occupier];
-            if (!DoRemove(occupier))
-            {
+            if(!this.DoRemove(occupier)) {
                 return false;
             }
 
-            OnOccupierRemoved(new OccupierRemovedEventArgs<T>(metrics, oldLocation.Value, occupier));
+            this.OnOccupierRemoved(new OccupierRemovedEventArgs<T>(this.metrics, oldLocation.Value, occupier));
             return true;
         }
 
-        public bool Remove(Point location) => Remove(this[location]);
+        public bool Remove(Point location) => this.Remove(this[location]);
 
-        public bool Remove(int x, int y) => Remove(new Point(x, y));
+        public bool Remove(int x, int y) => this.Remove(new Point(x, y));
 
-        public bool Remove(int cell) => metrics.GetLocation(cell, out Point location) ? Remove(location) : false;
+        public bool Remove(int cell) => this.metrics.GetLocation(cell, out var location) ? this.Remove(location) : false;
 
         public IEnumerable<(Point Location, U Occupier)> OfType<U>() where U : T => this.Where(i => i.Occupier is U).Select(i => (i.Location, (U)i.Occupier));
 
-        protected virtual void OnOccupierAdded(OccupierAddedEventArgs<T> e)
-        {
-            OccupierAdded?.Invoke(this, e);
-        }
+        protected virtual void OnOccupierAdded(OccupierAddedEventArgs<T> e) => OccupierAdded?.Invoke(this, e);
 
-        protected virtual void OnOccupierRemoved(OccupierRemovedEventArgs<T> e)
-        {
-            OccupierRemoved?.Invoke(this, e);
-        }
+        protected virtual void OnOccupierRemoved(OccupierRemovedEventArgs<T> e) => OccupierRemoved?.Invoke(this, e);
 
-        protected virtual void OnCleared()
-        {
-            Cleared?.Invoke(this, new EventArgs());
-        }
+        protected virtual void OnCleared() => Cleared?.Invoke(this, new EventArgs());
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-        private bool DoAdd(Point location, T occupier, bool[,] occupyMask)
-        {
-            if ((occupier == null) || Contains(occupier))
-            {
+        private bool DoAdd(Point location, T occupier, bool[,] occupyMask) {
+            if((occupier == null) || this.Contains(occupier)) {
                 return false;
             }
 
             var occupyPoints = GetOccupyPoints(location, occupyMask).ToArray();
-            if (occupyPoints.Any(p => !Contains(p) || (this[p] != null)))
-            {
+            if(occupyPoints.Any(p => !this.Contains(p) || (this[p] != null))) {
                 return false;
             }
 
-            occupiers[occupier] = location;
-            foreach (var p in occupyPoints)
-            {
-                occupierCells[p.Y, p.X] = occupier;
+            this.occupiers[occupier] = location;
+            foreach(var p in occupyPoints) {
+                this.occupierCells[p.Y, p.X] = occupier;
             }
             return true;
         }
 
-        private bool DoRemove(T occupier)
-        {
-            if ((occupier == null) || !occupiers.TryGetValue(occupier, out Point location))
-            {
+        private bool DoRemove(T occupier) {
+            if((occupier == null) || !this.occupiers.TryGetValue(occupier, out var location)) {
                 return false;
             }
 
-            occupiers.Remove(occupier);
-            for (var y = location.Y; y < metrics.Height; ++y)
-            {
-                for (var x = location.X; x < metrics.Width; ++x)
-                {
-                    if (occupierCells[y, x] == occupier)
-                    {
-                        occupierCells[y, x] = null;
+            this.occupiers.Remove(occupier);
+            for(var y = location.Y; y < this.metrics.Height; ++y) {
+                for(var x = location.X; x < this.metrics.Width; ++x) {
+                    if(this.occupierCells[y, x] == occupier) {
+                        this.occupierCells[y, x] = null;
                     }
                 }
             }
             return true;
         }
 
-        private static IEnumerable<Point> GetOccupyPoints(Point location, bool[,] occupyMask)
-        {
-            for (var y = 0; y < occupyMask.GetLength(0); ++y)
-            {
-                for (var x = 0; x < occupyMask.GetLength(1); ++x)
-                {
-                    if (occupyMask[y, x])
-                    {
+        private static IEnumerable<Point> GetOccupyPoints(Point location, bool[,] occupyMask) {
+            for(var y = 0; y < occupyMask.GetLength(0); ++y) {
+                for(var x = 0; x < occupyMask.GetLength(1); ++x) {
+                    if(occupyMask[y, x]) {
                         yield return location + new Size(x, y);
                     }
                 }

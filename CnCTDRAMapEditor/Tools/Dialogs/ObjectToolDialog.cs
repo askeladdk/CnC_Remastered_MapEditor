@@ -15,43 +15,29 @@
 using MobiusEditor.Controls;
 using MobiusEditor.Interface;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools.Dialogs
-{
-    public partial class ObjectToolDialog : Form
-    {
-        public TypeComboBox ObjectTypeComboBox => objectTypeComboBox;
+namespace MobiusEditor.Tools.Dialogs {
+    public partial class ObjectToolDialog : Form {
+        public TypeComboBox ObjectTypeComboBox => this.objectTypeComboBox;
 
-        public MapPanel ObjectTypeMapPanel => objectTypeMapPanel;
+        public MapPanel ObjectTypeMapPanel => this.objectTypeMapPanel;
 
-        public ObjectProperties ObjectProperties => objectProperties;
+        public ObjectProperties ObjectProperties => this.objectProperties;
 
-        public ObjectToolDialog()
-        {
-            InitializeComponent();
+        public ObjectToolDialog() {
+            this.InitializeComponent();
 
-            Location = Properties.Settings.Default.ToolDialogPosition;
+            this.Location = Properties.Settings.Default.ToolDialogPosition;
         }
 
         public ObjectToolDialog(IGamePlugin plugin)
-            : this()
-        {
-            objectProperties.Initialize(plugin, true);
-        }
+            : this() => this.objectProperties.Initialize(plugin, true);
 
-        protected override void OnMove(EventArgs e)
-        {
+        protected override void OnMove(EventArgs e) {
             base.OnMove(e);
 
-            Properties.Settings.Default.ToolDialogPosition = Location;
+            Properties.Settings.Default.ToolDialogPosition = this.Location;
             Properties.Settings.Default.Save();
         }
     }

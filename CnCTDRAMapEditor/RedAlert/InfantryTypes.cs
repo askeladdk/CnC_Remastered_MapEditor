@@ -17,10 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.RedAlert
-{
-    public static class InfantryTypes
-    {
+namespace MobiusEditor.RedAlert {
+    public static class InfantryTypes {
         public static readonly InfantryType E1 = new InfantryType(0, "e1", "TEXT_UNIT_RA_E1", "Greece");
         public static readonly InfantryType E2 = new InfantryType(1, "e2", "TEXT_UNIT_RA_E2", "USSR");
         public static readonly InfantryType E3 = new InfantryType(2, "e3", "TEXT_UNIT_RA_E3", "Greece");
@@ -50,17 +48,11 @@ namespace MobiusEditor.RedAlert
 
         private static readonly InfantryType[] Types;
 
-        static InfantryTypes()
-        {
-            Types =
+        static InfantryTypes() => Types =
                 (from field in typeof(InfantryTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsInitOnly && typeof(InfantryType).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as InfantryType).ToArray();
-        }
 
-        public static IEnumerable<InfantryType> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<InfantryType> GetTypes() => Types;
     }
 }

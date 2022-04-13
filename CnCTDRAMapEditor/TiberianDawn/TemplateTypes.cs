@@ -17,10 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.TiberianDawn
-{
-    public static class TemplateTypes
-    {
+namespace MobiusEditor.TiberianDawn {
+    public static class TemplateTypes {
         public static readonly TemplateType Clear = new TemplateType(0, "clear1", 1, 1, new TheaterType[] { TheaterTypes.Winter, TheaterTypes.Desert, TheaterTypes.Temperate }, TemplateTypeFlag.Clear);
         public static readonly TemplateType Water = new TemplateType(1, "w1", 1, 1, new TheaterType[] { TheaterTypes.Winter, TheaterTypes.Temperate, TheaterTypes.Desert });
         public static readonly TemplateType Water2 = new TemplateType(2, "w2", 2, 2, new TheaterType[] { TheaterTypes.Winter, TheaterTypes.Temperate });
@@ -238,19 +236,13 @@ namespace MobiusEditor.TiberianDawn
         public static readonly TemplateType Shore62 = new TemplateType(214, "sh62", 6, 1, new TheaterType[] { TheaterTypes.Desert });
         public static readonly TemplateType Shore63 = new TemplateType(215, "sh63", 4, 1, new TheaterType[] { TheaterTypes.Desert });
 
-        private static TemplateType[] Types;
+        private static readonly TemplateType[] Types;
 
-        static TemplateTypes()
-        {
-            Types =
+        static TemplateTypes() => Types =
                 (from field in typeof(TemplateTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsInitOnly && typeof(TemplateType).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as TemplateType).ToArray();
-        }
 
-        public static IEnumerable<TemplateType> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<TemplateType> GetTypes() => Types;
     }
 }

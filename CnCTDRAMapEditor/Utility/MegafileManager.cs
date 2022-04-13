@@ -17,52 +17,38 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-namespace MobiusEditor.Utility
-{
-    public class MegafileManager : IEnumerable<string>, IEnumerable, IDisposable
-    {
+namespace MobiusEditor.Utility {
+    public class MegafileManager : IEnumerable<string>, IEnumerable, IDisposable {
         private readonly string looseFilePath;
 
         private readonly List<Megafile> megafiles = new List<Megafile>();
 
         private readonly HashSet<string> filenames = new HashSet<string>();
 
-        public MegafileManager(string looseFilePath)
-        {
-            this.looseFilePath = looseFilePath;
-        }
+        public MegafileManager(string looseFilePath) => this.looseFilePath = looseFilePath;
 
-        public bool Load(string megafilePath)
-        {
-            if (!File.Exists(megafilePath))
-            {
+        public bool Load(string megafilePath) {
+            if(!File.Exists(megafilePath)) {
                 return false;
             }
 
             var megafile = new Megafile(megafilePath);
-            filenames.UnionWith(megafile);
-            megafiles.Add(megafile);
+            this.filenames.UnionWith(megafile);
+            this.megafiles.Add(megafile);
             return true;
         }
 
-        public bool Exists(string path)
-        {
-            return File.Exists(Path.Combine(looseFilePath, path)) || filenames.Contains(path.ToUpper());
-        }
+        public bool Exists(string path) => File.Exists(Path.Combine(this.looseFilePath, path)) || this.filenames.Contains(path.ToUpper());
 
-        public Stream Open(string path)
-        {
-            string loosePath = Path.Combine(looseFilePath, path);
-            if (File.Exists(loosePath))
-            {
+        public Stream Open(string path) {
+            var loosePath = Path.Combine(this.looseFilePath, path);
+            if(File.Exists(loosePath)) {
                 return File.Open(loosePath, FileMode.Open, FileAccess.Read);
             }
 
-            foreach (var megafile in megafiles)
-            {
+            foreach(var megafile in this.megafiles) {
                 var stream = megafile.Open(path.ToUpper());
-                if (stream != null)
-                {
+                if(stream != null) {
                     return stream;
                 }
             }
@@ -70,35 +56,23 @@ namespace MobiusEditor.Utility
             return null;
         }
 
-        public IEnumerator<string> GetEnumerator()
-        {
-            return filenames.GetEnumerator();
-        }
+        public IEnumerator<string> GetEnumerator() => this.filenames.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    megafiles.ForEach(m => m.Dispose());
+        protected virtual void Dispose(bool disposing) {
+            if(!this.disposedValue) {
+                if(disposing) {
+                    this.megafiles.ForEach(m => m.Dispose());
                 }
-                disposedValue = true;
+                this.disposedValue = true;
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        public void Dispose() => this.Dispose(true);
         #endregion
     }
 }

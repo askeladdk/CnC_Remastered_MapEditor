@@ -6,59 +6,37 @@
 // Changes to this file will be reverted when you update Steamworks.NET
 
 #if UNITY_ANDROID || UNITY_IOS || UNITY_TIZEN || UNITY_TVOS || UNITY_WEBGL || UNITY_WSA || UNITY_PS4 || UNITY_WII || UNITY_XBOXONE || UNITY_SWITCH
-	#define DISABLESTEAMWORKS
+#define DISABLESTEAMWORKS
 #endif
 
 #if !DISABLESTEAMWORKS
 
-using System.Runtime.InteropServices;
-using IntPtr = System.IntPtr;
 
 namespace Steamworks {
-	[System.Serializable]
-	public struct SteamLeaderboardEntries_t : System.IEquatable<SteamLeaderboardEntries_t>, System.IComparable<SteamLeaderboardEntries_t> {
-		public ulong m_SteamLeaderboardEntries;
+    [System.Serializable]
+    public struct SteamLeaderboardEntries_t : System.IEquatable<SteamLeaderboardEntries_t>, System.IComparable<SteamLeaderboardEntries_t> {
+        public ulong m_SteamLeaderboardEntries;
 
-		public SteamLeaderboardEntries_t(ulong value) {
-			m_SteamLeaderboardEntries = value;
-		}
+        public SteamLeaderboardEntries_t(ulong value) => this.m_SteamLeaderboardEntries = value;
 
-		public override string ToString() {
-			return m_SteamLeaderboardEntries.ToString();
-		}
+        public override string ToString() => this.m_SteamLeaderboardEntries.ToString();
 
-		public override bool Equals(object other) {
-			return other is SteamLeaderboardEntries_t && this == (SteamLeaderboardEntries_t)other;
-		}
+        public override bool Equals(object other) => other is SteamLeaderboardEntries_t && this == (SteamLeaderboardEntries_t)other;
 
-		public override int GetHashCode() {
-			return m_SteamLeaderboardEntries.GetHashCode();
-		}
+        public override int GetHashCode() => this.m_SteamLeaderboardEntries.GetHashCode();
 
-		public static bool operator ==(SteamLeaderboardEntries_t x, SteamLeaderboardEntries_t y) {
-			return x.m_SteamLeaderboardEntries == y.m_SteamLeaderboardEntries;
-		}
+        public static bool operator ==(SteamLeaderboardEntries_t x, SteamLeaderboardEntries_t y) => x.m_SteamLeaderboardEntries == y.m_SteamLeaderboardEntries;
 
-		public static bool operator !=(SteamLeaderboardEntries_t x, SteamLeaderboardEntries_t y) {
-			return !(x == y);
-		}
+        public static bool operator !=(SteamLeaderboardEntries_t x, SteamLeaderboardEntries_t y) => !(x == y);
 
-		public static explicit operator SteamLeaderboardEntries_t(ulong value) {
-			return new SteamLeaderboardEntries_t(value);
-		}
+        public static explicit operator SteamLeaderboardEntries_t(ulong value) => new SteamLeaderboardEntries_t(value);
 
-		public static explicit operator ulong(SteamLeaderboardEntries_t that) {
-			return that.m_SteamLeaderboardEntries;
-		}
+        public static explicit operator ulong(SteamLeaderboardEntries_t that) => that.m_SteamLeaderboardEntries;
 
-		public bool Equals(SteamLeaderboardEntries_t other) {
-			return m_SteamLeaderboardEntries == other.m_SteamLeaderboardEntries;
-		}
+        public bool Equals(SteamLeaderboardEntries_t other) => this.m_SteamLeaderboardEntries == other.m_SteamLeaderboardEntries;
 
-		public int CompareTo(SteamLeaderboardEntries_t other) {
-			return m_SteamLeaderboardEntries.CompareTo(other.m_SteamLeaderboardEntries);
-		}
-	}
+        public int CompareTo(SteamLeaderboardEntries_t other) => this.m_SteamLeaderboardEntries.CompareTo(other.m_SteamLeaderboardEntries);
+    }
 }
 
 #endif // !DISABLESTEAMWORKS

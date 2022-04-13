@@ -18,236 +18,196 @@ using MobiusEditor.Utility;
 using Steamworks;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Dialogs
-{
-    public partial class SteamDialog : Form
-    {
+namespace MobiusEditor.Dialogs {
+    public partial class SteamDialog : Form {
         private static readonly string PreviewDirectory = Path.Combine(Path.GetTempPath(), "CnCRCMapEditor");
 
         private readonly IGamePlugin plugin;
         private readonly Timer statusUpdateTimer = new Timer();
 
-        public SteamDialog(IGamePlugin plugin)
-        {
+        public SteamDialog(IGamePlugin plugin) {
             this.plugin = plugin;
 
-            InitializeComponent();
+            this.InitializeComponent();
 
-            visibilityComboBox.DataSource = new []
+            this.visibilityComboBox.DataSource = new[]
             {
                 new { Name = "Public", Value = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPublic },
                 new { Name = "Friends Only", Value = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityFriendsOnly },
                 new { Name = "Private", Value = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPrivate }
             };
 
-            statusUpdateTimer.Interval = 500;
-            statusUpdateTimer.Tick += StatusUpdateTimer_Tick;
+            this.statusUpdateTimer.Interval = 500;
+            this.statusUpdateTimer.Tick += this.StatusUpdateTimer_Tick;
 
-            Disposed += (o, e) => { (previewTxt.Tag as Image)?.Dispose(); };
+            Disposed += (o, e) => { (this.previewTxt.Tag as Image)?.Dispose(); };
         }
 
-        protected override void OnLoad(EventArgs e)
-        {
+        protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
 
-            titleTxt.Text = plugin.Map.SteamSection.Title;
-            descriptionTxt.Text = plugin.Map.SteamSection.Description;
-            previewTxt.Text = plugin.Map.SteamSection.PreviewFile;
-            visibilityComboBox.SelectedValue = plugin.Map.SteamSection.Visibility;
+            this.titleTxt.Text = this.plugin.Map.SteamSection.Title;
+            this.descriptionTxt.Text = this.plugin.Map.SteamSection.Description;
+            this.previewTxt.Text = this.plugin.Map.SteamSection.PreviewFile;
+            this.visibilityComboBox.SelectedValue = this.plugin.Map.SteamSection.Visibility;
 
-            btnPublishMap.SplitWidth = (plugin.Map.SteamSection.PublishedFileId != PublishedFileId_t.Invalid.m_PublishedFileId) ? MenuButton.DefaultSplitWidth : 0;
+            this.btnPublishMap.SplitWidth = (this.plugin.Map.SteamSection.PublishedFileId != PublishedFileId_t.Invalid.m_PublishedFileId) ? MenuButton.DefaultSplitWidth : 0;
 
             Directory.CreateDirectory(PreviewDirectory);
             var previewPath = Path.Combine(PreviewDirectory, "Minimap.png");
-            plugin.Map.GenerateWorkshopPreview().ToBitmap().Save(previewPath, ImageFormat.Png);
+            this.plugin.Map.GenerateWorkshopPreview().ToBitmap().Save(previewPath, ImageFormat.Png);
 
-            if (plugin.Map.BasicSection.SoloMission)
-            {
+            if(this.plugin.Map.BasicSection.SoloMission) {
                 var soloBannerPath = Path.Combine(PreviewDirectory, "SoloBanner.png");
                 Properties.Resources.UI_CustomMissionPreviewDefault.Save(soloBannerPath, ImageFormat.Png);
-                previewTxt.Text = soloBannerPath;
-            }
-            else
-            {
-                previewTxt.Text = previewPath;
+                this.previewTxt.Text = soloBannerPath;
+            } else {
+                this.previewTxt.Text = previewPath;
             }
 
-            imageTooltip.SetToolTip(previewTxt, "Preview.png");
+            this.imageTooltip.SetToolTip(this.previewTxt, "Preview.png");
 
-            statusUpdateTimer.Start();
+            this.statusUpdateTimer.Start();
 
-            UpdateControls();
+            this.UpdateControls();
         }
 
-        private void StatusUpdateTimer_Tick(object sender, EventArgs e)
-        {
+        private void StatusUpdateTimer_Tick(object sender, EventArgs e) {
             var status = SteamworksUGC.CurrentOperation?.Status;
-            if (!string.IsNullOrEmpty(status))
-            {
-                statusLbl.Text = status;
+            if(!string.IsNullOrEmpty(status)) {
+                this.statusLbl.Text = status;
             }
         }
 
-        protected override void OnClosed(EventArgs e)
-        {
+        protected override void OnClosed(EventArgs e) {
             base.OnClosed(e);
 
-            statusUpdateTimer.Stop();
-            statusUpdateTimer.Dispose();
+            this.statusUpdateTimer.Stop();
+            this.statusUpdateTimer.Dispose();
         }
 
-        protected virtual void OnPublishSuccess()
-        {
-            statusLbl.Text = "Done.";
-            EnableControls(true);
+        protected virtual void OnPublishSuccess() {
+            this.statusLbl.Text = "Done.";
+            this.EnableControls(true);
         }
 
-        protected virtual void OnOperationFailed(string status)
-        {
-            statusLbl.Text = status;
-            EnableControls(true);
+        protected virtual void OnOperationFailed(string status) {
+            this.statusLbl.Text = status;
+            this.EnableControls(true);
         }
 
-        private void EnableControls(bool enable)
-        {
-            titleTxt.Enabled = enable;
-            visibilityComboBox.Enabled = enable;
-            previewTxt.Enabled = enable;
-            previewBtn.Enabled = enable;
-            descriptionTxt.Enabled = enable;
-            btnPublishMap.Enabled = enable;
-            btnClose.Enabled = enable;
+        private void EnableControls(bool enable) {
+            this.titleTxt.Enabled = enable;
+            this.visibilityComboBox.Enabled = enable;
+            this.previewTxt.Enabled = enable;
+            this.previewBtn.Enabled = enable;
+            this.descriptionTxt.Enabled = enable;
+            this.btnPublishMap.Enabled = enable;
+            this.btnClose.Enabled = enable;
         }
 
-        private void btnGoToSteam_Click(object sender, EventArgs e)
-        {
+        private void btnGoToSteam_Click(object sender, EventArgs e) {
             var workshopUrl = SteamworksUGC.WorkshopURL;
-            if (!string.IsNullOrEmpty(workshopUrl))
-            {
+            if(!string.IsNullOrEmpty(workshopUrl)) {
                 Process.Start(workshopUrl);
             }
         }
 
-        private void btnPublishMap_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(plugin.Map.BasicSection.Name))
-            {
-                plugin.Map.BasicSection.Name = titleTxt.Text;
+        private void btnPublishMap_Click(object sender, EventArgs e) {
+            if(string.IsNullOrEmpty(this.plugin.Map.BasicSection.Name)) {
+                this.plugin.Map.BasicSection.Name = this.titleTxt.Text;
             }
 
-            if (string.IsNullOrEmpty(plugin.Map.BasicSection.Author))
-            {
-                plugin.Map.BasicSection.Author = SteamFriends.GetPersonaName();
+            if(string.IsNullOrEmpty(this.plugin.Map.BasicSection.Author)) {
+                this.plugin.Map.BasicSection.Author = SteamFriends.GetPersonaName();
             }
 
-            plugin.Map.SteamSection.PreviewFile = previewTxt.Text;
-            plugin.Map.SteamSection.Title = titleTxt.Text;
-            plugin.Map.SteamSection.Description = descriptionTxt.Text;
-            plugin.Map.SteamSection.Visibility = (ERemoteStoragePublishedFileVisibility)visibilityComboBox.SelectedValue;
+            this.plugin.Map.SteamSection.PreviewFile = this.previewTxt.Text;
+            this.plugin.Map.SteamSection.Title = this.titleTxt.Text;
+            this.plugin.Map.SteamSection.Description = this.descriptionTxt.Text;
+            this.plugin.Map.SteamSection.Visibility = (ERemoteStoragePublishedFileVisibility)this.visibilityComboBox.SelectedValue;
 
             var tempPath = Path.Combine(Path.GetTempPath(), "CnCRCMapEditorPublishUGC");
             Directory.CreateDirectory(tempPath);
-            foreach (var file in new DirectoryInfo(tempPath).EnumerateFiles()) file.Delete();
+            foreach(var file in new DirectoryInfo(tempPath).EnumerateFiles())
+                file.Delete();
 
             var pgmPath = Path.Combine(tempPath, "MAPDATA.PGM");
-            plugin.Save(pgmPath, FileType.PGM);
+            this.plugin.Save(pgmPath, FileType.PGM);
 
             var tags = new List<string>();
-            switch (plugin.GameType)
-            {
-                case GameType.TiberianDawn:
-                    tags.Add("TD");
-                    break;
-                case GameType.RedAlert:
-                    tags.Add("RA");
-                    break;
+            switch(this.plugin.GameType) {
+            case GameType.TiberianDawn:
+                tags.Add("TD");
+                break;
+            case GameType.RedAlert:
+                tags.Add("RA");
+                break;
             }
 
-            if (plugin.Map.BasicSection.SoloMission)
-            {
+            if(this.plugin.Map.BasicSection.SoloMission) {
                 tags.Add("SinglePlayer");
-            }
-            else
-            {
+            } else {
                 tags.Add("MultiPlayer");
             }
 
-            if (SteamworksUGC.PublishUGC(tempPath, plugin.Map.SteamSection, tags, OnPublishSuccess, OnOperationFailed))
-            {
-                statusLbl.Text = SteamworksUGC.CurrentOperation.Status;
-                EnableControls(false);
+            if(SteamworksUGC.PublishUGC(tempPath, this.plugin.Map.SteamSection, tags, this.OnPublishSuccess, this.OnOperationFailed)) {
+                this.statusLbl.Text = SteamworksUGC.CurrentOperation.Status;
+                this.EnableControls(false);
             }
         }
 
-        private void previewBtn_Click(object sender, EventArgs e)
-        {
-            var ofd = new OpenFileDialog
-            {
+        private void previewBtn_Click(object sender, EventArgs e) {
+            var ofd = new OpenFileDialog {
                 AutoUpgradeEnabled = false,
                 RestoreDirectory = true,
                 Filter = "Preview Files (*.png)|*.png",
                 CheckFileExists = true,
-                InitialDirectory = Path.GetDirectoryName(previewTxt.Text),
-                FileName = Path.GetFileName(previewTxt.Text)
+                InitialDirectory = Path.GetDirectoryName(this.previewTxt.Text),
+                FileName = Path.GetFileName(this.previewTxt.Text)
             };
-            if (!string.IsNullOrEmpty(previewTxt.Text))
-            {
-                ofd.FileName = previewTxt.Text;
+            if(!string.IsNullOrEmpty(this.previewTxt.Text)) {
+                ofd.FileName = this.previewTxt.Text;
             }
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                previewTxt.Text = ofd.FileName;
+            if(ofd.ShowDialog() == DialogResult.OK) {
+                this.previewTxt.Text = ofd.FileName;
             }
         }
 
-        private void publishAsNewToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            plugin.Map.SteamSection.PublishedFileId = PublishedFileId_t.Invalid.m_PublishedFileId;
-            btnPublishMap.PerformClick();
+        private void publishAsNewToolStripMenuItem_Click(object sender, EventArgs e) {
+            this.plugin.Map.SteamSection.PublishedFileId = PublishedFileId_t.Invalid.m_PublishedFileId;
+            this.btnPublishMap.PerformClick();
         }
 
-        private void previewTxt_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                (previewTxt.Tag as Image)?.Dispose();
+        private void previewTxt_TextChanged(object sender, EventArgs e) {
+            try {
+                (this.previewTxt.Tag as Image)?.Dispose();
 
                 Bitmap preview = null;
-                using (Bitmap b = new Bitmap(previewTxt.Text))
-                {
+                using(var b = new Bitmap(this.previewTxt.Text)) {
                     preview = new Bitmap(b.Width, b.Height, b.PixelFormat);
-                    using (Graphics g = Graphics.FromImage(preview))
-                    {
+                    using(var g = Graphics.FromImage(preview)) {
                         g.DrawImage(b, Point.Empty);
                         g.Flush();
                     }
                 }
 
-                previewTxt.Tag = preview;
-            }
-            catch (Exception)
-            {
-                previewTxt.Tag = null;
+                this.previewTxt.Tag = preview;
+            } catch(Exception) {
+                this.previewTxt.Tag = null;
             }
 
-            UpdateControls();
+            this.UpdateControls();
         }
 
-        private void descriptionTxt_TextChanged(object sender, EventArgs e)
-        {
-            UpdateControls();
-        }
+        private void descriptionTxt_TextChanged(object sender, EventArgs e) => this.UpdateControls();
 
-        private void UpdateControls()
-        {
-            btnPublishMap.Enabled = (previewTxt.Tag != null) && !string.IsNullOrEmpty(descriptionTxt.Text);
-        }
+        private void UpdateControls() => this.btnPublishMap.Enabled = (this.previewTxt.Tag != null) && !string.IsNullOrEmpty(this.descriptionTxt.Text);
     }
 }

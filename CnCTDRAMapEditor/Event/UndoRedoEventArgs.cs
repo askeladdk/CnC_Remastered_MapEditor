@@ -15,18 +15,19 @@
 using MobiusEditor.Controls;
 using MobiusEditor.Model;
 
-namespace MobiusEditor.Event
-{
-    public class UndoRedoEventArgs
-    {
-        public MapPanel MapPanel { get; private set; }
+namespace MobiusEditor.Event {
+    public class UndoRedoEventArgs {
+        public MapPanel MapPanel {
+            get; private set;
+        }
 
-        public Map Map { get; private set; }
+        public Map Map {
+            get; private set;
+        }
 
-        public UndoRedoEventArgs(MapPanel mapPanel, Map map)
-        {
-            MapPanel = mapPanel;
-            Map = map;
+        public UndoRedoEventArgs(MapPanel mapPanel, Map map) {
+            this.MapPanel = mapPanel;
+            this.Map = map;
         }
     }
 }

@@ -19,74 +19,60 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace MobiusEditor.Model
-{
-    public class OverlapperSet<T> : IEnumerable<(Point Location, T Overlapper)>, IEnumerable where T : class, ICellOverlapper
-    {
+namespace MobiusEditor.Model {
+    public class OverlapperSet<T> : IEnumerable<(Point Location, T Overlapper)>, IEnumerable where T : class, ICellOverlapper {
         private readonly CellMetrics metrics;
         private readonly Dictionary<T, Rectangle> overlappers = new Dictionary<T, Rectangle>();
 
-        public Rectangle? this[T overlapper] => Contains(overlapper) ? overlappers[overlapper] : default;
+        public Rectangle? this[T overlapper] => this.Contains(overlapper) ? this.overlappers[overlapper] : default;
 
-        public IEnumerable<T> Overlappers => overlappers.Keys;
+        public IEnumerable<T> Overlappers => this.overlappers.Keys;
 
-        public OverlapperSet(CellMetrics metrics)
-        {
-            this.metrics = metrics;
-        }
+        public OverlapperSet(CellMetrics metrics) => this.metrics = metrics;
 
-        public bool Add(Point location, T overlapper)
-        {
-            if ((overlapper == null) || Contains(overlapper))
-            {
+        public bool Add(Point location, T overlapper) {
+            if((overlapper == null) || this.Contains(overlapper)) {
                 return false;
             }
 
             var rectangle = overlapper.OverlapBounds;
             rectangle.Offset(location);
-            overlappers[overlapper] = rectangle;
+            this.overlappers[overlapper] = rectangle;
             return true;
         }
 
-        public bool Add(int x, int y, T occupier) => Add(new Point(x, y), occupier);
+        public bool Add(int x, int y, T occupier) => this.Add(new Point(x, y), occupier);
 
-        public bool Add(int cell, T overlapper) => metrics.GetLocation(cell, out Point location) ? Add(location, overlapper) : false;
+        public bool Add(int cell, T overlapper) => this.metrics.GetLocation(cell, out var location) ? this.Add(location, overlapper) : false;
 
-        public void Clear() => overlappers.Clear();
+        public void Clear() => this.overlappers.Clear();
 
-        public bool Contains(T occupier) => overlappers.ContainsKey(occupier);
+        public bool Contains(T occupier) => this.overlappers.ContainsKey(occupier);
 
-        public void CopyTo(OverlapperSet<T> other)
-        {
-            foreach (var (Location, Occupier) in this)
-            {
+        public void CopyTo(OverlapperSet<T> other) {
+            foreach(var (Location, Occupier) in this) {
                 other.Add(Location, Occupier);
             }
         }
 
-        public IEnumerator<(Point Location, T Overlapper)> GetEnumerator() => overlappers.Select(kv => (kv.Value.Location, kv.Key)).GetEnumerator();
+        public IEnumerator<(Point Location, T Overlapper)> GetEnumerator() => this.overlappers.Select(kv => (kv.Value.Location, kv.Key)).GetEnumerator();
 
-        public bool Remove(T overlapper)
-        {
-            if ((overlapper == null) || !overlappers.TryGetValue(overlapper, out Rectangle overlapRect))
-            {
+        public bool Remove(T overlapper) {
+            if((overlapper == null) || !this.overlappers.TryGetValue(overlapper, out var overlapRect)) {
                 return false;
             }
 
-            overlappers.Remove(overlapper);
+            this.overlappers.Remove(overlapper);
             return true;
         }
 
-        public ISet<Point> Overlaps(IEnumerable<Rectangle> rectangles)
-        {
+        public ISet<Point> Overlaps(IEnumerable<Rectangle> rectangles) {
             var rectangleSet = new HashSet<Rectangle>(rectangles);
-            while (true)
-            {
+            while(true) {
                 var count = rectangleSet.Count;
-                var overlap = overlappers.Values.Where(x => rectangleSet.Any(y => x.IntersectsWith(y))).ToArray();
+                var overlap = this.overlappers.Values.Where(x => rectangleSet.Any(y => x.IntersectsWith(y))).ToArray();
                 rectangleSet.UnionWith(overlap);
-                if (rectangleSet.Count == count)
-                {
+                if(rectangleSet.Count == count) {
                     break;
                 }
             }
@@ -94,14 +80,14 @@ namespace MobiusEditor.Model
             return rectangleSet.SelectMany(x => x.Points()).ToHashSet();
         }
 
-        public ISet<Point> Overlaps(Rectangle rectangle) => Overlaps(rectangle.Yield());
+        public ISet<Point> Overlaps(Rectangle rectangle) => this.Overlaps(rectangle.Yield());
 
-        public ISet<Point> Overlaps(IEnumerable<Point> points) => Overlaps(points.Select(p => new Rectangle(p, new Size(1, 1))));
+        public ISet<Point> Overlaps(IEnumerable<Point> points) => this.Overlaps(points.Select(p => new Rectangle(p, new Size(1, 1))));
 
-        public ISet<Point> Overlaps(Point point) => Overlaps(point.Yield());
+        public ISet<Point> Overlaps(Point point) => this.Overlaps(point.Yield());
 
         public IEnumerable<(Point Location, U Overlapper)> OfType<U>() where U : T => this.Where(i => i.Overlapper is U).Select(i => (i.Location, (U)i.Overlapper));
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }

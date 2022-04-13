@@ -17,16 +17,12 @@ using MobiusEditor.Event;
 using MobiusEditor.Interface;
 using MobiusEditor.Model;
 using MobiusEditor.Utility;
-using MobiusEditor.Widgets;
-using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools
-{
-    public class WaypointsTool : ViewTool
-    {
+namespace MobiusEditor.Tools {
+    public class WaypointsTool : ViewTool {
         private readonly ComboBox waypointCombo;
 
         private (Waypoint waypoint, int? cell)? undoWaypoint;
@@ -35,205 +31,161 @@ namespace MobiusEditor.Tools
         private bool placementMode;
 
         public WaypointsTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ComboBox waypointCombo, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
-            : base(mapPanel, layers, statusLbl, plugin, url)
-        {
-            this.mapPanel.MouseDown += MapPanel_MouseDown;
-            this.mapPanel.MouseMove += MapPanel_MouseMove;
-            (this.mapPanel as Control).KeyDown += WaypointsTool_KeyDown;
-            (this.mapPanel as Control).KeyUp += WaypointsTool_KeyUp;
+            : base(mapPanel, layers, statusLbl, plugin, url) {
+            this.mapPanel.MouseDown += this.MapPanel_MouseDown;
+            this.mapPanel.MouseMove += this.MapPanel_MouseMove;
+            (this.mapPanel as Control).KeyDown += this.WaypointsTool_KeyDown;
+            (this.mapPanel as Control).KeyUp += this.WaypointsTool_KeyUp;
 
             this.waypointCombo = waypointCombo;
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void MapPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (placementMode)
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    SetWaypoint(navigationWidget.MouseCell);
+        private void MapPanel_MouseDown(object sender, MouseEventArgs e) {
+            if(this.placementMode) {
+                if(e.Button == MouseButtons.Left) {
+                    this.SetWaypoint(this.navigationWidget.MouseCell);
+                } else if(e.Button == MouseButtons.Right) {
+                    this.RemoveWaypoint(this.navigationWidget.MouseCell);
                 }
-                else if (e.Button == MouseButtons.Right)
-                {
-                    RemoveWaypoint(navigationWidget.MouseCell);
-                }
-            }
-            else if ((e.Button == MouseButtons.Left) || (e.Button == MouseButtons.Right))
-            {
-                PickWaypoint(navigationWidget.MouseCell);
+            } else if((e.Button == MouseButtons.Left) || (e.Button == MouseButtons.Right)) {
+                this.PickWaypoint(this.navigationWidget.MouseCell);
             }
         }
 
-        private void WaypointsTool_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ShiftKey)
-            {
-                EnterPlacementMode();
+        private void WaypointsTool_KeyDown(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.ShiftKey) {
+                this.EnterPlacementMode();
             }
         }
 
-        private void WaypointsTool_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ShiftKey)
-            {
-                ExitPlacementMode();
+        private void WaypointsTool_KeyUp(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.ShiftKey) {
+                this.ExitPlacementMode();
             }
         }
 
-        private void MapPanel_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (!placementMode && (Control.ModifierKeys == Keys.Shift))
-            {
-                EnterPlacementMode();
-            }
-            else if (placementMode && (Control.ModifierKeys == Keys.None))
-            {
-                ExitPlacementMode();
+        private void MapPanel_MouseMove(object sender, MouseEventArgs e) {
+            if(!this.placementMode && (Control.ModifierKeys == Keys.Shift)) {
+                this.EnterPlacementMode();
+            } else if(this.placementMode && (Control.ModifierKeys == Keys.None)) {
+                this.ExitPlacementMode();
             }
         }
 
-        private void SetWaypoint(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                var waypoint = map.Waypoints[waypointCombo.SelectedIndex];
-                if (waypoint.Cell != cell)
-                {
-                    if (undoWaypoint == null)
-                    {
-                        undoWaypoint = (waypoint, waypoint.Cell);
-                    }
-                    else if (undoWaypoint.Value.cell == cell)
-                    {
-                        undoWaypoint = null;
+        private void SetWaypoint(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                var waypoint = this.map.Waypoints[this.waypointCombo.SelectedIndex];
+                if(waypoint.Cell != cell) {
+                    if(this.undoWaypoint == null) {
+                        this.undoWaypoint = (waypoint, waypoint.Cell);
+                    } else if(this.undoWaypoint.Value.cell == cell) {
+                        this.undoWaypoint = null;
                     }
 
                     waypoint.Cell = cell;
-                    redoWaypoint = (waypoint, waypoint.Cell);
+                    this.redoWaypoint = (waypoint, waypoint.Cell);
 
-                    CommitChange();
+                    this.CommitChange();
 
-                    mapPanel.Invalidate();
+                    this.mapPanel.Invalidate();
 
-                    plugin.Dirty = true;
+                    this.plugin.Dirty = true;
                 }
             }
         }
 
-        private void RemoveWaypoint(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                var waypoint = map.Waypoints.Where(w => w.Cell == cell).FirstOrDefault();
-                if (waypoint != null)
-                {
-                    if (undoWaypoint == null)
-                    {
-                        undoWaypoint = (waypoint, waypoint.Cell);
+        private void RemoveWaypoint(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                var waypoint = this.map.Waypoints.Where(w => w.Cell == cell).FirstOrDefault();
+                if(waypoint != null) {
+                    if(this.undoWaypoint == null) {
+                        this.undoWaypoint = (waypoint, waypoint.Cell);
                     }
 
                     waypoint.Cell = null;
-                    redoWaypoint = (waypoint, null);
+                    this.redoWaypoint = (waypoint, null);
 
-                    CommitChange();
+                    this.CommitChange();
 
-                    mapPanel.Invalidate();
+                    this.mapPanel.Invalidate();
 
-                    plugin.Dirty = true;
+                    this.plugin.Dirty = true;
                 }
             }
         }
 
-        private void EnterPlacementMode()
-        {
-            if (placementMode)
-            {
+        private void EnterPlacementMode() {
+            if(this.placementMode) {
                 return;
             }
 
-            placementMode = true;
+            this.placementMode = true;
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void ExitPlacementMode()
-        {
-            if (!placementMode)
-            {
+        private void ExitPlacementMode() {
+            if(!this.placementMode) {
                 return;
             }
 
-            placementMode = false;
+            this.placementMode = false;
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void PickWaypoint(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                for (var i = 0; i < map.Waypoints.Length; ++i)
-                {
-                    if (map.Waypoints[i].Cell == cell)
-                    {
-                        waypointCombo.SelectedIndex = i;
+        private void PickWaypoint(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                for(var i = 0; i < this.map.Waypoints.Length; ++i) {
+                    if(this.map.Waypoints[i].Cell == cell) {
+                        this.waypointCombo.SelectedIndex = i;
                         break;
                     }
                 }
             }
         }
 
-        private void CommitChange()
-        {
-            var undoWaypoint2 = undoWaypoint;
-            void undoAction(UndoRedoEventArgs e)
-            {
+        private void CommitChange() {
+            var undoWaypoint2 = this.undoWaypoint;
+            void undoAction(UndoRedoEventArgs e) {
                 undoWaypoint2.Value.waypoint.Cell = undoWaypoint2.Value.cell;
-                mapPanel.Invalidate();
+                this.mapPanel.Invalidate();
             }
 
-            var redoWaypoint2 = redoWaypoint;
-            void redoAction(UndoRedoEventArgs e)
-            {
+            var redoWaypoint2 = this.redoWaypoint;
+            void redoAction(UndoRedoEventArgs e) {
                 redoWaypoint2.Value.waypoint.Cell = redoWaypoint2.Value.cell;
-                mapPanel.Invalidate();
+                this.mapPanel.Invalidate();
             }
 
-            undoWaypoint = null;
-            redoWaypoint = null;
+            this.undoWaypoint = null;
+            this.redoWaypoint = null;
 
-            url.Track(undoAction, redoAction);
+            this.url.Track(undoAction, redoAction);
         }
 
-        private void UpdateStatus()
-        {
-            if (placementMode)
-            {
-                statusLbl.Text = "Left-Click to set cell waypoint, Right-Click to clear cell waypoint";
-            }
-            else
-            {
-                statusLbl.Text = "Shift to enter placement mode, Left-Click or Right-Click to pick cell waypoint";
+        private void UpdateStatus() {
+            if(this.placementMode) {
+                this.statusLbl.Text = "Left-Click to set cell waypoint, Right-Click to clear cell waypoint";
+            } else {
+                this.statusLbl.Text = "Shift to enter placement mode, Left-Click or Right-Click to pick cell waypoint";
             }
         }
 
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    mapPanel.MouseDown -= MapPanel_MouseDown;
-                    mapPanel.MouseMove -= MapPanel_MouseMove;
-                    (mapPanel as Control).KeyDown -= WaypointsTool_KeyDown;
-                    (mapPanel as Control).KeyUp -= WaypointsTool_KeyUp;
+        protected override void Dispose(bool disposing) {
+            if(!this.disposedValue) {
+                if(disposing) {
+                    this.mapPanel.MouseDown -= this.MapPanel_MouseDown;
+                    this.mapPanel.MouseMove -= this.MapPanel_MouseMove;
+                    (this.mapPanel as Control).KeyDown -= this.WaypointsTool_KeyDown;
+                    (this.mapPanel as Control).KeyUp -= this.WaypointsTool_KeyUp;
                 }
-                disposedValue = true;
+                this.disposedValue = true;
             }
 
             base.Dispose(disposing);

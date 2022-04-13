@@ -15,24 +15,20 @@
 using System;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools.Dialogs
-{
-    public partial class CellTriggersToolDialog : Form
-    {
-        public ComboBox TriggerCombo => triggerCombo;
+namespace MobiusEditor.Tools.Dialogs {
+    public partial class CellTriggersToolDialog : Form {
+        public ComboBox TriggerCombo => this.triggerCombo;
 
-        public CellTriggersToolDialog()
-        {
-            InitializeComponent();
+        public CellTriggersToolDialog() {
+            this.InitializeComponent();
 
-            Location = Properties.Settings.Default.ToolDialogPosition;
+            this.Location = Properties.Settings.Default.ToolDialogPosition;
         }
 
-        protected override void OnMove(EventArgs e)
-        {
+        protected override void OnMove(EventArgs e) {
             base.OnMove(e);
 
-            Properties.Settings.Default.ToolDialogPosition = Location;
+            Properties.Settings.Default.ToolDialogPosition = this.Location;
             Properties.Settings.Default.Save();
         }
     }

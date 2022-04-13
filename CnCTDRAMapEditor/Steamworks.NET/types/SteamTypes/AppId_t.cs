@@ -6,60 +6,38 @@
 // Changes to this file will be reverted when you update Steamworks.NET
 
 #if UNITY_ANDROID || UNITY_IOS || UNITY_TIZEN || UNITY_TVOS || UNITY_WEBGL || UNITY_WSA || UNITY_PS4 || UNITY_WII || UNITY_XBOXONE || UNITY_SWITCH
-	#define DISABLESTEAMWORKS
+#define DISABLESTEAMWORKS
 #endif
 
 #if !DISABLESTEAMWORKS
 
-using System.Runtime.InteropServices;
-using IntPtr = System.IntPtr;
 
 namespace Steamworks {
-	[System.Serializable]
-	public struct AppId_t : System.IEquatable<AppId_t>, System.IComparable<AppId_t> {
-		public static readonly AppId_t Invalid = new AppId_t(0x0);
-		public uint m_AppId;
+    [System.Serializable]
+    public struct AppId_t : System.IEquatable<AppId_t>, System.IComparable<AppId_t> {
+        public static readonly AppId_t Invalid = new AppId_t(0x0);
+        public uint m_AppId;
 
-		public AppId_t(uint value) {
-			m_AppId = value;
-		}
+        public AppId_t(uint value) => this.m_AppId = value;
 
-		public override string ToString() {
-			return m_AppId.ToString();
-		}
+        public override string ToString() => this.m_AppId.ToString();
 
-		public override bool Equals(object other) {
-			return other is AppId_t && this == (AppId_t)other;
-		}
+        public override bool Equals(object other) => other is AppId_t && this == (AppId_t)other;
 
-		public override int GetHashCode() {
-			return m_AppId.GetHashCode();
-		}
+        public override int GetHashCode() => this.m_AppId.GetHashCode();
 
-		public static bool operator ==(AppId_t x, AppId_t y) {
-			return x.m_AppId == y.m_AppId;
-		}
+        public static bool operator ==(AppId_t x, AppId_t y) => x.m_AppId == y.m_AppId;
 
-		public static bool operator !=(AppId_t x, AppId_t y) {
-			return !(x == y);
-		}
+        public static bool operator !=(AppId_t x, AppId_t y) => !(x == y);
 
-		public static explicit operator AppId_t(uint value) {
-			return new AppId_t(value);
-		}
+        public static explicit operator AppId_t(uint value) => new AppId_t(value);
 
-		public static explicit operator uint(AppId_t that) {
-			return that.m_AppId;
-		}
+        public static explicit operator uint(AppId_t that) => that.m_AppId;
 
-		public bool Equals(AppId_t other) {
-			return m_AppId == other.m_AppId;
-		}
+        public bool Equals(AppId_t other) => this.m_AppId == other.m_AppId;
 
-		public int CompareTo(AppId_t other) {
-			return m_AppId.CompareTo(other.m_AppId);
-		}
-	}
+        public int CompareTo(AppId_t other) => this.m_AppId.CompareTo(other.m_AppId);
+    }
 }
 
 #endif // !DISABLESTEAMWORKS

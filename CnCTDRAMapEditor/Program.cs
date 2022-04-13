@@ -20,19 +20,15 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace MobiusEditor
-{
-    static class Program
-    {
+namespace MobiusEditor {
+    internal static class Program {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
-        {
+        private static void Main() {
             // Change current culture to en-US
-            if (Thread.CurrentThread.CurrentCulture.Name != "en-US")
-            {
+            if(Thread.CurrentThread.CurrentCulture.Name != "en-US") {
                 Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
             }
 
@@ -62,17 +58,14 @@ namespace MobiusEditor
 
             var cultureName = CultureInfo.CurrentUICulture.Name;
             var gameTextFilename = string.Format(Globals.GameTextFilenameFormat, cultureName.ToUpper());
-            if (!Globals.TheMegafileManager.Exists(gameTextFilename))
-            {
+            if(!Globals.TheMegafileManager.Exists(gameTextFilename)) {
                 gameTextFilename = string.Format(Globals.GameTextFilenameFormat, "EN-US");
             }
             Globals.TheGameTextManager = new GameTextManager(Globals.TheMegafileManager, gameTextFilename);
 
             // Initialize Steam if this is a Steam build
-            if (SteamworksUGC.IsSteamBuild)
-            {
-                if (!SteamworksUGC.Init())
-                {
+            if(SteamworksUGC.IsSteamBuild) {
+                if(!SteamworksUGC.Init()) {
 #if !DEVELOPER
                     MessageBox.Show("Unable to initialize Steam interface.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -83,8 +76,7 @@ namespace MobiusEditor
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            if (Properties.Settings.Default.ShowInviteWarning)
-            {
+            if(Properties.Settings.Default.ShowInviteWarning) {
                 var inviteMessageBox = new InviteMessageBox();
                 inviteMessageBox.ShowDialog();
 
@@ -94,8 +86,7 @@ namespace MobiusEditor
 
             Application.Run(new MainForm());
 
-            if (SteamworksUGC.IsSteamBuild)
-            {
+            if(SteamworksUGC.IsSteamBuild) {
                 SteamworksUGC.Shutdown();
             }
 

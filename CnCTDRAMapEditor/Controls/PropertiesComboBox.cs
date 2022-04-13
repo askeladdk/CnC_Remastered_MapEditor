@@ -15,47 +15,35 @@
 using System;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Controls
-{
-    public partial class PropertiesComboBox : ComboBox
-    {
+namespace MobiusEditor.Controls {
+    public partial class PropertiesComboBox : ComboBox {
         private bool savedAutoClose;
 
-        private ToolStripDropDown DropDownHost
-        {
-            get
-            {
-                var parent = Parent;
-                while ((parent != null) && !(parent is ToolStripDropDown))
-                {
+        private ToolStripDropDown DropDownHost {
+            get {
+                var parent = this.Parent;
+                while((parent != null) && !(parent is ToolStripDropDown)) {
                     parent = parent.Parent;
                 }
                 return parent as ToolStripDropDown;
             }
         }
 
-        public PropertiesComboBox()
-        {
-            InitializeComponent();
-        }
+        public PropertiesComboBox() => this.InitializeComponent();
 
-        protected override void OnDropDownClosed(EventArgs e)
-        {
-            var dropDownHost = DropDownHost;
-            if (dropDownHost != null)
-            {
-                dropDownHost.AutoClose = savedAutoClose;
+        protected override void OnDropDownClosed(EventArgs e) {
+            var dropDownHost = this.DropDownHost;
+            if(dropDownHost != null) {
+                dropDownHost.AutoClose = this.savedAutoClose;
             }
 
             base.OnDropDownClosed(e);
         }
 
-        protected override void OnDropDown(EventArgs e)
-        {
-            var dropDownHost = DropDownHost;
-            if (dropDownHost != null)
-            {
-                savedAutoClose = dropDownHost.AutoClose;
+        protected override void OnDropDown(EventArgs e) {
+            var dropDownHost = this.DropDownHost;
+            if(dropDownHost != null) {
+                this.savedAutoClose = dropDownHost.AutoClose;
                 dropDownHost.AutoClose = false;
             }
 

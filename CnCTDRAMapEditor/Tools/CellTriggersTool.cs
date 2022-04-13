@@ -22,10 +22,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools
-{
-    public class CellTriggersTool : ViewTool
-    {
+namespace MobiusEditor.Tools {
+    public class CellTriggersTool : ViewTool {
         private readonly ComboBox triggerCombo;
 
         private readonly Dictionary<int, CellTrigger> undoCellTriggers = new Dictionary<int, CellTrigger>();
@@ -34,231 +32,181 @@ namespace MobiusEditor.Tools
         private bool placementMode;
 
         public CellTriggersTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ComboBox triggerCombo, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
-            : base(mapPanel, layers, statusLbl, plugin, url)
-        {
-            this.mapPanel.MouseDown += MapPanel_MouseDown;
-            this.mapPanel.MouseUp += MapPanel_MouseUp;
-            this.mapPanel.MouseMove += MapPanel_MouseMove;
-            (this.mapPanel as Control).KeyDown += WaypointsTool_KeyDown;
-            (this.mapPanel as Control).KeyUp += WaypointsTool_KeyUp;
+            : base(mapPanel, layers, statusLbl, plugin, url) {
+            this.mapPanel.MouseDown += this.MapPanel_MouseDown;
+            this.mapPanel.MouseUp += this.MapPanel_MouseUp;
+            this.mapPanel.MouseMove += this.MapPanel_MouseMove;
+            (this.mapPanel as Control).KeyDown += this.WaypointsTool_KeyDown;
+            (this.mapPanel as Control).KeyUp += this.WaypointsTool_KeyUp;
 
             this.triggerCombo = triggerCombo;
 
-            navigationWidget.MouseCellChanged += MouseoverWidget_MouseCellChanged;
+            this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void MapPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (placementMode)
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    SetCellTrigger(navigationWidget.MouseCell);
+        private void MapPanel_MouseDown(object sender, MouseEventArgs e) {
+            if(this.placementMode) {
+                if(e.Button == MouseButtons.Left) {
+                    this.SetCellTrigger(this.navigationWidget.MouseCell);
+                } else if(e.Button == MouseButtons.Right) {
+                    this.RemoveCellTrigger(this.navigationWidget.MouseCell);
                 }
-                else if (e.Button == MouseButtons.Right)
-                {
-                    RemoveCellTrigger(navigationWidget.MouseCell);
-                }
-            }
-            else if ((e.Button == MouseButtons.Left) || (e.Button == MouseButtons.Right))
-            {
-                PickCellTrigger(navigationWidget.MouseCell);
+            } else if((e.Button == MouseButtons.Left) || (e.Button == MouseButtons.Right)) {
+                this.PickCellTrigger(this.navigationWidget.MouseCell);
             }
         }
 
-        private void MapPanel_MouseUp(object sender, MouseEventArgs e)
-        {
-            if ((undoCellTriggers.Count > 0) || (redoCellTriggers.Count > 0))
-            {
-                CommitChange();
+        private void MapPanel_MouseUp(object sender, MouseEventArgs e) {
+            if((this.undoCellTriggers.Count > 0) || (this.redoCellTriggers.Count > 0)) {
+                this.CommitChange();
             }
         }
 
-        private void WaypointsTool_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ShiftKey)
-            {
-                EnterPlacementMode();
+        private void WaypointsTool_KeyDown(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.ShiftKey) {
+                this.EnterPlacementMode();
             }
         }
 
-        private void WaypointsTool_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ShiftKey)
-            {
-                ExitPlacementMode();
+        private void WaypointsTool_KeyUp(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.ShiftKey) {
+                this.ExitPlacementMode();
             }
         }
 
-        private void MapPanel_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (!placementMode && (Control.ModifierKeys == Keys.Shift))
-            {
-                EnterPlacementMode();
-            }
-            else if (placementMode && (Control.ModifierKeys == Keys.None))
-            {
-                ExitPlacementMode();
+        private void MapPanel_MouseMove(object sender, MouseEventArgs e) {
+            if(!this.placementMode && (Control.ModifierKeys == Keys.Shift)) {
+                this.EnterPlacementMode();
+            } else if(this.placementMode && (Control.ModifierKeys == Keys.None)) {
+                this.ExitPlacementMode();
             }
 
-            
+
         }
 
-        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e)
-        {
-            if (placementMode)
-            {
-                if (Control.MouseButtons == MouseButtons.Left)
-                {
-                    SetCellTrigger(e.NewCell);
-                }
-                else if (Control.MouseButtons == MouseButtons.Right)
-                {
-                    RemoveCellTrigger(e.NewCell);
+        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e) {
+            if(this.placementMode) {
+                if(Control.MouseButtons == MouseButtons.Left) {
+                    this.SetCellTrigger(e.NewCell);
+                } else if(Control.MouseButtons == MouseButtons.Right) {
+                    this.RemoveCellTrigger(e.NewCell);
                 }
             }
         }
 
-        private void SetCellTrigger(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                if (map.CellTriggers[cell] == null)
-                {
-                    if (!undoCellTriggers.ContainsKey(cell))
-                    {
-                        undoCellTriggers[cell] = map.CellTriggers[cell];
+        private void SetCellTrigger(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                if(this.map.CellTriggers[cell] == null) {
+                    if(!this.undoCellTriggers.ContainsKey(cell)) {
+                        this.undoCellTriggers[cell] = this.map.CellTriggers[cell];
                     }
 
-                    var cellTrigger = new CellTrigger { Trigger = triggerCombo.SelectedItem as string };
-                    map.CellTriggers[cell] = cellTrigger;
-                    redoCellTriggers[cell] = cellTrigger;
+                    var cellTrigger = new CellTrigger { Trigger = this.triggerCombo.SelectedItem as string };
+                    this.map.CellTriggers[cell] = cellTrigger;
+                    this.redoCellTriggers[cell] = cellTrigger;
 
-                    mapPanel.Invalidate();
+                    this.mapPanel.Invalidate();
 
-                    plugin.Dirty = true;
+                    this.plugin.Dirty = true;
                 }
             }
         }
 
-        private void RemoveCellTrigger(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                var cellTrigger = map.CellTriggers[cell];
-                if (cellTrigger != null)
-                {
-                    if (!undoCellTriggers.ContainsKey(cell))
-                    {
-                        undoCellTriggers[cell] = map.CellTriggers[cell];
+        private void RemoveCellTrigger(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                var cellTrigger = this.map.CellTriggers[cell];
+                if(cellTrigger != null) {
+                    if(!this.undoCellTriggers.ContainsKey(cell)) {
+                        this.undoCellTriggers[cell] = this.map.CellTriggers[cell];
                     }
 
-                    map.CellTriggers[cell] = null;
-                    redoCellTriggers[cell] = null;
+                    this.map.CellTriggers[cell] = null;
+                    this.redoCellTriggers[cell] = null;
 
-                    mapPanel.Invalidate();
+                    this.mapPanel.Invalidate();
 
-                    plugin.Dirty = true;
+                    this.plugin.Dirty = true;
                 }
             }
         }
 
-        private void EnterPlacementMode()
-        {
-            if (placementMode)
-            {
+        private void EnterPlacementMode() {
+            if(this.placementMode) {
                 return;
             }
 
-            placementMode = true;
+            this.placementMode = true;
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void ExitPlacementMode()
-        {
-            if (!placementMode)
-            {
+        private void ExitPlacementMode() {
+            if(!this.placementMode) {
                 return;
             }
 
-            placementMode = false;
+            this.placementMode = false;
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void PickCellTrigger(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                var cellTrigger = map.CellTriggers[cell];
-                if (cellTrigger != null)
-                {
-                    triggerCombo.SelectedItem = cellTrigger.Trigger;
+        private void PickCellTrigger(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                var cellTrigger = this.map.CellTriggers[cell];
+                if(cellTrigger != null) {
+                    this.triggerCombo.SelectedItem = cellTrigger.Trigger;
                 }
             }
         }
 
-        private void CommitChange()
-        {
-            var undoCellTriggers2 = new Dictionary<int, CellTrigger>(undoCellTriggers);
-            void undoAction(UndoRedoEventArgs e)
-            {
-                foreach (var kv in undoCellTriggers2)
-                {
+        private void CommitChange() {
+            var undoCellTriggers2 = new Dictionary<int, CellTrigger>(this.undoCellTriggers);
+            void undoAction(UndoRedoEventArgs e) {
+                foreach(var kv in undoCellTriggers2) {
                     e.Map.CellTriggers[kv.Key] = kv.Value;
                 }
                 e.MapPanel.Invalidate();
             }
 
-            var redoCellTriggers2 = new Dictionary<int, CellTrigger>(redoCellTriggers);
-            void redoAction(UndoRedoEventArgs e)
-            {
-                foreach (var kv in redoCellTriggers2)
-                {
+            var redoCellTriggers2 = new Dictionary<int, CellTrigger>(this.redoCellTriggers);
+            void redoAction(UndoRedoEventArgs e) {
+                foreach(var kv in redoCellTriggers2) {
                     e.Map.CellTriggers[kv.Key] = kv.Value;
                 }
                 e.MapPanel.Invalidate();
             }
 
-            undoCellTriggers.Clear();
-            redoCellTriggers.Clear();
+            this.undoCellTriggers.Clear();
+            this.redoCellTriggers.Clear();
 
-            url.Track(undoAction, redoAction);
+            this.url.Track(undoAction, redoAction);
         }
 
-        private void UpdateStatus()
-        {
-            if (placementMode)
-            {
-                statusLbl.Text = "Left-Click to set cell trigger, Right-Click to clear cell trigger";
-            }
-            else
-            {
-                statusLbl.Text = "Shift to enter placement mode, Left-Click or Right-Click to pick cell trigger";
+        private void UpdateStatus() {
+            if(this.placementMode) {
+                this.statusLbl.Text = "Left-Click to set cell trigger, Right-Click to clear cell trigger";
+            } else {
+                this.statusLbl.Text = "Shift to enter placement mode, Left-Click or Right-Click to pick cell trigger";
             }
         }
 
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    mapPanel.MouseDown -= MapPanel_MouseDown;
-                    mapPanel.MouseUp -= MapPanel_MouseUp;
-                    mapPanel.MouseMove -= MapPanel_MouseMove;
-                    (mapPanel as Control).KeyDown -= WaypointsTool_KeyDown;
-                    (mapPanel as Control).KeyUp -= WaypointsTool_KeyUp;
+        protected override void Dispose(bool disposing) {
+            if(!this.disposedValue) {
+                if(disposing) {
+                    this.mapPanel.MouseDown -= this.MapPanel_MouseDown;
+                    this.mapPanel.MouseUp -= this.MapPanel_MouseUp;
+                    this.mapPanel.MouseMove -= this.MapPanel_MouseMove;
+                    (this.mapPanel as Control).KeyDown -= this.WaypointsTool_KeyDown;
+                    (this.mapPanel as Control).KeyUp -= this.WaypointsTool_KeyUp;
 
-                    navigationWidget.MouseCellChanged -= MouseoverWidget_MouseCellChanged;
+                    this.navigationWidget.MouseCellChanged -= this.MouseoverWidget_MouseCellChanged;
                 }
-                disposedValue = true;
+                this.disposedValue = true;
             }
 
             base.Dispose(disposing);

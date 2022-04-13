@@ -17,54 +17,44 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 
-namespace MobiusEditor.Utility
-{
-    public class TilesetManager
-    {
+namespace MobiusEditor.Utility {
+    public class TilesetManager {
         private readonly Dictionary<string, Tileset> tilesets = new Dictionary<string, Tileset>();
 
         private readonly MegafileManager megafileManager;
 
-        public TilesetManager(MegafileManager megafileManager, TextureManager textureManager, string xmlPath, string texturesPath)
-        {
+        public TilesetManager(MegafileManager megafileManager, TextureManager textureManager, string xmlPath, string texturesPath) {
             this.megafileManager = megafileManager;
 
-            XmlDocument xmlDoc = new XmlDocument();
+            var xmlDoc = new XmlDocument();
             xmlDoc.Load(megafileManager.Open(xmlPath));
 
-            foreach (XmlNode fileNode in xmlDoc.SelectNodes("TilesetFiles/File"))
-            {
+            foreach(XmlNode fileNode in xmlDoc.SelectNodes("TilesetFiles/File")) {
                 var xmlFile = Path.Combine(Path.GetDirectoryName(xmlPath), fileNode.InnerText);
-                XmlDocument fileXmlDoc = new XmlDocument();
+                var fileXmlDoc = new XmlDocument();
                 fileXmlDoc.Load(megafileManager.Open(xmlFile));
 
-                foreach (XmlNode tilesetNode in fileXmlDoc.SelectNodes("Tilesets/TilesetTypeClass"))
-                {
+                foreach(XmlNode tilesetNode in fileXmlDoc.SelectNodes("Tilesets/TilesetTypeClass")) {
                     var tileset = new Tileset(textureManager);
                     tileset.Load(tilesetNode.OuterXml, texturesPath);
 
-                    tilesets[tilesetNode.Attributes["name"].Value] = tileset;
+                    this.tilesets[tilesetNode.Attributes["name"].Value] = tileset;
                 }
             }
         }
 
-        public void Reset()
-        {
-            foreach (var item in tilesets)
-            {
+        public void Reset() {
+            foreach(var item in this.tilesets) {
                 item.Value.Reset();
             }
         }
 
-        public bool GetTeamColorTileData(IEnumerable<string> searchTilesets, string name, int shape, TeamColor teamColor, out int fps, out Tile[] tiles)
-        {
+        public bool GetTeamColorTileData(IEnumerable<string> searchTilesets, string name, int shape, TeamColor teamColor, out int fps, out Tile[] tiles) {
             fps = 0;
             tiles = null;
 
-            foreach (var tileset in tilesets.Join(searchTilesets, x => x.Key, y => y, (x, y) => x.Value))
-            {
-                if (tileset.GetTileData(name, shape, teamColor, out fps, out tiles))
-                {
+            foreach(var tileset in this.tilesets.Join(searchTilesets, x => x.Key, y => y, (x, y) => x.Value)) {
+                if(tileset.GetTileData(name, shape, teamColor, out fps, out tiles)) {
                     return true;
                 }
             }
@@ -72,45 +62,25 @@ namespace MobiusEditor.Utility
             return false;
         }
 
-        public bool GetTeamColorTileData(IEnumerable<string> searchTilesets, string name, int shape, TeamColor teamColor, out int fps, out Tile tile)
-        {
+        public bool GetTeamColorTileData(IEnumerable<string> searchTilesets, string name, int shape, TeamColor teamColor, out int fps, out Tile tile) {
             tile = null;
-            if (!GetTeamColorTileData(searchTilesets, name, shape, teamColor, out fps, out Tile[] tiles))
-            {
+            if(!this.GetTeamColorTileData(searchTilesets, name, shape, teamColor, out fps, out Tile[] tiles)) {
                 return false;
             }
             tile = tiles[0];
             return true;
         }
 
-        public bool GetTeamColorTileData(IEnumerable<string> searchTilesets, string name, int shape, TeamColor teamColor, out Tile[] tiles)
-        {
-            return GetTeamColorTileData(searchTilesets, name, shape, teamColor, out int fps, out tiles);
-        }
+        public bool GetTeamColorTileData(IEnumerable<string> searchTilesets, string name, int shape, TeamColor teamColor, out Tile[] tiles) => this.GetTeamColorTileData(searchTilesets, name, shape, teamColor, out var fps, out tiles);
 
-        public bool GetTeamColorTileData(IEnumerable<string> searchTilesets, string name, int shape, TeamColor teamColor, out Tile tile)
-        {
-            return GetTeamColorTileData(searchTilesets, name, shape, teamColor, out int fps, out tile);
-        }
+        public bool GetTeamColorTileData(IEnumerable<string> searchTilesets, string name, int shape, TeamColor teamColor, out Tile tile) => this.GetTeamColorTileData(searchTilesets, name, shape, teamColor, out var fps, out tile);
 
-        public bool GetTileData(IEnumerable<string> searchTilesets, string name, int shape, out int fps, out Tile[] tiles)
-        {
-            return GetTeamColorTileData(searchTilesets, name, shape, null, out fps, out tiles);
-        }
+        public bool GetTileData(IEnumerable<string> searchTilesets, string name, int shape, out int fps, out Tile[] tiles) => this.GetTeamColorTileData(searchTilesets, name, shape, null, out fps, out tiles);
 
-        public bool GetTileData(IEnumerable<string> searchTilesets, string name, int shape, out int fps, out Tile tile)
-        {
-            return GetTeamColorTileData(searchTilesets, name, shape, null, out fps, out tile);
-        }
+        public bool GetTileData(IEnumerable<string> searchTilesets, string name, int shape, out int fps, out Tile tile) => this.GetTeamColorTileData(searchTilesets, name, shape, null, out fps, out tile);
 
-        public bool GetTileData(IEnumerable<string> searchTilesets, string name, int shape, out Tile[] tiles)
-        {
-            return GetTeamColorTileData(searchTilesets, name, shape, null, out tiles);
-        }
+        public bool GetTileData(IEnumerable<string> searchTilesets, string name, int shape, out Tile[] tiles) => this.GetTeamColorTileData(searchTilesets, name, shape, null, out tiles);
 
-        public bool GetTileData(IEnumerable<string> searchTilesets, string name, int shape, out Tile tile)
-        {
-            return GetTeamColorTileData(searchTilesets, name, shape, null, out tile);
-        }
+        public bool GetTileData(IEnumerable<string> searchTilesets, string name, int shape, out Tile tile) => this.GetTeamColorTileData(searchTilesets, name, shape, null, out tile);
     }
 }

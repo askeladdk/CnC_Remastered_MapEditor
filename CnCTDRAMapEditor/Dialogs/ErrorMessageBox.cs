@@ -14,42 +14,20 @@
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Dialogs
-{
-    public partial class ErrorMessageBox : Form
-    {
-        public string Message
-        {
-            set
-            {
-                lblMessage.Text = value;
-            }
+namespace MobiusEditor.Dialogs {
+    public partial class ErrorMessageBox : Form {
+        public string Message {
+            set => this.lblMessage.Text = value;
         }
 
-        public IEnumerable<string> Errors
-        {
-            set
-            {
-                txtErrors.Text = string.Join(Environment.NewLine, value);
-            }
+        public IEnumerable<string> Errors {
+            set => this.txtErrors.Text = string.Join(Environment.NewLine, value);
         }
 
-        public ErrorMessageBox()
-        {
-            InitializeComponent();
-        }
+        public ErrorMessageBox() => this.InitializeComponent();
 
-        private void btnCopy_Click(object sender, EventArgs e)
-        {
-            Clipboard.SetText(txtErrors.Text);
-        }
+        private void btnCopy_Click(object sender, EventArgs e) => Clipboard.SetText(this.txtErrors.Text);
     }
 }

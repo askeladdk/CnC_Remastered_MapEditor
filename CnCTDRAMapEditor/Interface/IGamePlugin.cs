@@ -13,16 +13,12 @@
 // GNU General Public License along with permitted additional restrictions 
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using MobiusEditor.Model;
-using MobiusEditor.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 
-namespace MobiusEditor.Interface
-{
-    public enum FileType
-    {
+namespace MobiusEditor.Interface {
+    public enum FileType {
         None,
         INI,
         BIN,
@@ -30,22 +26,28 @@ namespace MobiusEditor.Interface
         PGM
     }
 
-    public enum GameType
-    {
+    public enum GameType {
         None,
         TiberianDawn,
         RedAlert
     }
 
-    public interface IGamePlugin : IDisposable
-    {
-        GameType GameType { get; }
+    public interface IGamePlugin : IDisposable {
+        GameType GameType {
+            get;
+        }
 
-        Map Map { get; }
+        Map Map {
+            get;
+        }
 
-        Image MapImage { get; }
+        Image MapImage {
+            get;
+        }
 
-        bool Dirty { get; set; }
+        bool Dirty {
+            get; set;
+        }
 
         void New(string theater);
 

@@ -17,10 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.TiberianDawn
-{
-    public static class OverlayTypes
-    {
+namespace MobiusEditor.TiberianDawn {
+    public static class OverlayTypes {
         public static readonly OverlayType Sandbag = new OverlayType(1, "sbag", "TEXT_STRUCTURE_TITLE_GDI_SANDBAGS", OverlayTypeFlag.Wall);
         public static readonly OverlayType Cyclone = new OverlayType(2, "cycl", "TEXT_STRUCTURE_TITLE_GDI_CHAIN_LINK", OverlayTypeFlag.Wall);
         public static readonly OverlayType Brick = new OverlayType(3, "brik", "TEXT_STRUCTURE_TITLE_GDI_CONCRETE", OverlayTypeFlag.Wall);
@@ -49,19 +47,13 @@ namespace MobiusEditor.TiberianDawn
         public static readonly OverlayType WoodCrate = new OverlayType(28, "wcrate", OverlayTypeFlag.Crate);
         public static readonly OverlayType SteelCrate = new OverlayType(29, "scrate", OverlayTypeFlag.Crate);
 
-        private static OverlayType[] Types;
+        private static readonly OverlayType[] Types;
 
-        static OverlayTypes()
-        {
-            Types =
+        static OverlayTypes() => Types =
                 (from field in typeof(OverlayTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsInitOnly && typeof(OverlayType).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as OverlayType).ToArray();
-        }
 
-        public static IEnumerable<OverlayType> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<OverlayType> GetTypes() => Types;
     }
 }

@@ -14,35 +14,24 @@
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using MobiusEditor.Controls;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools.Dialogs
-{
-    public partial class GenericToolDialog : Form
-    {
-        public TypeComboBox GenericTypeComboBox => genericTypeComboBox;
+namespace MobiusEditor.Tools.Dialogs {
+    public partial class GenericToolDialog : Form {
+        public TypeComboBox GenericTypeComboBox => this.genericTypeComboBox;
 
-        public MapPanel GenericTypeMapPanel => genericTypeMapPanel;
+        public MapPanel GenericTypeMapPanel => this.genericTypeMapPanel;
 
-        public GenericToolDialog()
-        {
-            InitializeComponent();
+        public GenericToolDialog() {
+            this.InitializeComponent();
 
-            Location = Properties.Settings.Default.ToolDialogPosition;
+            this.Location = Properties.Settings.Default.ToolDialogPosition;
         }
 
-        protected override void OnMove(EventArgs e)
-        {
+        protected override void OnMove(EventArgs e) {
             base.OnMove(e);
 
-            Properties.Settings.Default.ToolDialogPosition = Location;
+            Properties.Settings.Default.ToolDialogPosition = this.Location;
             Properties.Settings.Default.Save();
         }
     }

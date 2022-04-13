@@ -15,17 +15,19 @@
 using MobiusEditor.Interface;
 using System.Drawing;
 
-namespace MobiusEditor.Model
-{
-    public class Overlay : ICellOccupier
-    {
-        public OverlayType Type { get; set; }
+namespace MobiusEditor.Model {
+    public class Overlay : ICellOccupier {
+        public OverlayType Type {
+            get; set;
+        }
 
-        public int Icon { get; set; }
+        public int Icon {
+            get; set;
+        }
 
         public Size OverlapSize => new Size(1, 1);
 
-        public bool[,] OccupyMask => Type.OccupyMask;
+        public bool[,] OccupyMask => this.Type.OccupyMask;
 
         public Color Tint { get; set; } = Color.White;
     }

@@ -22,251 +22,212 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Controls
-{
-    public partial class ObjectProperties : UserControl
-    {
+namespace MobiusEditor.Controls {
+    public partial class ObjectProperties : UserControl {
         private bool isMockObject;
 
-        public IGamePlugin Plugin { get; private set; }
+        public IGamePlugin Plugin {
+            get; private set;
+        }
 
         private INotifyPropertyChanged obj;
-        public INotifyPropertyChanged Object
-        {
-            get => obj;
-            set
-            {
-                if (obj != value)
-                {
-                    if (obj != null)
-                    {
-                        obj.PropertyChanged -= Obj_PropertyChanged;
+        public INotifyPropertyChanged Object {
+            get => this.obj;
+            set {
+                if(this.obj != value) {
+                    if(this.obj != null) {
+                        this.obj.PropertyChanged -= this.Obj_PropertyChanged;
                     }
 
-                    obj = value;
+                    this.obj = value;
 
-                    if (obj != null)
-                    {
-                        obj.PropertyChanged += Obj_PropertyChanged;
+                    if(this.obj != null) {
+                        this.obj.PropertyChanged += this.Obj_PropertyChanged;
                     }
 
-                    Rebind();
+                    this.Rebind();
                 }
             }
         }
 
-        public ObjectProperties()
-        {
-            InitializeComponent();
-        }
+        public ObjectProperties() => this.InitializeComponent();
 
-        public void Initialize(IGamePlugin plugin, bool isMockObject)
-        {
+        public void Initialize(IGamePlugin plugin, bool isMockObject) {
             this.isMockObject = isMockObject;
 
-            Plugin = plugin;
-            plugin.Map.Triggers.CollectionChanged += Triggers_CollectionChanged;
+            this.Plugin = plugin;
+            plugin.Map.Triggers.CollectionChanged += this.Triggers_CollectionChanged;
 
-            houseComboBox.DataSource = plugin.Map.Houses.Select(t => new TypeItem<HouseType>(t.Type.Name, t.Type)).ToArray();
-            missionComboBox.DataSource = plugin.Map.MissionTypes;
+            this.houseComboBox.DataSource = plugin.Map.Houses.Select(t => new TypeItem<HouseType>(t.Type.Name, t.Type)).ToArray();
+            this.missionComboBox.DataSource = plugin.Map.MissionTypes;
 
-            UpdateDataSource();
+            this.UpdateDataSource();
 
-            Disposed += (sender, e) =>
-            {
-                Object = null;
-                plugin.Map.Triggers.CollectionChanged -= Triggers_CollectionChanged;
+            Disposed += (sender, e) => {
+                this.Object = null;
+                plugin.Map.Triggers.CollectionChanged -= this.Triggers_CollectionChanged;
             };
         }
 
-        private void Triggers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            UpdateDataSource();
-        }
+        private void Triggers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => this.UpdateDataSource();
 
-        private void UpdateDataSource()
-        {
-            triggerComboBox.DataSource = Trigger.None.Yield().Concat(Plugin.Map.Triggers.Select(t => t.Name).Distinct()).ToArray();
-        }
+        private void UpdateDataSource() => this.triggerComboBox.DataSource = Trigger.None.Yield().Concat(this.Plugin.Map.Triggers.Select(t => t.Name).Distinct()).ToArray();
 
-        private void Rebind()
-        {
-            houseComboBox.DataBindings.Clear();
-            strengthNud.DataBindings.Clear();
-            directionComboBox.DataBindings.Clear();
-            missionComboBox.DataBindings.Clear();
-            triggerComboBox.DataBindings.Clear();
-            basePriorityNud.DataBindings.Clear();
-            prebuiltCheckBox.DataBindings.Clear();
-            sellableCheckBox.DataBindings.Clear();
-            rebuildCheckBox.DataBindings.Clear();
+        private void Rebind() {
+            this.houseComboBox.DataBindings.Clear();
+            this.strengthNud.DataBindings.Clear();
+            this.directionComboBox.DataBindings.Clear();
+            this.missionComboBox.DataBindings.Clear();
+            this.triggerComboBox.DataBindings.Clear();
+            this.basePriorityNud.DataBindings.Clear();
+            this.prebuiltCheckBox.DataBindings.Clear();
+            this.sellableCheckBox.DataBindings.Clear();
+            this.rebuildCheckBox.DataBindings.Clear();
 
-            if (obj == null)
-            {
+            if(this.obj == null) {
                 return;
             }
 
-            switch (obj)
-            {
-                case Infantry infantry:
-                    {
-                        houseComboBox.Enabled = true;
-                        directionComboBox.DataSource = Plugin.Map.DirectionTypes
+            switch(this.obj) {
+            case Infantry infantry: {
+                this.houseComboBox.Enabled = true;
+                this.directionComboBox.DataSource = this.Plugin.Map.DirectionTypes
                             .Where(t => t.Facing != FacingType.None)
                             .Select(t => new TypeItem<DirectionType>(t.Name, t)).ToArray();
 
-                        missionComboBox.DataBindings.Add("SelectedItem", obj, "Mission");
-                        missionLabel.Visible = missionComboBox.Visible = true;
-                        basePriorityLabel.Visible = basePriorityNud.Visible = false;
-                        prebuiltCheckBox.Visible = false;
-                        sellableCheckBox.Visible = false;
-                        rebuildCheckBox.Visible = false;
-                    }
-                    break;
-                case Unit unit:
-                    {
-                        houseComboBox.Enabled = true;
-                        directionComboBox.DataSource = Plugin.Map.DirectionTypes.Select(t => new TypeItem<DirectionType>(t.Name, t)).ToArray();
-                        missionComboBox.DataBindings.Add("SelectedItem", obj, "Mission");
-                        missionLabel.Visible = missionComboBox.Visible = true;
-                        basePriorityLabel.Visible = basePriorityNud.Visible = false;
-                        prebuiltCheckBox.Visible = false;
-                        sellableCheckBox.Visible = false;
-                        rebuildCheckBox.Visible = false;
-                    }
-                    break;
-                case Building building:
-                    {
-                        houseComboBox.Enabled = building.IsPrebuilt;
-                        directionComboBox.DataSource = Plugin.Map.DirectionTypes.Select(t => new TypeItem<DirectionType>(t.Name, t)).ToArray();
-                        directionComboBox.Visible = (building.Type != null) && building.Type.HasTurret;
-                        missionLabel.Visible = missionComboBox.Visible = false;
-                        basePriorityLabel.Visible = basePriorityNud.Visible = true;
-                        prebuiltCheckBox.Visible = true;
-                        prebuiltCheckBox.Enabled = building.BasePriority >= 0;
+                this.missionComboBox.DataBindings.Add("SelectedItem", this.obj, "Mission");
+                this.missionLabel.Visible = this.missionComboBox.Visible = true;
+                this.basePriorityLabel.Visible = this.basePriorityNud.Visible = false;
+                this.prebuiltCheckBox.Visible = false;
+                this.sellableCheckBox.Visible = false;
+                this.rebuildCheckBox.Visible = false;
+            }
+            break;
+            case Unit unit: {
+                this.houseComboBox.Enabled = true;
+                this.directionComboBox.DataSource = this.Plugin.Map.DirectionTypes.Select(t => new TypeItem<DirectionType>(t.Name, t)).ToArray();
+                this.missionComboBox.DataBindings.Add("SelectedItem", this.obj, "Mission");
+                this.missionLabel.Visible = this.missionComboBox.Visible = true;
+                this.basePriorityLabel.Visible = this.basePriorityNud.Visible = false;
+                this.prebuiltCheckBox.Visible = false;
+                this.sellableCheckBox.Visible = false;
+                this.rebuildCheckBox.Visible = false;
+            }
+            break;
+            case Building building: {
+                this.houseComboBox.Enabled = building.IsPrebuilt;
+                this.directionComboBox.DataSource = this.Plugin.Map.DirectionTypes.Select(t => new TypeItem<DirectionType>(t.Name, t)).ToArray();
+                this.directionComboBox.Visible = (building.Type != null) && building.Type.HasTurret;
+                this.missionLabel.Visible = this.missionComboBox.Visible = false;
+                this.basePriorityLabel.Visible = this.basePriorityNud.Visible = true;
+                this.prebuiltCheckBox.Visible = true;
+                this.prebuiltCheckBox.Enabled = building.BasePriority >= 0;
 
-                        basePriorityNud.DataBindings.Add("Value", obj, "BasePriority");
-                        prebuiltCheckBox.DataBindings.Add("Checked", obj, "IsPrebuilt");
+                this.basePriorityNud.DataBindings.Add("Value", this.obj, "BasePriority");
+                this.prebuiltCheckBox.DataBindings.Add("Checked", this.obj, "IsPrebuilt");
 
-                        switch (Plugin.GameType)
-                        {
-                            case GameType.TiberianDawn:
-                                {
-                                    sellableCheckBox.Visible = false;
-                                    rebuildCheckBox.Visible = false;
-                                } break;
-                            case GameType.RedAlert:
-                                {
-                                    sellableCheckBox.DataBindings.Add("Checked", obj, "Sellable");
-                                    rebuildCheckBox.DataBindings.Add("Checked", obj, "Rebuild");
-                                    sellableCheckBox.Visible = true;
-                                    rebuildCheckBox.Visible = true;
-                                } break;
-                        }
-                    }
-                    break;
+                switch(this.Plugin.GameType) {
+                case GameType.TiberianDawn: {
+                    this.sellableCheckBox.Visible = false;
+                    this.rebuildCheckBox.Visible = false;
+                }
+                break;
+                case GameType.RedAlert: {
+                    this.sellableCheckBox.DataBindings.Add("Checked", this.obj, "Sellable");
+                    this.rebuildCheckBox.DataBindings.Add("Checked", this.obj, "Rebuild");
+                    this.sellableCheckBox.Visible = true;
+                    this.rebuildCheckBox.Visible = true;
+                }
+                break;
+                }
+            }
+            break;
             }
 
-            houseComboBox.DataBindings.Add("SelectedValue", obj, "House");
-            strengthNud.DataBindings.Add("Value", obj, "Strength");
-            directionComboBox.DataBindings.Add("SelectedValue", obj, "Direction");
-            triggerComboBox.DataBindings.Add("SelectedItem", obj, "Trigger");
+            this.houseComboBox.DataBindings.Add("SelectedValue", this.obj, "House");
+            this.strengthNud.DataBindings.Add("Value", this.obj, "Strength");
+            this.directionComboBox.DataBindings.Add("SelectedValue", this.obj, "Direction");
+            this.triggerComboBox.DataBindings.Add("SelectedItem", this.obj, "Trigger");
         }
 
-        private void Obj_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "Type":
-                    {
-                        Rebind();
+        private void Obj_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            switch(e.PropertyName) {
+            case "Type": {
+                this.Rebind();
+            }
+            break;
+            case "BasePriority": {
+                if(this.obj is Building building) {
+                    this.prebuiltCheckBox.Enabled = building.BasePriority >= 0;
+                }
+            }
+            break;
+            case "IsPrebuilt": {
+                if(this.obj is Building building) {
+                    if(!building.IsPrebuilt) {
+                        var basePlayer = this.Plugin.Map.HouseTypes.Where(h => h.Equals(this.Plugin.Map.BasicSection.BasePlayer)).FirstOrDefault() ?? this.Plugin.Map.HouseTypes.First();
+                        building.House = basePlayer;
                     }
-                    break;
-                case "BasePriority":
-                    {
-                        if (obj is Building building)
-                        {
-                            prebuiltCheckBox.Enabled = building.BasePriority >= 0;
-                        }
-                    }
-                    break;
-                case "IsPrebuilt":
-                    {
-                        if (obj is Building building)
-                        {
-                            if (!building.IsPrebuilt)
-                            {
-                                var basePlayer = Plugin.Map.HouseTypes.Where(h => h.Equals(Plugin.Map.BasicSection.BasePlayer)).FirstOrDefault() ?? Plugin.Map.HouseTypes.First();
-                                building.House = basePlayer;
-                            }
-                            houseComboBox.Enabled = building.IsPrebuilt;
-                        }
-                    } break;
+                    this.houseComboBox.Enabled = building.IsPrebuilt;
+                }
+            }
+            break;
             }
 
-            if (!isMockObject)
-            {
-                Plugin.Dirty = true;
+            if(!this.isMockObject) {
+                this.Plugin.Dirty = true;
             }
         }
 
-        private void comboBox_SelectedValueChanged(object sender, EventArgs e)
-        {
-            foreach (Binding binding in (sender as ComboBox).DataBindings)
-            {
+        private void comboBox_SelectedValueChanged(object sender, EventArgs e) {
+            foreach(Binding binding in (sender as ComboBox).DataBindings) {
                 binding.WriteValue();
             }
         }
 
-        private void nud_ValueChanged(object sender, EventArgs e)
-        {
-            foreach (Binding binding in (sender as NumericUpDown).DataBindings)
-            {
+        private void nud_ValueChanged(object sender, EventArgs e) {
+            foreach(Binding binding in (sender as NumericUpDown).DataBindings) {
                 binding.WriteValue();
             }
         }
 
-        private void checkBox_CheckedChanged(object sender, EventArgs e)
-        {
-            foreach (Binding binding in (sender as CheckBox).DataBindings)
-            {
+        private void checkBox_CheckedChanged(object sender, EventArgs e) {
+            foreach(Binding binding in (sender as CheckBox).DataBindings) {
                 binding.WriteValue();
             }
         }
     }
 
-    public class ObjectPropertiesPopup : ToolStripDropDown
-    {
+    public class ObjectPropertiesPopup : ToolStripDropDown {
         private readonly ToolStripControlHost host;
 
-        public ObjectProperties ObjectProperties { get; private set; }
+        public ObjectProperties ObjectProperties {
+            get; private set;
+        }
 
-        public ObjectPropertiesPopup(IGamePlugin plugin, INotifyPropertyChanged obj)
-        {
-            ObjectProperties = new ObjectProperties();
-            ObjectProperties.Initialize(plugin, false);
-            ObjectProperties.Object = obj;
+        public ObjectPropertiesPopup(IGamePlugin plugin, INotifyPropertyChanged obj) {
+            this.ObjectProperties = new ObjectProperties();
+            this.ObjectProperties.Initialize(plugin, false);
+            this.ObjectProperties.Object = obj;
 
-            host = new ToolStripControlHost(ObjectProperties);
-            Padding = Margin = host.Padding = host.Margin = Padding.Empty;
-            MinimumSize = ObjectProperties.MinimumSize;
-            ObjectProperties.MinimumSize = ObjectProperties.Size;
-            MaximumSize = ObjectProperties.MaximumSize;
-            ObjectProperties.MaximumSize = ObjectProperties.Size;
-            Size = ObjectProperties.Size;
-            Items.Add(host);
-            ObjectProperties.Disposed += (sender, e) =>
-            {
-                ObjectProperties = null;
-                Dispose(true);
+            this.host = new ToolStripControlHost(this.ObjectProperties);
+            this.Padding = this.Margin = this.host.Padding = this.host.Margin = Padding.Empty;
+            this.MinimumSize = this.ObjectProperties.MinimumSize;
+            this.ObjectProperties.MinimumSize = this.ObjectProperties.Size;
+            this.MaximumSize = this.ObjectProperties.MaximumSize;
+            this.ObjectProperties.MaximumSize = this.ObjectProperties.Size;
+            this.Size = this.ObjectProperties.Size;
+            this.Items.Add(this.host);
+            this.ObjectProperties.Disposed += (sender, e) => {
+                this.ObjectProperties = null;
+                this.Dispose(true);
             };
         }
 
-        protected override void OnClosed(ToolStripDropDownClosedEventArgs e)
-        {
+        protected override void OnClosed(ToolStripDropDownClosedEventArgs e) {
             base.OnClosed(e);
 
-            ObjectProperties.Object = null;
+            this.ObjectProperties.Object = null;
         }
     }
 }

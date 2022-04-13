@@ -17,10 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.RedAlert
-{
-    public static class OverlayTypes
-    {
+namespace MobiusEditor.RedAlert {
+    public static class OverlayTypes {
         public static readonly OverlayType Sandbag = new OverlayType(0, "sbag", "TEXT_STRUCTURE_RA_SBAG", OverlayTypeFlag.Wall);
         public static readonly OverlayType Cyclone = new OverlayType(1, "cycl", "TEXT_STRUCTURE_RA_CYCL", OverlayTypeFlag.Wall);
         public static readonly OverlayType Brick = new OverlayType(2, "brik", "TEXT_STRUCTURE_RA_BRIK", OverlayTypeFlag.Wall);
@@ -47,19 +45,13 @@ namespace MobiusEditor.RedAlert
         public static readonly OverlayType Fence = new OverlayType(23, "fenc", "TEXT_STRUCTURE_RA_FENC", OverlayTypeFlag.Wall);
         public static readonly OverlayType WaterCrate = new OverlayType(24, "wwcrate", OverlayTypeFlag.Crate);
 
-        private static OverlayType[] Types;
+        private static readonly OverlayType[] Types;
 
-        static OverlayTypes()
-        {
-            Types =
+        static OverlayTypes() => Types =
                 (from field in typeof(OverlayTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsInitOnly && typeof(OverlayType).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as OverlayType).ToArray();
-        }
 
-        public static IEnumerable<OverlayType> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<OverlayType> GetTypes() => Types;
     }
 }

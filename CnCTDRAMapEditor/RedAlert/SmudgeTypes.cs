@@ -18,10 +18,8 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.RedAlert
-{
-    public static class SmudgeTypes
-    {
+namespace MobiusEditor.RedAlert {
+    public static class SmudgeTypes {
         public static readonly SmudgeType Crater1 = new SmudgeType(0, "cr1");
         public static readonly SmudgeType Crater2 = new SmudgeType(1, "cr2");
         public static readonly SmudgeType Crater3 = new SmudgeType(2, "cr3");
@@ -38,19 +36,13 @@ namespace MobiusEditor.RedAlert
         public static readonly SmudgeType Bib2 = new SmudgeType(13, "bib2", new Size(3, 2), SmudgeTypeFlag.Bib2);
         public static readonly SmudgeType Bib3 = new SmudgeType(14, "bib3", new Size(2, 2), SmudgeTypeFlag.Bib3);
 
-        private static SmudgeType[] Types;
+        private static readonly SmudgeType[] Types;
 
-        static SmudgeTypes()
-        {
-            Types =
+        static SmudgeTypes() => Types =
                 (from field in typeof(SmudgeTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsInitOnly && typeof(SmudgeType).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as SmudgeType).ToArray();
-        }
 
-        public static IEnumerable<SmudgeType> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<SmudgeType> GetTypes() => Types;
     }
 }

@@ -15,13 +15,15 @@
 using MobiusEditor.Interface;
 using System.Drawing;
 
-namespace MobiusEditor.Model
-{
-    public class Template : ICellOccupier
-    {
-        public TemplateType Type { get; set; }
+namespace MobiusEditor.Model {
+    public class Template : ICellOccupier {
+        public TemplateType Type {
+            get; set;
+        }
 
-        public int Icon { get; set; }
+        public int Icon {
+            get; set;
+        }
 
         public Size OverlapSize => new Size(1, 1);
 

@@ -16,18 +16,19 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace MobiusEditor.Event
-{
-    public class RenderEventArgs : EventArgs
-    {
-        public Graphics Graphics { get; private set; }
+namespace MobiusEditor.Event {
+    public class RenderEventArgs : EventArgs {
+        public Graphics Graphics {
+            get; private set;
+        }
 
-        public ISet<Point> Cells { get; private set; }
+        public ISet<Point> Cells {
+            get; private set;
+        }
 
-        public RenderEventArgs(Graphics graphics, ISet<Point> cells)
-        {
-            Graphics = graphics;
-            Cells = cells;
+        public RenderEventArgs(Graphics graphics, ISet<Point> cells) {
+            this.Graphics = graphics;
+            this.Cells = cells;
         }
     }
 }

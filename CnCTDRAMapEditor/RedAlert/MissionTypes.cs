@@ -14,10 +14,8 @@
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using System.Collections.Generic;
 
-namespace MobiusEditor.RedAlert
-{
-    public static class MissionTypes
-    {
+namespace MobiusEditor.RedAlert {
+    public static class MissionTypes {
         private static readonly string[] Types = new string[]
         {
             "Sleep",
@@ -45,9 +43,6 @@ namespace MobiusEditor.RedAlert
             "Harmless"
         };
 
-        public static IEnumerable<string> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<string> GetTypes() => Types;
     }
 }

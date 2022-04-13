@@ -14,14 +14,11 @@
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using MobiusEditor.Model;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.TiberianDawn
-{
-    public static class UnitTypes
-    {
+namespace MobiusEditor.TiberianDawn {
+    public static class UnitTypes {
         public static readonly UnitType HTank = new UnitType(0, "htnk", "TEXT_UNIT_TITLE_GDI_MAMMOTH_TANK", "Goodguy", true);
         public static readonly UnitType MTank = new UnitType(1, "mtnk", "TEXT_UNIT_TITLE_GDI_MED_TANK", "Goodguy", true);
         public static readonly UnitType LTank = new UnitType(2, "ltnk", "TEXT_UNIT_TITLE_NOD_LIGHT_TANK", "Badguy", true);
@@ -53,17 +50,11 @@ namespace MobiusEditor.TiberianDawn
 
         private static readonly UnitType[] Types;
 
-        static UnitTypes()
-        {
-            Types =
+        static UnitTypes() => Types =
                 (from field in typeof(UnitTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsInitOnly && typeof(UnitType).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as UnitType).ToArray();
-        }
 
-        public static IEnumerable<UnitType> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<UnitType> GetTypes() => Types;
     }
 }

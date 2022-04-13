@@ -15,28 +15,24 @@
 using System;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools.Dialogs
-{
-    public partial class ResourcesToolDialog : Form
-    {
-        public Label TotalResourcesLbl => totalResourcesLbl;
+namespace MobiusEditor.Tools.Dialogs {
+    public partial class ResourcesToolDialog : Form {
+        public Label TotalResourcesLbl => this.totalResourcesLbl;
 
-        public NumericUpDown ResourceBrushSizeNud => resourceBrushSizeNud;
+        public NumericUpDown ResourceBrushSizeNud => this.resourceBrushSizeNud;
 
-        public CheckBox GemsCheckBox => gemsCheckBox;
+        public CheckBox GemsCheckBox => this.gemsCheckBox;
 
-        public ResourcesToolDialog()
-        {
-            InitializeComponent();
+        public ResourcesToolDialog() {
+            this.InitializeComponent();
 
-            Location = Properties.Settings.Default.ToolDialogPosition;
+            this.Location = Properties.Settings.Default.ToolDialogPosition;
         }
 
-        protected override void OnMove(EventArgs e)
-        {
+        protected override void OnMove(EventArgs e) {
             base.OnMove(e);
 
-            Properties.Settings.Default.ToolDialogPosition = Location;
+            Properties.Settings.Default.ToolDialogPosition = this.Location;
             Properties.Settings.Default.Save();
         }
     }

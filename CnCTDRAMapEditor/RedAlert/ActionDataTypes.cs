@@ -12,12 +12,9 @@
 // distributed with this program. You should have received a copy of the 
 // GNU General Public License along with permitted additional restrictions 
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
-namespace MobiusEditor.RedAlert
-{
-    public static class ActionDataTypes
-    {
-        public enum ThemeType
-        {
+namespace MobiusEditor.RedAlert {
+    public static class ActionDataTypes {
+        public enum ThemeType {
             THEME_QUIET = -3,
             THEME_PICK_ANOTHER = -2,
             THEME_NONE = -1,
@@ -62,8 +59,7 @@ namespace MobiusEditor.RedAlert
             THEME_WASTELND,
         };
 
-        public enum VocType
-        {
+        public enum VocType {
             VOC_NONE = -1,
             VOC_GIRL_OKAY,          // "okay"
             VOC_GIRL_YEAH,          // "yeah?"
@@ -232,8 +228,7 @@ namespace MobiusEditor.RedAlert
             VOC_SHOCK_TROOP1,
         };
 
-        public enum VoxType
-        {
+        public enum VoxType {
             VOX_NONE = -1,
             VOX_ACCOMPLISHED,                   //	mission accomplished
             VOX_FAIL,                           //	your mission has failed
@@ -353,8 +348,7 @@ namespace MobiusEditor.RedAlert
             VOX_LOAD1,
         };
 
-        public enum SpecialWeaponType
-        {
+        public enum SpecialWeaponType {
             SPC_NONE = -1,
             SPC_SONAR_PULSE,            // Momentarily reveals submarines.
             SPC_NUCLEAR_BOMB,           //	Tactical nuclear weapon.
@@ -366,8 +360,7 @@ namespace MobiusEditor.RedAlert
             SPC_GPS,						// give allies free unjammable radar.
         };
 
-        public enum QuarryType
-        {
+        public enum QuarryType {
             QUARRY_NONE,
             QUARRY_ANYTHING,                    // Attack any enemy (same as "hunt").
             QUARRY_BUILDINGS,                   // Attack buildings (in general).
@@ -382,8 +375,7 @@ namespace MobiusEditor.RedAlert
             QUARRY_FAKES,						// Prefer to attack fake buildings.
         };
 
-        public enum VQType
-        {
+        public enum VQType {
             VQ_NONE = -1,
             VQ_AAGUN,
             VQ_MIG,

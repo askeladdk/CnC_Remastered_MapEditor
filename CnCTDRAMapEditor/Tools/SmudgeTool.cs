@@ -23,287 +23,225 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools
-{
-    public class SmudgeTool : ViewTool
-    {
+namespace MobiusEditor.Tools {
+    public class SmudgeTool : ViewTool {
         private readonly TypeComboBox smudgeTypeComboBox;
         private readonly MapPanel smudgeTypeMapPanel;
 
         private Map previewMap;
-        protected override Map RenderMap => previewMap;
+        protected override Map RenderMap => this.previewMap;
 
         private bool placementMode;
 
         private SmudgeType selectedSmudgeType;
-        private SmudgeType SelectedSmudgeType
-        {
-            get => selectedSmudgeType;
-            set
-            {
-                if (selectedSmudgeType != value)
-                {
-                    if (placementMode && (selectedSmudgeType != null))
-                    {
-                        mapPanel.Invalidate(map, navigationWidget.MouseCell);
+        private SmudgeType SelectedSmudgeType {
+            get => this.selectedSmudgeType;
+            set {
+                if(this.selectedSmudgeType != value) {
+                    if(this.placementMode && (this.selectedSmudgeType != null)) {
+                        this.mapPanel.Invalidate(this.map, this.navigationWidget.MouseCell);
                     }
 
-                    selectedSmudgeType = value;
-                    smudgeTypeComboBox.SelectedValue = selectedSmudgeType;
+                    this.selectedSmudgeType = value;
+                    this.smudgeTypeComboBox.SelectedValue = this.selectedSmudgeType;
 
-                    if (placementMode && (selectedSmudgeType != null))
-                    {
-                        mapPanel.Invalidate(map, navigationWidget.MouseCell);
+                    if(this.placementMode && (this.selectedSmudgeType != null)) {
+                        this.mapPanel.Invalidate(this.map, this.navigationWidget.MouseCell);
                     }
 
-                    RefreshMapPanel();
+                    this.RefreshMapPanel();
                 }
             }
         }
 
         public SmudgeTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, TypeComboBox smudgeTypeComboBox, MapPanel smudgeTypeMapPanel, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
-            : base(mapPanel, layers, statusLbl, plugin, url)
-        {
-            previewMap = map;
+            : base(mapPanel, layers, statusLbl, plugin, url) {
+            this.previewMap = this.map;
 
-            this.mapPanel.MouseDown += MapPanel_MouseDown;
-            this.mapPanel.MouseMove += MapPanel_MouseMove;
-            (this.mapPanel as Control).KeyDown += SmudgeTool_KeyDown;
-            (this.mapPanel as Control).KeyUp += SmudgeTool_KeyUp;
+            this.mapPanel.MouseDown += this.MapPanel_MouseDown;
+            this.mapPanel.MouseMove += this.MapPanel_MouseMove;
+            (this.mapPanel as Control).KeyDown += this.SmudgeTool_KeyDown;
+            (this.mapPanel as Control).KeyUp += this.SmudgeTool_KeyUp;
 
             this.smudgeTypeComboBox = smudgeTypeComboBox;
-            this.smudgeTypeComboBox.SelectedIndexChanged += SmudgeTypeComboBox_SelectedIndexChanged;
+            this.smudgeTypeComboBox.SelectedIndexChanged += this.SmudgeTypeComboBox_SelectedIndexChanged;
 
             this.smudgeTypeMapPanel = smudgeTypeMapPanel;
             this.smudgeTypeMapPanel.BackColor = Color.White;
             this.smudgeTypeMapPanel.MaxZoom = 1;
 
-            navigationWidget.MouseCellChanged += MouseoverWidget_MouseCellChanged;
+            this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
 
-            SelectedSmudgeType = smudgeTypeComboBox.Types.First() as SmudgeType;
+            this.SelectedSmudgeType = smudgeTypeComboBox.Types.First() as SmudgeType;
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void SmudgeTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SelectedSmudgeType = smudgeTypeComboBox.SelectedValue as SmudgeType;
-        }
+        private void SmudgeTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) => this.SelectedSmudgeType = this.smudgeTypeComboBox.SelectedValue as SmudgeType;
 
-        private void SmudgeTool_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ShiftKey)
-            {
-                EnterPlacementMode();
+        private void SmudgeTool_KeyDown(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.ShiftKey) {
+                this.EnterPlacementMode();
             }
         }
 
-        private void SmudgeTool_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ShiftKey)
-            {
-                ExitPlacementMode();
+        private void SmudgeTool_KeyUp(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.ShiftKey) {
+                this.ExitPlacementMode();
             }
         }
 
-        private void MapPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (placementMode)
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    AddSmudge(navigationWidget.MouseCell);
+        private void MapPanel_MouseDown(object sender, MouseEventArgs e) {
+            if(this.placementMode) {
+                if(e.Button == MouseButtons.Left) {
+                    this.AddSmudge(this.navigationWidget.MouseCell);
+                } else if(e.Button == MouseButtons.Right) {
+                    this.RemoveSmudge(this.navigationWidget.MouseCell);
                 }
-                else if (e.Button == MouseButtons.Right)
-                {
-                    RemoveSmudge(navigationWidget.MouseCell);
-                }
-            }
-            else if ((e.Button == MouseButtons.Left) || (e.Button == MouseButtons.Right))
-            {
-                PickSmudge(navigationWidget.MouseCell);
+            } else if((e.Button == MouseButtons.Left) || (e.Button == MouseButtons.Right)) {
+                this.PickSmudge(this.navigationWidget.MouseCell);
             }
         }
 
-        private void MapPanel_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (!placementMode && (Control.ModifierKeys == Keys.Shift))
-            {
-                EnterPlacementMode();
-            }
-            else if (placementMode && (Control.ModifierKeys == Keys.None))
-            {
-                ExitPlacementMode();
+        private void MapPanel_MouseMove(object sender, MouseEventArgs e) {
+            if(!this.placementMode && (Control.ModifierKeys == Keys.Shift)) {
+                this.EnterPlacementMode();
+            } else if(this.placementMode && (Control.ModifierKeys == Keys.None)) {
+                this.ExitPlacementMode();
             }
         }
 
-        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e)
-        {
-            if (placementMode)
-            {
-                if (SelectedSmudgeType != null)
-                {
-                    mapPanel.Invalidate(map, e.OldCell);
-                    mapPanel.Invalidate(map, e.NewCell);
+        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e) {
+            if(this.placementMode) {
+                if(this.SelectedSmudgeType != null) {
+                    this.mapPanel.Invalidate(this.map, e.OldCell);
+                    this.mapPanel.Invalidate(this.map, e.NewCell);
                 }
             }
         }
 
-        private void AddSmudge(Point location)
-        {
-            if (map.Smudge[location] == null)
-            {
-                if (SelectedSmudgeType != null)
-                {
-                    var smudge = new Smudge
-                    {
+        private void AddSmudge(Point location) {
+            if(this.map.Smudge[location] == null) {
+                if(this.SelectedSmudgeType != null) {
+                    var smudge = new Smudge {
                         Type = SelectedSmudgeType,
                         Icon = 0,
                         Data = 0
                     };
-                    map.Smudge[location] = smudge;
-                    mapPanel.Invalidate(map, location);
+                    this.map.Smudge[location] = smudge;
+                    this.mapPanel.Invalidate(this.map, location);
 
-                    void undoAction(UndoRedoEventArgs e)
-                    {
+                    void undoAction(UndoRedoEventArgs e) {
                         e.MapPanel.Invalidate(e.Map, location);
                         e.Map.Smudge[location] = null;
                     }
 
-                    void redoAction(UndoRedoEventArgs e)
-                    {
+                    void redoAction(UndoRedoEventArgs e) {
                         e.Map.Smudge[location] = smudge;
                         e.MapPanel.Invalidate(e.Map, location);
                     }
 
-                    url.Track(undoAction, redoAction);
+                    this.url.Track(undoAction, redoAction);
 
-                    plugin.Dirty = true;
+                    this.plugin.Dirty = true;
                 }
             }
         }
 
-        private void RemoveSmudge(Point location)
-        {
-            if ((map.Smudge[location] is Smudge smudge) && ((smudge.Type.Flag & SmudgeTypeFlag.Bib) == SmudgeTypeFlag.None))
-            {
-                map.Smudge[location] = null;
-                mapPanel.Invalidate(map, location);
+        private void RemoveSmudge(Point location) {
+            if((this.map.Smudge[location] is Smudge smudge) && ((smudge.Type.Flag & SmudgeTypeFlag.Bib) == SmudgeTypeFlag.None)) {
+                this.map.Smudge[location] = null;
+                this.mapPanel.Invalidate(this.map, location);
 
-                void undoAction(UndoRedoEventArgs e)
-                {
+                void undoAction(UndoRedoEventArgs e) {
                     e.Map.Smudge[location] = smudge;
                     e.MapPanel.Invalidate(e.Map, location);
                 }
 
-                void redoAction(UndoRedoEventArgs e)
-                {
+                void redoAction(UndoRedoEventArgs e) {
                     e.MapPanel.Invalidate(e.Map, location);
                     e.Map.Smudge[location] = null;
                 }
 
-                url.Track(undoAction, redoAction);
+                this.url.Track(undoAction, redoAction);
 
-                plugin.Dirty = true;
+                this.plugin.Dirty = true;
             }
         }
 
-        private void EnterPlacementMode()
-        {
-            if (placementMode)
-            {
+        private void EnterPlacementMode() {
+            if(this.placementMode) {
                 return;
             }
 
-            placementMode = true;
+            this.placementMode = true;
 
-            navigationWidget.MouseoverSize = Size.Empty;
+            this.navigationWidget.MouseoverSize = Size.Empty;
 
-            if (SelectedSmudgeType != null)
-            {
-                mapPanel.Invalidate(map, navigationWidget.MouseCell);
+            if(this.SelectedSmudgeType != null) {
+                this.mapPanel.Invalidate(this.map, this.navigationWidget.MouseCell);
             }
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void ExitPlacementMode()
-        {
-            if (!placementMode)
-            {
+        private void ExitPlacementMode() {
+            if(!this.placementMode) {
                 return;
             }
 
-            placementMode = false;
+            this.placementMode = false;
 
-            navigationWidget.MouseoverSize = new Size(1, 1);
+            this.navigationWidget.MouseoverSize = new Size(1, 1);
 
-            if (SelectedSmudgeType != null)
-            {
-                mapPanel.Invalidate(map, navigationWidget.MouseCell);
+            if(this.SelectedSmudgeType != null) {
+                this.mapPanel.Invalidate(this.map, this.navigationWidget.MouseCell);
             }
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void PickSmudge(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                var smudge = map.Smudge[cell];
-                if (smudge != null)
-                {
-                    SelectedSmudgeType = smudge.Type;
+        private void PickSmudge(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                var smudge = this.map.Smudge[cell];
+                if(smudge != null) {
+                    this.SelectedSmudgeType = smudge.Type;
                 }
             }
         }
 
-        private void RefreshMapPanel()
-        {
-            smudgeTypeMapPanel.MapImage = SelectedSmudgeType?.Thumbnail;
-        }
+        private void RefreshMapPanel() => this.smudgeTypeMapPanel.MapImage = this.SelectedSmudgeType?.Thumbnail;
 
-        private void UpdateStatus()
-        {
-            if (placementMode)
-            {
-                statusLbl.Text = "Left-Click to place smudge, Right-Click to remove smudge";
-            }
-            else
-            {
-                statusLbl.Text = "Shift to enter placement mode, Left-Click or Right-Click to pick smudge";
+        private void UpdateStatus() {
+            if(this.placementMode) {
+                this.statusLbl.Text = "Left-Click to place smudge, Right-Click to remove smudge";
+            } else {
+                this.statusLbl.Text = "Shift to enter placement mode, Left-Click or Right-Click to pick smudge";
             }
         }
 
-        protected override void PreRenderMap()
-        {
+        protected override void PreRenderMap() {
             base.PreRenderMap();
 
-            previewMap = map.Clone();
-            if (placementMode)
-            {
-                var location = navigationWidget.MouseCell;
-                if (SelectedSmudgeType != null)
-                {
-                    if (previewMap.Metrics.GetCell(location, out int cell))
-                    {
-                        if (previewMap.Smudge[cell] == null)
-                        {
-                            previewMap.Smudge[cell] = new Smudge { Type = SelectedSmudgeType, Data = 0, Tint = Color.FromArgb(128, Color.White) };
+            this.previewMap = this.map.Clone();
+            if(this.placementMode) {
+                var location = this.navigationWidget.MouseCell;
+                if(this.SelectedSmudgeType != null) {
+                    if(this.previewMap.Metrics.GetCell(location, out var cell)) {
+                        if(this.previewMap.Smudge[cell] == null) {
+                            this.previewMap.Smudge[cell] = new Smudge { Type = SelectedSmudgeType, Data = 0, Tint = Color.FromArgb(128, Color.White) };
                         }
                     }
                 }
             }
         }
 
-        protected override void PostRenderMap(Graphics graphics)
-        {
+        protected override void PostRenderMap(Graphics graphics) {
             base.PostRenderMap(graphics);
 
             var smudgePen = new Pen(Color.Green, 4.0f);
-            foreach (var (cell, smudge) in previewMap.Smudge.Where(x => (x.Value.Type.Flag & SmudgeTypeFlag.Bib) == SmudgeTypeFlag.None))
-            {
-                previewMap.Metrics.GetLocation(cell, out Point topLeft);
+            foreach(var (cell, smudge) in this.previewMap.Smudge.Where(x => (x.Value.Type.Flag & SmudgeTypeFlag.Bib) == SmudgeTypeFlag.None)) {
+                this.previewMap.Metrics.GetLocation(cell, out var topLeft);
                 var bounds = new Rectangle(new Point(topLeft.X * Globals.TileWidth, topLeft.Y * Globals.TileHeight), Globals.TileSize);
                 graphics.DrawRectangle(smudgePen, bounds);
             }
@@ -312,22 +250,19 @@ namespace MobiusEditor.Tools
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    smudgeTypeComboBox.SelectedIndexChanged -= SmudgeTypeComboBox_SelectedIndexChanged;
+        protected override void Dispose(bool disposing) {
+            if(!this.disposedValue) {
+                if(disposing) {
+                    this.smudgeTypeComboBox.SelectedIndexChanged -= this.SmudgeTypeComboBox_SelectedIndexChanged;
 
-                    mapPanel.MouseDown -= MapPanel_MouseDown;
-                    mapPanel.MouseMove -= MapPanel_MouseMove;
-                    (mapPanel as Control).KeyDown -= SmudgeTool_KeyDown;
-                    (mapPanel as Control).KeyUp -= SmudgeTool_KeyUp;
+                    this.mapPanel.MouseDown -= this.MapPanel_MouseDown;
+                    this.mapPanel.MouseMove -= this.MapPanel_MouseMove;
+                    (this.mapPanel as Control).KeyDown -= this.SmudgeTool_KeyDown;
+                    (this.mapPanel as Control).KeyUp -= this.SmudgeTool_KeyUp;
 
-                    navigationWidget.MouseCellChanged -= MouseoverWidget_MouseCellChanged;
+                    this.navigationWidget.MouseCellChanged -= this.MouseoverWidget_MouseCellChanged;
                 }
-                disposedValue = true;
+                this.disposedValue = true;
             }
 
             base.Dispose(disposing);

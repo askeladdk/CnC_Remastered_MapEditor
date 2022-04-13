@@ -21,484 +21,383 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Dialogs
-{
-    public partial class TeamTypesDialog : Form
-    {
+namespace MobiusEditor.Dialogs {
+    public partial class TeamTypesDialog : Form {
         private readonly IGamePlugin plugin;
         private readonly int maxTeams;
         private readonly IEnumerable<ITechnoType> technoTypes;
 
         private readonly List<TeamType> teamTypes;
-        public IEnumerable<TeamType> TeamTypes => teamTypes;
+        public IEnumerable<TeamType> TeamTypes => this.teamTypes;
 
-        private ListViewItem SelectedItem => (teamTypesListView.SelectedItems.Count > 0) ? teamTypesListView.SelectedItems[0] : null;
+        private ListViewItem SelectedItem => (this.teamTypesListView.SelectedItems.Count > 0) ? this.teamTypesListView.SelectedItems[0] : null;
 
-        private TeamType SelectedTeamType => SelectedItem?.Tag as TeamType;
+        private TeamType SelectedTeamType => this.SelectedItem?.Tag as TeamType;
 
         private TeamTypeClass mockClass;
         private TeamTypeMission mockMission;
         private int classEditRow = -1;
         private int missionEditRow = -1;
 
-        public TeamTypesDialog(IGamePlugin plugin, int maxTeams)
-        {
+        public TeamTypesDialog(IGamePlugin plugin, int maxTeams) {
             this.plugin = plugin;
             this.maxTeams = maxTeams;
-            technoTypes = plugin.Map.InfantryTypes.Cast<ITechnoType>().Concat(plugin.Map.UnitTypes.Cast<ITechnoType>());
+            this.technoTypes = plugin.Map.InfantryTypes.Cast<ITechnoType>().Concat(plugin.Map.UnitTypes.Cast<ITechnoType>());
 
-            InitializeComponent();
+            this.InitializeComponent();
 
-            switch (plugin.GameType)
-            {
-                case GameType.TiberianDawn:
-                    triggerLabel.Visible = triggerComboBox.Visible = false;
-                    waypointLabel.Visible = waypointComboBox.Visible = false;
-                    break;
-                case GameType.RedAlert:
-                    learningCheckBox.Visible = false;
-                    mercernaryCheckBox.Visible = false;
-                    break;
+            switch(plugin.GameType) {
+            case GameType.TiberianDawn:
+                this.triggerLabel.Visible = this.triggerComboBox.Visible = false;
+                this.waypointLabel.Visible = this.waypointComboBox.Visible = false;
+                break;
+            case GameType.RedAlert:
+                this.learningCheckBox.Visible = false;
+                this.mercernaryCheckBox.Visible = false;
+                break;
             }
 
-            teamTypes = new List<TeamType>(plugin.Map.TeamTypes.Select(t => t.Clone()));
+            this.teamTypes = new List<TeamType>(plugin.Map.TeamTypes.Select(t => t.Clone()));
 
-            teamTypesListView.BeginUpdate();
+            this.teamTypesListView.BeginUpdate();
             {
-                foreach (var teamType in this.teamTypes)
-                {
-                    var item = new ListViewItem(teamType.Name)
-                    {
+                foreach(var teamType in this.teamTypes) {
+                    var item = new ListViewItem(teamType.Name) {
                         Tag = teamType
                     };
-                    teamTypesListView.Items.Add(item).ToolTipText = teamType.Name;
+                    this.teamTypesListView.Items.Add(item).ToolTipText = teamType.Name;
                 }
             }
-            teamTypesListView.EndUpdate();
+            this.teamTypesListView.EndUpdate();
 
-            houseComboBox.DataSource = plugin.Map.Houses.Select(t => new TypeItem<HouseType>(t.Type.Name, t.Type)).ToArray();
-            waypointComboBox.DataSource = "(none)".Yield().Concat(plugin.Map.Waypoints.Select(w => w.Name)).ToArray();
-            triggerComboBox.DataSource = Trigger.None.Yield().Concat(plugin.Map.Triggers.Select(t => t.Name)).ToArray();
+            this.houseComboBox.DataSource = plugin.Map.Houses.Select(t => new TypeItem<HouseType>(t.Type.Name, t.Type)).ToArray();
+            this.waypointComboBox.DataSource = "(none)".Yield().Concat(plugin.Map.Waypoints.Select(w => w.Name)).ToArray();
+            this.triggerComboBox.DataSource = Trigger.None.Yield().Concat(plugin.Map.Triggers.Select(t => t.Name)).ToArray();
 
-            teamsTypeColumn.DisplayMember = "Name";
-            teamsTypeColumn.ValueMember = "Type";
-            teamsTypeColumn.DataSource = technoTypes.Select(t => new TypeItem<ITechnoType>(t.Name, t)).ToArray();
+            this.teamsTypeColumn.DisplayMember = "Name";
+            this.teamsTypeColumn.ValueMember = "Type";
+            this.teamsTypeColumn.DataSource = this.technoTypes.Select(t => new TypeItem<ITechnoType>(t.Name, t)).ToArray();
 
-            missionsMissionColumn.DataSource = plugin.Map.TeamMissionTypes;
+            this.missionsMissionColumn.DataSource = plugin.Map.TeamMissionTypes;
 
-            teamTypeTableLayoutPanel.Visible = false;
+            this.teamTypeTableLayoutPanel.Visible = false;
         }
 
-        private void teamTypesListView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            houseComboBox.DataBindings.Clear();
-            roundaboutCheckBox.DataBindings.Clear();
-            learningCheckBox.DataBindings.Clear();
-            suicideCheckBox.DataBindings.Clear();
-            autocreateCheckBox.DataBindings.Clear();
-            mercernaryCheckBox.DataBindings.Clear();
-            reinforcableCheckBox.DataBindings.Clear();
-            prebuiltCheckBox.DataBindings.Clear();
-            recruitPriorityNud.DataBindings.Clear();
-            initNumNud.DataBindings.Clear();
-            maxAllowedNud.DataBindings.Clear();
-            fearNud.DataBindings.Clear();
-            waypointComboBox.DataBindings.Clear();
-            triggerComboBox.DataBindings.Clear();
+        private void teamTypesListView_SelectedIndexChanged(object sender, EventArgs e) {
+            this.houseComboBox.DataBindings.Clear();
+            this.roundaboutCheckBox.DataBindings.Clear();
+            this.learningCheckBox.DataBindings.Clear();
+            this.suicideCheckBox.DataBindings.Clear();
+            this.autocreateCheckBox.DataBindings.Clear();
+            this.mercernaryCheckBox.DataBindings.Clear();
+            this.reinforcableCheckBox.DataBindings.Clear();
+            this.prebuiltCheckBox.DataBindings.Clear();
+            this.recruitPriorityNud.DataBindings.Clear();
+            this.initNumNud.DataBindings.Clear();
+            this.maxAllowedNud.DataBindings.Clear();
+            this.fearNud.DataBindings.Clear();
+            this.waypointComboBox.DataBindings.Clear();
+            this.triggerComboBox.DataBindings.Clear();
 
-            if (SelectedTeamType != null)
-            {
-                houseComboBox.DataBindings.Add("SelectedValue", SelectedTeamType, "House");
-                roundaboutCheckBox.DataBindings.Add("Checked", SelectedTeamType, "IsRoundAbout");
-                learningCheckBox.DataBindings.Add("Checked", SelectedTeamType, "IsLearning");
-                suicideCheckBox.DataBindings.Add("Checked", SelectedTeamType, "IsSuicide");
-                autocreateCheckBox.DataBindings.Add("Checked", SelectedTeamType, "IsAutocreate");
-                mercernaryCheckBox.DataBindings.Add("Checked", SelectedTeamType, "IsMercenary");
-                reinforcableCheckBox.DataBindings.Add("Checked", SelectedTeamType, "IsReinforcable");
-                prebuiltCheckBox.DataBindings.Add("Checked", SelectedTeamType, "IsPrebuilt");
-                recruitPriorityNud.DataBindings.Add("Value", SelectedTeamType, "RecruitPriority");
-                initNumNud.DataBindings.Add("Value", SelectedTeamType, "InitNum");
-                maxAllowedNud.DataBindings.Add("Value", SelectedTeamType, "MaxAllowed");
-                fearNud.DataBindings.Add("Value", SelectedTeamType, "Fear");
-                waypointComboBox.DataBindings.Add("SelectedIndex", SelectedTeamType, "Origin");
-                triggerComboBox.DataBindings.Add("SelectedItem", SelectedTeamType, "Trigger");
+            if(this.SelectedTeamType != null) {
+                this.houseComboBox.DataBindings.Add("SelectedValue", this.SelectedTeamType, "House");
+                this.roundaboutCheckBox.DataBindings.Add("Checked", this.SelectedTeamType, "IsRoundAbout");
+                this.learningCheckBox.DataBindings.Add("Checked", this.SelectedTeamType, "IsLearning");
+                this.suicideCheckBox.DataBindings.Add("Checked", this.SelectedTeamType, "IsSuicide");
+                this.autocreateCheckBox.DataBindings.Add("Checked", this.SelectedTeamType, "IsAutocreate");
+                this.mercernaryCheckBox.DataBindings.Add("Checked", this.SelectedTeamType, "IsMercenary");
+                this.reinforcableCheckBox.DataBindings.Add("Checked", this.SelectedTeamType, "IsReinforcable");
+                this.prebuiltCheckBox.DataBindings.Add("Checked", this.SelectedTeamType, "IsPrebuilt");
+                this.recruitPriorityNud.DataBindings.Add("Value", this.SelectedTeamType, "RecruitPriority");
+                this.initNumNud.DataBindings.Add("Value", this.SelectedTeamType, "InitNum");
+                this.maxAllowedNud.DataBindings.Add("Value", this.SelectedTeamType, "MaxAllowed");
+                this.fearNud.DataBindings.Add("Value", this.SelectedTeamType, "Fear");
+                this.waypointComboBox.DataBindings.Add("SelectedIndex", this.SelectedTeamType, "Origin");
+                this.triggerComboBox.DataBindings.Add("SelectedItem", this.SelectedTeamType, "Trigger");
 
-                mockClass = null;
-                mockMission = null;
-                classEditRow = -1;
-                missionEditRow = -1;
+                this.mockClass = null;
+                this.mockMission = null;
+                this.classEditRow = -1;
+                this.missionEditRow = -1;
 
-                teamsDataGridView.Rows.Clear();
-                missionsDataGridView.Rows.Clear();
+                this.teamsDataGridView.Rows.Clear();
+                this.missionsDataGridView.Rows.Clear();
 
-                teamsDataGridView.RowCount = SelectedTeamType.Classes.Count + 1;
-                missionsDataGridView.RowCount = SelectedTeamType.Missions.Count + 1;
+                this.teamsDataGridView.RowCount = this.SelectedTeamType.Classes.Count + 1;
+                this.missionsDataGridView.RowCount = this.SelectedTeamType.Missions.Count + 1;
 
-                updateDataGridViewAddRows(teamsDataGridView, Globals.MaxTeamClasses);
-                updateDataGridViewAddRows(missionsDataGridView, Globals.MaxTeamMissions);
+                this.updateDataGridViewAddRows(this.teamsDataGridView, Globals.MaxTeamClasses);
+                this.updateDataGridViewAddRows(this.missionsDataGridView, Globals.MaxTeamMissions);
 
-                teamTypeTableLayoutPanel.Visible = true;
-            }
-            else
-            {
-                teamTypeTableLayoutPanel.Visible = false;
+                this.teamTypeTableLayoutPanel.Visible = true;
+            } else {
+                this.teamTypeTableLayoutPanel.Visible = false;
             }
         }
 
-        private void teamTypesListView_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                var hitTest = teamTypesListView.HitTest(e.Location);
+        private void teamTypesListView_MouseDown(object sender, MouseEventArgs e) {
+            if(e.Button == MouseButtons.Right) {
+                var hitTest = this.teamTypesListView.HitTest(e.Location);
 
-                bool canAdd = (hitTest.Item == null) && (teamTypesListView.Items.Count < maxTeams);
-                bool canRemove = hitTest.Item != null;
-                addTeamTypeToolStripMenuItem.Visible = canAdd;
-                removeTeamTypeToolStripMenuItem.Visible = canRemove;
+                var canAdd = (hitTest.Item == null) && (this.teamTypesListView.Items.Count < this.maxTeams);
+                var canRemove = hitTest.Item != null;
+                this.addTeamTypeToolStripMenuItem.Visible = canAdd;
+                this.removeTeamTypeToolStripMenuItem.Visible = canRemove;
 
-                if (canAdd || canRemove)
-                {
-                    teamTypesContextMenuStrip.Show(Cursor.Position);
+                if(canAdd || canRemove) {
+                    this.teamTypesContextMenuStrip.Show(Cursor.Position);
                 }
             }
         }
 
-        private void teamTypesListView_KeyDown(object sender, KeyEventArgs e)
-        {
-            if ((e.KeyData == Keys.F2) && (teamTypesListView.SelectedItems.Count > 0))
-            {
-                teamTypesListView.SelectedItems[0].BeginEdit();
+        private void teamTypesListView_KeyDown(object sender, KeyEventArgs e) {
+            if((e.KeyData == Keys.F2) && (this.teamTypesListView.SelectedItems.Count > 0)) {
+                this.teamTypesListView.SelectedItems[0].BeginEdit();
             }
         }
 
-        private void addTeamTypeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
+        private void addTeamTypeToolStripMenuItem_Click(object sender, EventArgs e) {
             var nameChars = Enumerable.Range(97, 26).Concat(Enumerable.Range(48, 10));
 
-            string name = string.Empty;
-            foreach (var nameChar in nameChars)
-            {
+            var name = string.Empty;
+            foreach(var nameChar in nameChars) {
                 name = new string((char)nameChar, 4);
-                if (!teamTypes.Where(t => t.Equals(name)).Any())
-                {
+                if(!this.teamTypes.Where(t => t.Equals(name)).Any()) {
                     break;
                 }
             }
 
-            var teamType = new TeamType { Name = name, House = plugin.Map.HouseTypes.First() };
-            var item = new ListViewItem(teamType.Name)
-            {
+            var teamType = new TeamType { Name = name, House = this.plugin.Map.HouseTypes.First() };
+            var item = new ListViewItem(teamType.Name) {
                 Tag = teamType
             };
-            teamTypes.Add(teamType);
-            teamTypesListView.Items.Add(item).ToolTipText = teamType.Name;
+            this.teamTypes.Add(teamType);
+            this.teamTypesListView.Items.Add(item).ToolTipText = teamType.Name;
 
             item.Selected = true;
             item.BeginEdit();
         }
 
-        private void removeTeamTypeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (SelectedItem != null)
-            {
-                teamTypes.Remove(SelectedTeamType);
-                teamTypesListView.Items.Remove(SelectedItem);
+        private void removeTeamTypeToolStripMenuItem_Click(object sender, EventArgs e) {
+            if(this.SelectedItem != null) {
+                this.teamTypes.Remove(this.SelectedTeamType);
+                this.teamTypesListView.Items.Remove(this.SelectedItem);
             }
         }
 
-        private void teamTypesListView_AfterLabelEdit(object sender, LabelEditEventArgs e)
-        {
-            int maxLength = int.MaxValue;
-            switch (plugin.GameType)
-            {
-                case GameType.TiberianDawn:
-                    maxLength = 8;
-                    break;
-                case GameType.RedAlert:
-                    maxLength = 23;
-                    break;
+        private void teamTypesListView_AfterLabelEdit(object sender, LabelEditEventArgs e) {
+            var maxLength = int.MaxValue;
+            switch(this.plugin.GameType) {
+            case GameType.TiberianDawn:
+                maxLength = 8;
+                break;
+            case GameType.RedAlert:
+                maxLength = 23;
+                break;
             }
 
-            if (string.IsNullOrEmpty(e.Label))
-            {
+            if(string.IsNullOrEmpty(e.Label)) {
                 e.CancelEdit = true;
-            }
-            else if (e.Label.Length > maxLength)
-            {
+            } else if(e.Label.Length > maxLength) {
                 e.CancelEdit = true;
                 MessageBox.Show(string.Format("Team name is longer than {0} characters.", maxLength), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else if (teamTypes.Where(t => (t != SelectedTeamType) && t.Equals(e.Label)).Any())
-            {
+            } else if(this.teamTypes.Where(t => (t != this.SelectedTeamType) && t.Equals(e.Label)).Any()) {
                 e.CancelEdit = true;
                 MessageBox.Show(string.Format("Team with name '{0]' already exists", e.Label), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                SelectedTeamType.Name = e.Label;
-                teamTypesListView.Items[e.Item].ToolTipText = SelectedTeamType.Name;
+            } else {
+                this.SelectedTeamType.Name = e.Label;
+                this.teamTypesListView.Items[e.Item].ToolTipText = this.SelectedTeamType.Name;
             }
         }
 
-        private void teamsDataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
-        {
-            if (SelectedTeamType == null)
-            {
+        private void teamsDataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
+            if(this.SelectedTeamType == null) {
                 return;
             }
 
             TeamTypeClass teamTypeClass = null;
-            if (e.RowIndex == classEditRow)
-            {
-                teamTypeClass = mockClass;
-            }
-            else if (e.RowIndex < SelectedTeamType.Classes.Count)
-            {
-                teamTypeClass = SelectedTeamType.Classes[e.RowIndex];
+            if(e.RowIndex == this.classEditRow) {
+                teamTypeClass = this.mockClass;
+            } else if(e.RowIndex < this.SelectedTeamType.Classes.Count) {
+                teamTypeClass = this.SelectedTeamType.Classes[e.RowIndex];
             }
 
-            if (teamTypeClass == null)
-            {
+            if(teamTypeClass == null) {
                 return;
             }
 
-            switch (e.ColumnIndex)
-            {
-                case 0:
-                    e.Value = teamTypeClass.Type;
-                    break;
-                case 1:
-                    e.Value = teamTypeClass.Count;
-                    break;
+            switch(e.ColumnIndex) {
+            case 0:
+                e.Value = teamTypeClass.Type;
+                break;
+            case 1:
+                e.Value = teamTypeClass.Count;
+                break;
             }
         }
 
-        private void teamsDataGridView_CellValuePushed(object sender, DataGridViewCellValueEventArgs e)
-        {
-            if (SelectedTeamType == null)
-            {
+        private void teamsDataGridView_CellValuePushed(object sender, DataGridViewCellValueEventArgs e) {
+            if(this.SelectedTeamType == null) {
                 return;
             }
 
-            if (mockClass == null)
-            {
-                mockClass = (e.RowIndex < SelectedTeamType.Classes.Count) ?
-                    new TeamTypeClass { Type = SelectedTeamType.Classes[e.RowIndex].Type, Count = SelectedTeamType.Classes[e.RowIndex].Count } :
-                    new TeamTypeClass { Type = technoTypes.First(), Count = 0 };
+            if(this.mockClass == null) {
+                this.mockClass = (e.RowIndex < this.SelectedTeamType.Classes.Count) ?
+                    new TeamTypeClass { Type = this.SelectedTeamType.Classes[e.RowIndex].Type, Count = this.SelectedTeamType.Classes[e.RowIndex].Count } :
+                    new TeamTypeClass { Type = this.technoTypes.First(), Count = 0 };
             }
-            classEditRow = e.RowIndex;
+            this.classEditRow = e.RowIndex;
 
-            switch (e.ColumnIndex)
-            {
-                case 0:
-                    mockClass.Type = e.Value as ITechnoType;
-                    break;
-                case 1:
-                    mockClass.Count = int.TryParse(e.Value as string, out int value) ? (byte)Math.Max(0, Math.Min(255, value)) : (byte)0;
-                    break;
+            switch(e.ColumnIndex) {
+            case 0:
+                this.mockClass.Type = e.Value as ITechnoType;
+                break;
+            case 1:
+                this.mockClass.Count = int.TryParse(e.Value as string, out var value) ? (byte)Math.Max(0, Math.Min(255, value)) : (byte)0;
+                break;
             }
         }
 
-        private void teamsDataGridView_NewRowNeeded(object sender, DataGridViewRowEventArgs e)
-        {
-            mockClass = new TeamTypeClass { Type = technoTypes.First(), Count = 0 };
-            classEditRow = teamsDataGridView.RowCount - 1;
+        private void teamsDataGridView_NewRowNeeded(object sender, DataGridViewRowEventArgs e) {
+            this.mockClass = new TeamTypeClass { Type = this.technoTypes.First(), Count = 0 };
+            this.classEditRow = this.teamsDataGridView.RowCount - 1;
         }
 
-        private void teamsDataGridView_RowValidated(object sender, DataGridViewCellEventArgs e)
-        {
-            if ((mockClass != null) && (e.RowIndex >= SelectedTeamType.Classes.Count) && ((teamsDataGridView.Rows.Count > 1) || (e.RowIndex < (teamsDataGridView.Rows.Count - 1))))
-            {
-                SelectedTeamType.Classes.Add(mockClass);
-                mockClass = null;
-                classEditRow = -1;
-            }
-            else if ((mockClass != null) && (e.RowIndex < SelectedTeamType.Classes.Count))
-            {
-                SelectedTeamType.Classes[e.RowIndex] = mockClass;
-                mockClass = null;
-                classEditRow = -1;
-            }
-            else if (teamsDataGridView.ContainsFocus)
-            {
-                mockClass = null;
-                classEditRow = -1;
+        private void teamsDataGridView_RowValidated(object sender, DataGridViewCellEventArgs e) {
+            if((this.mockClass != null) && (e.RowIndex >= this.SelectedTeamType.Classes.Count) && ((this.teamsDataGridView.Rows.Count > 1) || (e.RowIndex < (this.teamsDataGridView.Rows.Count - 1)))) {
+                this.SelectedTeamType.Classes.Add(this.mockClass);
+                this.mockClass = null;
+                this.classEditRow = -1;
+            } else if((this.mockClass != null) && (e.RowIndex < this.SelectedTeamType.Classes.Count)) {
+                this.SelectedTeamType.Classes[e.RowIndex] = this.mockClass;
+                this.mockClass = null;
+                this.classEditRow = -1;
+            } else if(this.teamsDataGridView.ContainsFocus) {
+                this.mockClass = null;
+                this.classEditRow = -1;
             }
         }
 
-        private void teamsDataGridView_RowDirtyStateNeeded(object sender, QuestionEventArgs e)
-        {
-            e.Response = teamsDataGridView.IsCurrentCellDirty;
-        }
+        private void teamsDataGridView_RowDirtyStateNeeded(object sender, QuestionEventArgs e) => e.Response = this.teamsDataGridView.IsCurrentCellDirty;
 
-        private void teamsDataGridView_CancelRowEdit(object sender, QuestionEventArgs e)
-        {
-            if ((classEditRow == (teamsDataGridView.Rows.Count - 2)) && (classEditRow == SelectedTeamType.Classes.Count))
-            {
-                mockClass = new TeamTypeClass { Type = technoTypes.First(), Count = 0 };
-            }
-            else
-            {
-                mockClass = null;
-                classEditRow = -1;
+        private void teamsDataGridView_CancelRowEdit(object sender, QuestionEventArgs e) {
+            if((this.classEditRow == (this.teamsDataGridView.Rows.Count - 2)) && (this.classEditRow == this.SelectedTeamType.Classes.Count)) {
+                this.mockClass = new TeamTypeClass { Type = this.technoTypes.First(), Count = 0 };
+            } else {
+                this.mockClass = null;
+                this.classEditRow = -1;
             }
         }
 
-        private void teamsDataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
-        {
-            if (e.Row.Index < SelectedTeamType.Classes.Count)
-            {
-                SelectedTeamType.Classes.RemoveAt(e.Row.Index);
+        private void teamsDataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e) {
+            if(e.Row.Index < this.SelectedTeamType.Classes.Count) {
+                this.SelectedTeamType.Classes.RemoveAt(e.Row.Index);
             }
 
-            if (e.Row.Index == classEditRow)
-            {
-                mockClass = null;
-                classEditRow = -1;
+            if(e.Row.Index == this.classEditRow) {
+                this.mockClass = null;
+                this.classEditRow = -1;
             }
         }
 
-        private void teamsDataGridView_UserAddedRow(object sender, DataGridViewRowEventArgs e)
-        {
-            updateDataGridViewAddRows(teamsDataGridView, Globals.MaxTeamClasses);
-        }
+        private void teamsDataGridView_UserAddedRow(object sender, DataGridViewRowEventArgs e) => this.updateDataGridViewAddRows(this.teamsDataGridView, Globals.MaxTeamClasses);
 
-        private void teamsDataGridView_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
-        {
-            updateDataGridViewAddRows(teamsDataGridView, Globals.MaxTeamClasses);
-        }
+        private void teamsDataGridView_UserDeletedRow(object sender, DataGridViewRowEventArgs e) => this.updateDataGridViewAddRows(this.teamsDataGridView, Globals.MaxTeamClasses);
 
-        private void missionsDataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
-        {
-            if (SelectedTeamType == null)
-            {
+        private void missionsDataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
+            if(this.SelectedTeamType == null) {
                 return;
             }
 
             TeamTypeMission teamMissionType = null;
-            if (e.RowIndex == missionEditRow)
-            {
-                teamMissionType = mockMission;
-            }
-            else if (e.RowIndex < SelectedTeamType.Missions.Count)
-            {
-                teamMissionType = SelectedTeamType.Missions[e.RowIndex];
+            if(e.RowIndex == this.missionEditRow) {
+                teamMissionType = this.mockMission;
+            } else if(e.RowIndex < this.SelectedTeamType.Missions.Count) {
+                teamMissionType = this.SelectedTeamType.Missions[e.RowIndex];
             }
 
-            if (teamMissionType == null)
-            {
+            if(teamMissionType == null) {
                 return;
             }
 
-            switch (e.ColumnIndex)
-            {
-                case 0:
-                    e.Value = teamMissionType.Mission;
-                    break;
-                case 1:
-                    e.Value = teamMissionType.Argument;
-                    break;
+            switch(e.ColumnIndex) {
+            case 0:
+                e.Value = teamMissionType.Mission;
+                break;
+            case 1:
+                e.Value = teamMissionType.Argument;
+                break;
             }
         }
 
-        private void missionsDataGridView_CellValuePushed(object sender, DataGridViewCellValueEventArgs e)
-        {
-            if (SelectedTeamType == null)
-            {
+        private void missionsDataGridView_CellValuePushed(object sender, DataGridViewCellValueEventArgs e) {
+            if(this.SelectedTeamType == null) {
                 return;
             }
 
-            if (mockMission == null)
-            {
-                mockMission = (e.RowIndex < SelectedTeamType.Missions.Count) ?
-                    new TeamTypeMission { Mission = SelectedTeamType.Missions[e.RowIndex].Mission, Argument = SelectedTeamType.Missions[e.RowIndex].Argument } :
-                    new TeamTypeMission { Mission = plugin.Map.TeamMissionTypes.First(), Argument = 0 };
+            if(this.mockMission == null) {
+                this.mockMission = (e.RowIndex < this.SelectedTeamType.Missions.Count) ?
+                    new TeamTypeMission { Mission = this.SelectedTeamType.Missions[e.RowIndex].Mission, Argument = this.SelectedTeamType.Missions[e.RowIndex].Argument } :
+                    new TeamTypeMission { Mission = this.plugin.Map.TeamMissionTypes.First(), Argument = 0 };
             }
-            missionEditRow = e.RowIndex;
+            this.missionEditRow = e.RowIndex;
 
-            switch (e.ColumnIndex)
-            {
-                case 0:
-                    mockMission.Mission = e.Value as string;
-                    break;
-                case 1:
-                    mockMission.Argument = int.TryParse(e.Value as string, out int value) ? value : 0;
-                    break;
+            switch(e.ColumnIndex) {
+            case 0:
+                this.mockMission.Mission = e.Value as string;
+                break;
+            case 1:
+                this.mockMission.Argument = int.TryParse(e.Value as string, out var value) ? value : 0;
+                break;
             }
         }
 
-        private void missionsDataGridView_NewRowNeeded(object sender, DataGridViewRowEventArgs e)
-        {
-            mockMission = new TeamTypeMission { Mission = plugin.Map.TeamMissionTypes.First(), Argument = 0 };
-            missionEditRow = missionsDataGridView.RowCount - 1;
+        private void missionsDataGridView_NewRowNeeded(object sender, DataGridViewRowEventArgs e) {
+            this.mockMission = new TeamTypeMission { Mission = this.plugin.Map.TeamMissionTypes.First(), Argument = 0 };
+            this.missionEditRow = this.missionsDataGridView.RowCount - 1;
         }
 
-        private void missionsDataGridView_RowValidated(object sender, DataGridViewCellEventArgs e)
-        {
-            if ((mockMission != null) && (e.RowIndex >= SelectedTeamType.Missions.Count) && ((missionsDataGridView.Rows.Count > 1) || (e.RowIndex < (missionsDataGridView.Rows.Count - 1))))
-            {
-                SelectedTeamType.Missions.Add(mockMission);
-                mockMission = null;
-                missionEditRow = -1;
-            }
-            else if ((mockMission != null) && (e.RowIndex < SelectedTeamType.Missions.Count))
-            {
-                SelectedTeamType.Missions[e.RowIndex] = mockMission;
-                mockMission = null;
-                missionEditRow = -1;
-            }
-            else if (missionsDataGridView.ContainsFocus)
-            {
-                mockMission = null;
-                missionEditRow = -1;
+        private void missionsDataGridView_RowValidated(object sender, DataGridViewCellEventArgs e) {
+            if((this.mockMission != null) && (e.RowIndex >= this.SelectedTeamType.Missions.Count) && ((this.missionsDataGridView.Rows.Count > 1) || (e.RowIndex < (this.missionsDataGridView.Rows.Count - 1)))) {
+                this.SelectedTeamType.Missions.Add(this.mockMission);
+                this.mockMission = null;
+                this.missionEditRow = -1;
+            } else if((this.mockMission != null) && (e.RowIndex < this.SelectedTeamType.Missions.Count)) {
+                this.SelectedTeamType.Missions[e.RowIndex] = this.mockMission;
+                this.mockMission = null;
+                this.missionEditRow = -1;
+            } else if(this.missionsDataGridView.ContainsFocus) {
+                this.mockMission = null;
+                this.missionEditRow = -1;
             }
         }
 
-        private void missionsDataGridView_RowDirtyStateNeeded(object sender, QuestionEventArgs e)
-        {
-            e.Response = missionsDataGridView.IsCurrentCellDirty;
-        }
+        private void missionsDataGridView_RowDirtyStateNeeded(object sender, QuestionEventArgs e) => e.Response = this.missionsDataGridView.IsCurrentCellDirty;
 
-        private void missionsDataGridView_CancelRowEdit(object sender, QuestionEventArgs e)
-        {
-            if ((missionEditRow == (missionsDataGridView.Rows.Count - 2)) && (missionEditRow == SelectedTeamType.Missions.Count))
-            {
-                mockMission = new TeamTypeMission { Mission = plugin.Map.TeamMissionTypes.First(), Argument = 0 };
-            }
-            else
-            {
-                mockMission = null;
-                missionEditRow = -1;
+        private void missionsDataGridView_CancelRowEdit(object sender, QuestionEventArgs e) {
+            if((this.missionEditRow == (this.missionsDataGridView.Rows.Count - 2)) && (this.missionEditRow == this.SelectedTeamType.Missions.Count)) {
+                this.mockMission = new TeamTypeMission { Mission = this.plugin.Map.TeamMissionTypes.First(), Argument = 0 };
+            } else {
+                this.mockMission = null;
+                this.missionEditRow = -1;
             }
         }
 
-        private void missionsDataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
-        {
-            if (e.Row.Index < SelectedTeamType.Missions.Count)
-            {
-                SelectedTeamType.Missions.RemoveAt(e.Row.Index);
+        private void missionsDataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e) {
+            if(e.Row.Index < this.SelectedTeamType.Missions.Count) {
+                this.SelectedTeamType.Missions.RemoveAt(e.Row.Index);
             }
 
-            if (e.Row.Index == missionEditRow)
-            {
-                mockMission = null;
-                missionEditRow = -1;
+            if(e.Row.Index == this.missionEditRow) {
+                this.mockMission = null;
+                this.missionEditRow = -1;
             }
         }
 
-        private void missionsDataGridView_UserAddedRow(object sender, DataGridViewRowEventArgs e)
-        {
-            updateDataGridViewAddRows(missionsDataGridView, Globals.MaxTeamMissions);
-        }
+        private void missionsDataGridView_UserAddedRow(object sender, DataGridViewRowEventArgs e) => this.updateDataGridViewAddRows(this.missionsDataGridView, Globals.MaxTeamMissions);
 
-        private void missionsDataGridView_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
-        {
-            updateDataGridViewAddRows(missionsDataGridView, Globals.MaxTeamMissions);
-        }
+        private void missionsDataGridView_UserDeletedRow(object sender, DataGridViewRowEventArgs e) => this.updateDataGridViewAddRows(this.missionsDataGridView, Globals.MaxTeamMissions);
 
-        private void updateDataGridViewAddRows(DataGridView dataGridView, int maxItems)
-        {
-            dataGridView.AllowUserToAddRows = dataGridView.Rows.Count <= maxItems;
-        }
+        private void updateDataGridViewAddRows(DataGridView dataGridView, int maxItems) => dataGridView.AllowUserToAddRows = dataGridView.Rows.Count <= maxItems;
     }
 }

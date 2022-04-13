@@ -15,55 +15,46 @@
 using MobiusEditor.Interface;
 using System;
 
-namespace MobiusEditor.Model
-{
-    public enum WaypointFlag
-    {
+namespace MobiusEditor.Model {
+    public enum WaypointFlag {
         None,
         PlayerStart
     }
 
-    public class Waypoint : INamedType
-    {
-        public string Name { get; private set; }
+    public class Waypoint : INamedType {
+        public string Name {
+            get; private set;
+        }
 
-        public WaypointFlag Flag { get; private set; }
+        public WaypointFlag Flag {
+            get; private set;
+        }
 
-        public int? Cell { get; set; }
+        public int? Cell {
+            get; set;
+        }
 
-        public Waypoint(string name, WaypointFlag flag)
-        {
-            Name = name;
-            Flag = flag;
+        public Waypoint(string name, WaypointFlag flag) {
+            this.Name = name;
+            this.Flag = flag;
         }
 
         public Waypoint(string name)
-            : this(name, WaypointFlag.None)
-        {
+            : this(name, WaypointFlag.None) {
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Waypoint)
-            {
+        public override bool Equals(object obj) {
+            if(obj is Waypoint) {
                 return this == obj;
-            }
-            else if (obj is string)
-            {
-                return string.Equals(Name, obj as string, StringComparison.OrdinalIgnoreCase);
+            } else if(obj is string) {
+                return string.Equals(this.Name, obj as string, StringComparison.OrdinalIgnoreCase);
             }
 
             return base.Equals(obj);
         }
 
-        public override int GetHashCode()
-        {
-            return Name.GetHashCode();
-        }
+        public override int GetHashCode() => this.Name.GetHashCode();
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => this.Name;
     }
 }

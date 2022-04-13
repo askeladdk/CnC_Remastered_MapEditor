@@ -17,10 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MobiusEditor.RedAlert
-{
-    public static class HouseTypes
-    {
+namespace MobiusEditor.RedAlert {
+    public static class HouseTypes {
         public static readonly HouseType Spain = new HouseType(0, "Spain", "SPAIN");
         public static readonly HouseType Greece = new HouseType(1, "Greece", "GREECE");
         public static readonly HouseType USSR = new HouseType(2, "USSR", "USSR");
@@ -44,22 +42,13 @@ namespace MobiusEditor.RedAlert
 
         private static readonly HouseType[] Types;
 
-        static HouseTypes()
-        {
-            Types =
+        static HouseTypes() => Types =
                 (from field in typeof(HouseTypes).GetFields(BindingFlags.Static | BindingFlags.Public)
                  where field.IsInitOnly && typeof(HouseType).IsAssignableFrom(field.FieldType)
                  select field.GetValue(null) as HouseType).ToArray();
-        }
 
-        public static IEnumerable<HouseType> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<HouseType> GetTypes() => Types;
 
-        public static string GetBasePlayer(string player)
-        {
-            return (USSR.Equals(player) || Ukraine.Equals(player) || Bad.Equals(player)) ? Good.Name : Bad.Name;
-        }
+        public static string GetBasePlayer(string player) => (USSR.Equals(player) || Ukraine.Equals(player) || Bad.Equals(player)) ? Good.Name : Bad.Name;
     }
 }

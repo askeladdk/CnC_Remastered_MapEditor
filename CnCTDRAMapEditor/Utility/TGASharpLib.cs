@@ -36,14 +36,13 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 
-namespace TGASharpLib
-{
+namespace TGASharpLib {
     #region Enums
     /// <summary>
     /// <para>The first 128 Color Map Type codes are reserved for use by Truevision,
@@ -57,8 +56,7 @@ namespace TGASharpLib
     /// images do not use this field and set it to Zero to ensure compatibility. Please refer
     /// to the Developer Area specification for methods of storing developer defined information.
     /// </summary>
-    public enum TgaColorMapType : byte
-    {
+    public enum TgaColorMapType : byte {
         NoColorMap = 0,
         ColorMap = 1,
         Truevision_2,
@@ -332,8 +330,7 @@ namespace TGASharpLib
     /// field to store look-up tables. Please refer to the TGA Extensions for fields better suited
     /// to storing look-up table information.
     /// </summary>
-    public enum TgaColorMapEntrySize : byte
-    {
+    public enum TgaColorMapEntrySize : byte {
         Other = 0,
         X1R5G5B5 = 15,
         A1R5G5B5 = 16,
@@ -353,8 +350,7 @@ namespace TGASharpLib
     /// Image Data Type codes 0 to 127 are reserved for use by Truevision for general applications.
     /// Image Data Type codes 128 to 255 may be used for developer applications.
     /// </summary>
-    public enum TgaImageType : byte
-    {
+    public enum TgaImageType : byte {
         NoImageData = 0,
         Uncompressed_ColorMapped = 1,
         Uncompressed_TrueColor,
@@ -617,8 +613,7 @@ namespace TGASharpLib
     /// Number of bits per pixel. This number includes the Attribute or Alpha channel bits.
     /// Common values are 8, 16, 24 and 32 but other pixel depths could be used.
     /// </summary>
-    public enum TgaPixelDepth : byte
-    {
+    public enum TgaPixelDepth : byte {
         Other = 0,
         Bpp8 = 8,
         Bpp16 = 16,
@@ -631,8 +626,7 @@ namespace TGASharpLib
     /// (Bit 4 (bit 0 in enum) is for left-to-right ordering and bit 5 (bit 1 in enum) is for
     /// topto-bottom ordering as shown below.)
     /// </summary>
-    public enum TgaImgOrigin : byte
-    {
+    public enum TgaImgOrigin : byte {
         BottomLeft = 0,
         BottomRight,
         TopLeft,
@@ -660,8 +654,7 @@ namespace TGASharpLib
     /// A value of 3 in the Attributes Type Field(field 23) would indicate that the color components
     /// of the pixel have already been scaled by the value in the Alpha channel.
     /// </summary>
-    public enum TgaAttrType : byte
-    {
+    public enum TgaAttrType : byte {
         NoAlpha = 0,
         UndefinedAlphaCanBeIgnored,
         UndefinedAlphaButShouldBeRetained,
@@ -922,15 +915,13 @@ namespace TGASharpLib
     #endregion
 
     #region Classes
-    public class TgaColorKey : ICloneable
-    {
-        byte a = 0;
-        byte r = 0;
-        byte g = 0;
-        byte b = 0;
+    public class TgaColorKey : ICloneable {
+        private byte a = 0;
+        private byte r = 0;
+        private byte g = 0;
+        private byte b = 0;
 
-        public TgaColorKey()
-        {
+        public TgaColorKey() {
         }
 
         /// <summary>
@@ -940,91 +931,83 @@ namespace TGASharpLib
         /// <param name="R">Red value.</param>
         /// <param name="G">Green value.</param>
         /// <param name="B">Blue value.</param>
-        public TgaColorKey(byte A, byte R, byte G, byte B)
-        {
-            a = A;
-            r = R;
-            g = G;
-            b = B;
+        public TgaColorKey(byte A, byte R, byte G, byte B) {
+            this.a = A;
+            this.r = R;
+            this.g = G;
+            this.b = B;
         }
 
         /// <summary>
         /// Make <see cref="TgaColorKey"/> from ARGB bytes.
         /// </summary>
         /// <param name="Bytes">Array of bytes(byte[4]).</param>
-        public TgaColorKey(byte[] Bytes)
-        {
-            if (Bytes == null)
+        public TgaColorKey(byte[] Bytes) {
+            if(Bytes == null)
                 throw new ArgumentNullException(nameof(Bytes) + " = null!");
-            if (Bytes.Length != Size)
+            if(Bytes.Length != Size)
                 throw new ArgumentOutOfRangeException(nameof(Bytes.Length) + " must be equal " + Size + "!");
 
-            Color color = Color.FromArgb(BitConverter.ToInt32(Bytes, 0));
-            a = color.A;
-            r = color.R;
-            g = color.G;
-            b = color.B;
+            var color = Color.FromArgb(BitConverter.ToInt32(Bytes, 0));
+            this.a = color.A;
+            this.r = color.R;
+            this.g = color.G;
+            this.b = color.B;
         }
 
         /// <summary>
         /// Make <see cref="TgaColorKey"/> from <see cref="int"/>.
         /// </summary>
         /// <param name="ARGB">32bit ARGB integer color value.</param>
-        public TgaColorKey(int ARGB)
-        {
-            Color ColorARGB = Color.FromArgb(ARGB);
-            a = ColorARGB.A;
-            r = ColorARGB.R;
-            g = ColorARGB.G;
-            b = ColorARGB.B;
+        public TgaColorKey(int ARGB) {
+            var ColorARGB = Color.FromArgb(ARGB);
+            this.a = ColorARGB.A;
+            this.r = ColorARGB.R;
+            this.g = ColorARGB.G;
+            this.b = ColorARGB.B;
         }
 
         /// <summary>
         /// Make <see cref="TgaColorKey"/> from <see cref="Color"/>.
         /// </summary>
         /// <param name="color">GDI+ <see cref="Color"/> value.</param>
-        public TgaColorKey(Color color)
-        {
-            a = color.A;
-            r = color.R;
-            g = color.G;
-            b = color.B;
+        public TgaColorKey(Color color) {
+            this.a = color.A;
+            this.r = color.R;
+            this.g = color.G;
+            this.b = color.B;
         }
 
         /// <summary>
         /// Gets or sets alpha color value.
         /// </summary>
-        public byte A
-        {
-            get { return a; }
-            set { a = value; }
+        public byte A {
+            get => this.a;
+            set => this.a = value;
         }
 
         /// <summary>
         /// Gets or sets red color value.
         /// </summary>
-        public byte R
-        {
-            get { return r; }
-            set { r = value; }
+        public byte R {
+            get => this.r;
+            set => this.r = value;
         }
 
         /// <summary>
         /// Gets or sets green color value.
         /// </summary>
-        public byte G
-        {
-            get { return g; }
-            set { g = value; }
+        public byte G {
+            get => this.g;
+            set => this.g = value;
         }
 
         /// <summary>
         /// Gets or sets blue color value.
         /// </summary>
-        public byte B
-        {
-            get { return b; }
-            set { b = value; }
+        public byte B {
+            get => this.b;
+            set => this.b = value;
         }
 
         /// <summary>
@@ -1036,87 +1019,56 @@ namespace TGASharpLib
         /// Make full independed copy of <see cref="TgaColorKey"/>.
         /// </summary>
         /// <returns>Copy of <see cref="TgaColorKey"/></returns>
-        public TgaColorKey Clone()
-        {
-            return new TgaColorKey(a, r, g, b);
-        }
+        public TgaColorKey Clone() => new TgaColorKey(this.a, this.r, this.g, this.b);
 
         /// <summary>
         /// Make full independed copy of <see cref="TgaColorKey"/>.
         /// </summary>
         /// <returns>Copy of <see cref="TgaColorKey"/></returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaColorKey) ? Equals((TgaColorKey)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaColorKey) ? this.Equals((TgaColorKey)obj) : false);
 
-        public bool Equals(TgaColorKey item)
-        {
-            return (a == item.a && r == item.r && g == item.g && b == item.b);
-        }
+        public bool Equals(TgaColorKey item) => (this.a == item.a && this.r == item.r && this.g == item.g && this.b == item.b);
 
-        public static bool operator ==(TgaColorKey item1, TgaColorKey item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaColorKey item1, TgaColorKey item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaColorKey item1, TgaColorKey item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaColorKey item1, TgaColorKey item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            return ToInt().GetHashCode();
-        }
+        public override int GetHashCode() => this.ToInt().GetHashCode();
 
         /// <summary>
         /// Gets <see cref="TgaColorKey"/> like string.
         /// </summary>
         /// <returns>String in ARGB format.</returns>
-        public override string ToString()
-        {
-            return String.Format("{0}={1}, {2}={3}, {4}={5}, {6}={7}",
-                nameof(A), a, nameof(R), r, nameof(G), g, nameof(B), b);
-        }
+        public override string ToString() => string.Format("{0}={1}, {2}={3}, {4}={5}, {6}={7}",
+                nameof(this.A), this.a, nameof(this.R), this.r, nameof(this.G), this.g, nameof(this.B), this.b);
 
         /// <summary>
         /// Convert <see cref="TgaColorKey"/> to byte array.
         /// </summary>
         /// <returns>Byte array with length = 4.</returns>
-        public byte[] ToBytes()
-        {
-            return BitConverter.GetBytes(ToInt());
-        }
+        public byte[] ToBytes() => BitConverter.GetBytes(this.ToInt());
 
         /// <summary>
         /// Gets <see cref="TgaColorKey"/> like GDI+ <see cref="Color"/>.
         /// </summary>
         /// <returns><see cref="Color"/> value of <see cref="TgaColorKey"/>.</returns>
-        public Color ToColor()
-        {
-            return Color.FromArgb(a, r, g, b);
-        }
+        public Color ToColor() => Color.FromArgb(this.a, this.r, this.g, this.b);
 
         /// <summary>
         /// Gets <see cref="TgaColorKey"/> like ARGB <see cref="int"/>.
         /// </summary>
         /// <returns>ARGB <see cref="int"/> value of <see cref="TgaColorKey"/>.</returns>
-        public int ToInt()
-        {
-            return ToColor().ToArgb();
-        }
+        public int ToInt() => this.ToColor().ToArgb();
     }
 
     /// <summary>
@@ -1124,33 +1076,30 @@ namespace TGASharpLib
     /// If the Color Map Type field is set to zero, indicating that no color map exists, then
     /// these 5 bytes should be set to zero. These bytes always must be written to the file.
     /// </summary>
-    public class TgaColorMapSpec : ICloneable
-    {
-        ushort firstEntryIndex = 0;
-        ushort colorMapLength = 0;
-        TgaColorMapEntrySize colorMapEntrySize = TgaColorMapEntrySize.Other;
+    public class TgaColorMapSpec : ICloneable {
+        private ushort firstEntryIndex = 0;
+        private ushort colorMapLength = 0;
+        private TgaColorMapEntrySize colorMapEntrySize = TgaColorMapEntrySize.Other;
 
         /// <summary>
         /// Make new <see cref="TgaColorMapSpec"/>.
         /// </summary>
-        public TgaColorMapSpec()
-        {
+        public TgaColorMapSpec() {
         }
 
         /// <summary>
         /// Make <see cref="TgaColorMapSpec"/> from bytes.
         /// </summary>
         /// <param name="Bytes">Array of bytes(byte[5]).</param>
-        public TgaColorMapSpec(byte[] Bytes)
-        {
-            if (Bytes == null)
+        public TgaColorMapSpec(byte[] Bytes) {
+            if(Bytes == null)
                 throw new ArgumentNullException(nameof(Bytes) + " = null!");
-            if (Bytes.Length != Size)
+            if(Bytes.Length != Size)
                 throw new ArgumentOutOfRangeException(nameof(Bytes.Length) + " must be equal " + Size + "!");
 
-            firstEntryIndex = BitConverter.ToUInt16(Bytes, 0);
-            colorMapLength = BitConverter.ToUInt16(Bytes, 2);
-            colorMapEntrySize = (TgaColorMapEntrySize)Bytes[4];
+            this.firstEntryIndex = BitConverter.ToUInt16(Bytes, 0);
+            this.colorMapLength = BitConverter.ToUInt16(Bytes, 2);
+            this.colorMapEntrySize = (TgaColorMapEntrySize)Bytes[4];
         }
 
         /// <summary>
@@ -1161,20 +1110,18 @@ namespace TGASharpLib
         /// need to store 72 of those entries, this field allows you to start in the middle of
         /// the color-map (e.g., position 342).</para>
         /// </summary>
-        public ushort FirstEntryIndex
-        {
-            get { return firstEntryIndex; }
-            set { firstEntryIndex = value; }
+        public ushort FirstEntryIndex {
+            get => this.firstEntryIndex;
+            set => this.firstEntryIndex = value;
         }
 
         /// <summary>
         /// Field 4.2 (2 bytes):
         /// Total number of color map entries included.
         /// </summary>
-        public ushort ColorMapLength
-        {
-            get { return colorMapLength; }
-            set { colorMapLength = value; }
+        public ushort ColorMapLength {
+            get => this.colorMapLength;
+            set => this.colorMapLength = value;
         }
 
         /// <summary>
@@ -1193,10 +1140,9 @@ namespace TGASharpLib
         /// field to store look-up tables. Please refer to the TGA Extensions for fields better suited
         /// to storing look-up table information.
         /// </summary>
-        public TgaColorMapEntrySize ColorMapEntrySize
-        {
-            get { return colorMapEntrySize; }
-            set { colorMapEntrySize = value; }
+        public TgaColorMapEntrySize ColorMapEntrySize {
+            get => this.colorMapEntrySize;
+            set => this.colorMapEntrySize = value;
         }
 
         /// <summary>
@@ -1208,113 +1154,84 @@ namespace TGASharpLib
         /// Make full independed copy of <see cref="TgaColorMapSpec"/>.
         /// </summary>
         /// <returns>Copy of <see cref="TgaColorMapSpec"/></returns>
-        public TgaColorMapSpec Clone()
-        {
-            return new TgaColorMapSpec(ToBytes());
-        }
+        public TgaColorMapSpec Clone() => new TgaColorMapSpec(this.ToBytes());
 
         /// <summary>
         /// Make full independed copy of <see cref="TgaColorMapSpec"/>.
         /// </summary>
         /// <returns>Copy of <see cref="TgaColorMapSpec"/></returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaColorMapSpec) ? Equals((TgaColorMapSpec)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaColorMapSpec) ? this.Equals((TgaColorMapSpec)obj) : false);
 
-        public bool Equals(TgaColorMapSpec item)
-        {
-            return (firstEntryIndex == item.firstEntryIndex &&
-                colorMapLength == item.colorMapLength &&
-                colorMapEntrySize == item.colorMapEntrySize);
-        }
+        public bool Equals(TgaColorMapSpec item) => (this.firstEntryIndex == item.firstEntryIndex &&
+                this.colorMapLength == item.colorMapLength &&
+                this.colorMapEntrySize == item.colorMapEntrySize);
 
-        public static bool operator ==(TgaColorMapSpec item1, TgaColorMapSpec item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaColorMapSpec item1, TgaColorMapSpec item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaColorMapSpec item1, TgaColorMapSpec item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaColorMapSpec item1, TgaColorMapSpec item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return (firstEntryIndex << 16 | colorMapLength).GetHashCode() ^ colorMapEntrySize.GetHashCode();
+        public override int GetHashCode() {
+            unchecked {
+                return (this.firstEntryIndex << 16 | this.colorMapLength).GetHashCode() ^ this.colorMapEntrySize.GetHashCode();
             }
         }
 
-        public override string ToString()
-        {
-            return String.Format("{0}={1}, {2}={3}, {4}={5}", nameof(FirstEntryIndex), FirstEntryIndex,
-                nameof(ColorMapLength), ColorMapLength, nameof(ColorMapEntrySize), ColorMapEntrySize);
-        }
+        public override string ToString() => string.Format("{0}={1}, {2}={3}, {4}={5}", nameof(this.FirstEntryIndex), this.FirstEntryIndex,
+                nameof(this.ColorMapLength), this.ColorMapLength, nameof(this.ColorMapEntrySize), this.ColorMapEntrySize);
 
         /// <summary>
         /// Convert ColorMapSpec to byte array.
         /// </summary>
         /// <returns>Byte array with length = 5.</returns>
-        public byte[] ToBytes()
-        {
-            return BitConverterExt.ToBytes(firstEntryIndex, colorMapLength, (byte)colorMapEntrySize);
-        }
+        public byte[] ToBytes() => BitConverterExt.ToBytes(this.firstEntryIndex, this.colorMapLength, (byte)this.colorMapEntrySize);
     }
 
-    public class TgaComment : ICloneable
-    {
-        const int StrNLen = 80; //80 ASCII chars + 1 '\0' = 81 per SrtN!
-        string origString = String.Empty;
-        char blankSpaceChar = TgaString.DefaultBlankSpaceChar;
+    public class TgaComment : ICloneable {
+        private const int StrNLen = 80; //80 ASCII chars + 1 '\0' = 81 per SrtN!
+        private string origString = string.Empty;
+        private char blankSpaceChar = TgaString.DefaultBlankSpaceChar;
 
-        public TgaComment()
-        {
+        public TgaComment() {
         }
 
-        public TgaComment(string Str, char BlankSpaceChar = '\0')
-        {
-            if (Str == null)
+        public TgaComment(string Str, char BlankSpaceChar = '\0') {
+            if(Str == null)
                 throw new ArgumentNullException(nameof(Str) + " = null!");
 
-            origString = Str;
-            blankSpaceChar = BlankSpaceChar;
+            this.origString = Str;
+            this.blankSpaceChar = BlankSpaceChar;
         }
 
-        public TgaComment(byte[] Bytes)
-        {
-            if (Bytes == null)
+        public TgaComment(byte[] Bytes) {
+            if(Bytes == null)
                 throw new ArgumentNullException(nameof(Bytes) + " = null!");
-            if (Bytes.Length != Size)
+            if(Bytes.Length != Size)
                 throw new ArgumentOutOfRangeException(nameof(Bytes.Length) + " must be equal " + Size + "!");
 
-            string s = Encoding.ASCII.GetString(Bytes, 0, StrNLen);
+            var s = Encoding.ASCII.GetString(Bytes, 0, StrNLen);
             s += Encoding.ASCII.GetString(Bytes, 81, StrNLen);
             s += Encoding.ASCII.GetString(Bytes, 162, StrNLen);
             s += Encoding.ASCII.GetString(Bytes, 243, StrNLen);
 
-            switch (s[s.Length - 1])
-            {
-                case '\0':
-                case ' ':
-                    blankSpaceChar = s[s.Length - 1];
-                    origString = s.TrimEnd(new char[] { s[s.Length - 1] });
-                    break;
-                default:
-                    origString = s;
-                    break;
+            switch(s[s.Length - 1]) {
+            case '\0':
+            case ' ':
+                this.blankSpaceChar = s[s.Length - 1];
+                this.origString = s.TrimEnd(new char[] { s[s.Length - 1] });
+                break;
+            default:
+                this.origString = s;
+                break;
             }
         }
 
@@ -1323,97 +1240,69 @@ namespace TGASharpLib
         /// </summary>
         public const int Size = 81 * 4;
 
-        public string OriginalString
-        {
-            get { return origString; }
-            set { origString = value; }
+        public string OriginalString {
+            get => this.origString;
+            set => this.origString = value;
         }
 
-        public char BlankSpaceChar
-        {
-            get { return blankSpaceChar; }
-            set { blankSpaceChar = value; }
-        }
-
-        /// <summary>
-        /// Make full independed copy of <see cref="TgaComment"/>.
-        /// </summary>
-        /// <returns>Copy of <see cref="TgaComment"/></returns>
-        public TgaComment Clone()
-        {
-            return new TgaComment(origString, blankSpaceChar);
+        public char BlankSpaceChar {
+            get => this.blankSpaceChar;
+            set => this.blankSpaceChar = value;
         }
 
         /// <summary>
         /// Make full independed copy of <see cref="TgaComment"/>.
         /// </summary>
         /// <returns>Copy of <see cref="TgaComment"/></returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        public TgaComment Clone() => new TgaComment(this.origString, this.blankSpaceChar);
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaComment) ? Equals((TgaComment)obj) : false);
-        }
+        /// <summary>
+        /// Make full independed copy of <see cref="TgaComment"/>.
+        /// </summary>
+        /// <returns>Copy of <see cref="TgaComment"/></returns>
+        object ICloneable.Clone() => this.Clone();
 
-        public bool Equals(TgaComment item)
-        {
-            return (origString == item.origString && blankSpaceChar == item.blankSpaceChar);
-        }
+        public override bool Equals(object obj) => ((obj is TgaComment) ? this.Equals((TgaComment)obj) : false);
 
-        public static bool operator ==(TgaComment item1, TgaComment item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public bool Equals(TgaComment item) => (this.origString == item.origString && this.blankSpaceChar == item.blankSpaceChar);
+
+        public static bool operator ==(TgaComment item1, TgaComment item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaComment item1, TgaComment item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaComment item1, TgaComment item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            return origString.GetHashCode() ^ blankSpaceChar.GetHashCode();
-        }
+        public override int GetHashCode() => this.origString.GetHashCode() ^ this.blankSpaceChar.GetHashCode();
 
         /// <summary>
         /// Get ASCII-Like string with string-terminators, example: "Line1 \0\0 Line2 \0\0\0".
         /// </summary>
         /// <returns>String with replaced string-terminators to "\0".</returns>
-        public override string ToString()
-        {
-            return Encoding.ASCII.GetString(ToBytes()).Replace("\0", @"\0");
-        }
+        public override string ToString() => Encoding.ASCII.GetString(this.ToBytes()).Replace("\0", @"\0");
 
         /// <summary>
         /// Get ASCII-Like string to first string-terminator, example:
         /// "Some string \0 Some Data \0" - > "Some string".
         /// </summary>
         /// <returns>String to first string-terminator.</returns>
-        public string GetString()
-        {
-            String Str = Encoding.ASCII.GetString(ToBytes());
-            for (int i = 1; i < 4; i++)
+        public string GetString() {
+            var Str = Encoding.ASCII.GetString(this.ToBytes());
+            for(var i = 1; i < 4; i++)
                 Str = Str.Insert((StrNLen + 1) * i + i - 1, "\n");
-            return Str.Replace("\0", String.Empty).TrimEnd(new char[] { '\n' });
+            return Str.Replace("\0", string.Empty).TrimEnd(new char[] { '\n' });
         }
 
         /// <summary>
         /// Convert <see cref="TgaComment"/> to byte array.
         /// </summary>
         /// <returns>Byte array, every byte is ASCII symbol.</returns>
-        public byte[] ToBytes()
-        {
-            return ToBytes(origString, blankSpaceChar);
-        }
+        public byte[] ToBytes() => ToBytes(this.origString, this.blankSpaceChar);
 
         /// <summary>
         /// Convert <see cref="TgaComment"/> to byte array.
@@ -1421,17 +1310,14 @@ namespace TGASharpLib
         /// <param name="Str">Input string.</param>
         /// <param name="BlankSpaceChar">Char for filling blank space in string.</param>
         /// <returns>Byte array, every byte is ASCII symbol.</returns>
-        public static byte[] ToBytes(string Str, char BlankSpaceChar = '\0')
-        {
-            char[] C = new char[81 * 4];
+        public static byte[] ToBytes(string Str, char BlankSpaceChar = '\0') {
+            var C = new char[81 * 4];
 
-            for (int i = 0; i < C.Length; i++)
-            {
-                if ((i + 82) % 81 == 0)
+            for(var i = 0; i < C.Length; i++) {
+                if((i + 82) % 81 == 0) {
                     C[i] = TgaString.DefaultEndingChar;
-                else
-                {
-                    int Index = i - i / 81;
+                } else {
+                    var Index = i - i / 81;
                     C[i] = (Index < Str.Length ? Str[Index] : BlankSpaceChar);
                 }
             }
@@ -1439,34 +1325,31 @@ namespace TGASharpLib
         }
     }
 
-    public class TgaDateTime : ICloneable
-    {
-        ushort month = 0;
-        ushort day = 0;
-        ushort year = 0;
-        ushort hour = 0;
-        ushort minute = 0;
-        ushort second = 0;
+    public class TgaDateTime : ICloneable {
+        private ushort month = 0;
+        private ushort day = 0;
+        private ushort year = 0;
+        private ushort hour = 0;
+        private ushort minute = 0;
+        private ushort second = 0;
 
         /// <summary>
         /// Make empty <see cref="TgaDateTime"/>.
         /// </summary>
-        public TgaDateTime()
-        {
+        public TgaDateTime() {
         }
 
         /// <summary>
         /// Make <see cref="TgaDateTime"/> from <see cref="DateTime"/>.
         /// </summary>
         /// <param name="DateAndTime">Some <see cref="DateTime"/> variable.</param>
-        public TgaDateTime(DateTime DateAndTime)
-        {
-            month = (ushort)DateAndTime.Month;
-            day = (ushort)DateAndTime.Day;
-            year = (ushort)DateAndTime.Year;
-            hour = (ushort)DateAndTime.Hour;
-            minute = (ushort)DateAndTime.Minute;
-            second = (ushort)DateAndTime.Second;
+        public TgaDateTime(DateTime DateAndTime) {
+            this.month = (ushort)DateAndTime.Month;
+            this.day = (ushort)DateAndTime.Day;
+            this.year = (ushort)DateAndTime.Year;
+            this.hour = (ushort)DateAndTime.Hour;
+            this.minute = (ushort)DateAndTime.Minute;
+            this.second = (ushort)DateAndTime.Second;
         }
 
         /// <summary>
@@ -1478,87 +1361,79 @@ namespace TGASharpLib
         /// <param name="Hour">Hour (0 - 23).</param>
         /// <param name="Minute">Minute (0 - 59).</param>
         /// <param name="Second">Second (0 - 59).</param>
-        public TgaDateTime(ushort Month, ushort Day, ushort Year, ushort Hour, ushort Minute, ushort Second)
-        {
-            month = Month;
-            day = Day;
-            year = Year;
-            hour = Hour;
-            minute = Minute;
-            second = Second;
+        public TgaDateTime(ushort Month, ushort Day, ushort Year, ushort Hour, ushort Minute, ushort Second) {
+            this.month = Month;
+            this.day = Day;
+            this.year = Year;
+            this.hour = Hour;
+            this.minute = Minute;
+            this.second = Second;
         }
 
         /// <summary>
         /// Make <see cref="TgaDateTime"/> from bytes.
         /// </summary>
         /// <param name="Bytes">Array of bytes(byte[12]).</param>
-        public TgaDateTime(byte[] Bytes)
-        {
-            if (Bytes == null)
+        public TgaDateTime(byte[] Bytes) {
+            if(Bytes == null)
                 throw new ArgumentNullException(nameof(Bytes) + " = null!");
-            else if (Bytes.Length != Size)
+            else if(Bytes.Length != Size)
                 throw new ArgumentOutOfRangeException(nameof(Bytes) + " must be equal " + Size + "!");
 
-            month = BitConverter.ToUInt16(Bytes, 0);
-            day = BitConverter.ToUInt16(Bytes, 2);
-            year = BitConverter.ToUInt16(Bytes, 4);
-            hour = BitConverter.ToUInt16(Bytes, 6);
-            minute = BitConverter.ToUInt16(Bytes, 8);
-            second = BitConverter.ToUInt16(Bytes, 10);
+            this.month = BitConverter.ToUInt16(Bytes, 0);
+            this.day = BitConverter.ToUInt16(Bytes, 2);
+            this.year = BitConverter.ToUInt16(Bytes, 4);
+            this.hour = BitConverter.ToUInt16(Bytes, 6);
+            this.minute = BitConverter.ToUInt16(Bytes, 8);
+            this.second = BitConverter.ToUInt16(Bytes, 10);
         }
 
         /// <summary>
         /// Gets or Sets month (1 - 12).
         /// </summary>
-        public ushort Month
-        {
-            get { return month; }
-            set { month = value; }
+        public ushort Month {
+            get => this.month;
+            set => this.month = value;
         }
 
         /// <summary>
         /// Gets or Sets day (1 - 31).
         /// </summary>
-        public ushort Day
-        {
-            get { return day; }
-            set { day = value; }
+        public ushort Day {
+            get => this.day;
+            set => this.day = value;
         }
 
         /// <summary>
         /// Gets or Sets year (4 digit, ie. 1989).
         /// </summary>
-        public ushort Year
-        {
-            get { return year; }
-            set { year = value; }
+        public ushort Year {
+            get => this.year;
+            set => this.year = value;
         }
 
         /// <summary>
         /// Gets or Sets hour (0 - 23).
         /// </summary>
-        public ushort Hour
-        {
-            get { return hour; }
-            set { hour = value; }
+        public ushort Hour {
+            get => this.hour;
+            set => this.hour = value;
         }
 
         /// <summary>
         /// Gets or Sets minute (0 - 59).
         /// </summary>
-        public ushort Minute
-        {
-            get { return minute; }
-            set { minute = value; }
+        public ushort Minute {
+            get => this.minute;
+            set => this.minute = value;
         }
 
         /// <summary>
         /// Gets or Sets second (0 - 59).
         /// </summary>
-        public ushort Second
-        {
-            get { return second; }
-            set { second = value; }
+        public ushort Second {
+            get => this.second;
+            set => this.second = value;
         }
 
         /// <summary>
@@ -1570,60 +1445,42 @@ namespace TGASharpLib
         /// Make full independed copy of <see cref="TgaDateTime"/>.
         /// </summary>
         /// <returns>Copy of <see cref="TgaDateTime"/></returns>
-        public TgaDateTime Clone()
-        {
-            return new TgaDateTime(month, day, year, hour, minute, second);
-        }
+        public TgaDateTime Clone() => new TgaDateTime(this.month, this.day, this.year, this.hour, this.minute, this.second);
 
         /// <summary>
         /// Make full independed copy of <see cref="TgaDateTime"/>.
         /// </summary>
         /// <returns>Copy of <see cref="TgaDateTime"/></returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaDateTime) ? Equals((TgaDateTime)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaDateTime) ? this.Equals((TgaDateTime)obj) : false);
 
-        public bool Equals(TgaDateTime item)
-        {
-            return (
-                month == item.month &&
-                day == item.day &&
-                year == item.year &&
-                hour == item.hour &&
-                minute == item.minute &&
-                second == item.second);
-        }
+        public bool Equals(TgaDateTime item) => (
+                this.month == item.month &&
+                this.day == item.day &&
+                this.year == item.year &&
+                this.hour == item.hour &&
+                this.minute == item.minute &&
+                this.second == item.second);
 
-        public static bool operator ==(TgaDateTime item1, TgaDateTime item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaDateTime item1, TgaDateTime item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaDateTime item1, TgaDateTime item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaDateTime item1, TgaDateTime item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 17;
-                hash = hash * 23 + (month << 16 | hour).GetHashCode();
-                hash = hash * 23 + (day << 16 | minute).GetHashCode();
-                hash = hash * 23 + (year << 16 | second).GetHashCode();
+        public override int GetHashCode() {
+            unchecked {
+                var hash = 17;
+                hash = hash * 23 + (this.month << 16 | this.hour).GetHashCode();
+                hash = hash * 23 + (this.day << 16 | this.minute).GetHashCode();
+                hash = hash * 23 + (this.year << 16 | this.second).GetHashCode();
                 return hash;
             }
         }
@@ -1632,57 +1489,46 @@ namespace TGASharpLib
         /// Gets <see cref="TgaDateTime"/> like string.
         /// </summary>
         /// <returns>String in "1990.01.23 1:02:03" format.</returns>
-        public override string ToString()
-        {
-            return String.Format("{0:D4}.{1:D2}.{2:D2} {3}:{4:D2}:{5:D2}", year, month, day, hour, minute, second);
-        }
+        public override string ToString() => string.Format("{0:D4}.{1:D2}.{2:D2} {3}:{4:D2}:{5:D2}", this.year, this.month, this.day, this.hour, this.minute, this.second);
 
         /// <summary>
         /// Convert <see cref="TgaDateTime"/> to byte array.
         /// </summary>
         /// <returns>Byte array with length = 12.</returns>
-        public byte[] ToBytes()
-        {
-            return BitConverterExt.ToBytes(month, day, year, hour, minute, second);
-        }
+        public byte[] ToBytes() => BitConverterExt.ToBytes(this.month, this.day, this.year, this.hour, this.minute, this.second);
 
         /// <summary>
         /// Gets <see cref="TgaDateTime"/> like <see cref="DateTime"/>.
         /// </summary>
         /// <returns><see cref="DateTime"/> value of <see cref="TgaDateTime"/>.</returns>
-        public DateTime ToDateTime()
-        {
-            return new DateTime(year, month, day, hour, minute, second);
-        }
+        public DateTime ToDateTime() => new DateTime(this.year, this.month, this.day, this.hour, this.minute, this.second);
     }
 
-    public class TgaDevEntry : ICloneable
-    {
+    public class TgaDevEntry : ICloneable {
         // Directory
-        ushort fieldTag = 0;
-        uint fieldFileOffset = 0;
+        private ushort fieldTag = 0;
+        private uint fieldFileOffset = 0;
+
         // Field
-        byte[] data = null;
+        private byte[] data = null;
 
         /// <summary>
         /// Make empty <see cref="TgaDevEntry"/>.
         /// </summary>
-        public TgaDevEntry()
-        {
+        public TgaDevEntry() {
         }
 
         /// <summary>
         /// Make <see cref="TgaDevEntry"/> from other <see cref="TgaDevEntry"/>.
         /// </summary>
         /// <param name="Entry">Some <see cref="TgaDevEntry"/> variable.</param>
-        public TgaDevEntry(TgaDevEntry Entry)
-        {
-            if (Entry == null)
+        public TgaDevEntry(TgaDevEntry Entry) {
+            if(Entry == null)
                 throw new ArgumentNullException();
 
-            fieldTag = Entry.fieldTag;
-            fieldFileOffset = Entry.fieldFileOffset;
-            data = BitConverterExt.ToBytes(Entry.data);
+            this.fieldTag = Entry.fieldTag;
+            this.fieldFileOffset = Entry.fieldFileOffset;
+            this.data = BitConverterExt.ToBytes(Entry.data);
         }
 
         /// <summary>
@@ -1691,49 +1537,45 @@ namespace TGASharpLib
         /// <param name="Tag">TAG ID (0 - 65535). See <see cref="Tag"/>.</param>
         /// <param name="Offset">TAG file offset in bytes. See <see cref="Offset"/>.</param>
         /// <param name="Data">This is DevEntry Field Data. See <see cref="Data"/>.</param>
-        public TgaDevEntry(ushort Tag, uint Offset, byte[] Data = null)
-        {
-            fieldTag = Tag;
-            fieldFileOffset = Offset;
-            data = Data;
+        public TgaDevEntry(ushort Tag, uint Offset, byte[] Data = null) {
+            this.fieldTag = Tag;
+            this.fieldFileOffset = Offset;
+            this.data = Data;
         }
 
         /// <summary>
         /// Make <see cref="TgaDevEntry"/> from bytes.
         /// </summary>
         /// <param name="Bytes">Array of bytes(byte[6] or bigger, if <see cref="Data"/> exist).</param>
-        public TgaDevEntry(byte[] Bytes)
-        {
-            if (Bytes == null)
+        public TgaDevEntry(byte[] Bytes) {
+            if(Bytes == null)
                 throw new ArgumentNullException(nameof(Bytes) + " = null!");
-            else if (Bytes.Length < 6)
+            else if(Bytes.Length < 6)
                 throw new ArgumentOutOfRangeException(nameof(Bytes) + " must be >= 6!");
 
-            fieldTag = BitConverter.ToUInt16(Bytes, 0);
-            fieldFileOffset = BitConverter.ToUInt32(Bytes, 2);
+            this.fieldTag = BitConverter.ToUInt16(Bytes, 0);
+            this.fieldFileOffset = BitConverter.ToUInt32(Bytes, 2);
 
-            if (Bytes.Length > 6)
-                data = BitConverterExt.GetElements(Bytes, 6, Bytes.Length - 6);
+            if(Bytes.Length > 6)
+                this.data = BitConverterExt.GetElements(Bytes, 6, Bytes.Length - 6);
         }
 
         /// <summary>
         /// Each TAG is a value in the range of 0 to 65535. Values from 0 - 32767 are available for developer use,
         /// while values from 32768 - 65535 are reserved for Truevision.
         /// </summary>
-        public ushort Tag
-        {
-            get { return fieldTag; }
-            set { fieldTag = value; }
+        public ushort Tag {
+            get => this.fieldTag;
+            set => this.fieldTag = value;
         }
 
         /// <summary>
         /// This OFFSET is a number of bytes from the beginning of the file to the start of the field
         /// referenced by the tag.
         /// </summary>
-        public uint Offset
-        {
-            get { return fieldFileOffset; }
-            set { fieldFileOffset = value; }
+        public uint Offset {
+            get => this.fieldFileOffset;
+            set => this.fieldFileOffset = value;
         }
 
         /// <summary>
@@ -1743,24 +1585,21 @@ namespace TGASharpLib
         /// This means that if you anticipate changing a field, build flexibility into the format to make these
         /// changes easy on other developers.Major changes to an existing TAG’s definition should never happen.
         /// </summary>
-        public byte[] Data
-        {
-            get { return data; }
-            set { data = value; }
+        public byte[] Data {
+            get => this.data;
+            set => this.data = value;
         }
 
         /// <summary>
         /// The FIELD SIZE is a number of bytes in the field. Same like: <see cref="Data.Length"/>,
         /// if <see cref="Data"/> is null, return -1.
         /// </summary>
-        public int FieldSize
-        {
-            get
-            {
-                if (Data == null)
+        public int FieldSize {
+            get {
+                if(this.Data == null)
                     return -1;
 
-                return Data.Length;
+                return this.Data.Length;
             }
         }
 
@@ -1774,59 +1613,42 @@ namespace TGASharpLib
         /// Make full independed copy of <see cref="TgaDevEntry"/>.
         /// </summary>
         /// <returns>Copy of <see cref="TgaDevEntry"/></returns>
-        public TgaDevEntry Clone()
-        {
-            return new TgaDevEntry(this);
-        }
+        public TgaDevEntry Clone() => new TgaDevEntry(this);
 
         /// <summary>
         /// Make full independed copy of <see cref="TgaDevEntry"/>.
         /// </summary>
         /// <returns>Copy of <see cref="TgaDevEntry"/></returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaDevEntry) ? Equals((TgaDevEntry)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaDevEntry) ? this.Equals((TgaDevEntry)obj) : false);
 
-        public bool Equals(TgaDevEntry item)
-        {
-            return (fieldTag == item.fieldTag &&
-                fieldFileOffset == item.fieldFileOffset &&
-                BitConverterExt.IsArraysEqual(data, item.data));
-        }
+        public bool Equals(TgaDevEntry item) => (this.fieldTag == item.fieldTag &&
+                this.fieldFileOffset == item.fieldFileOffset &&
+                BitConverterExt.IsArraysEqual(this.data, item.data));
 
-        public static bool operator ==(TgaDevEntry item1, TgaDevEntry item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaDevEntry item1, TgaDevEntry item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaDevEntry item1, TgaDevEntry item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaDevEntry item1, TgaDevEntry item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 17;
-                hash = hash * 23 + fieldTag.GetHashCode();
-                hash = hash * 23 + fieldFileOffset.GetHashCode();
+        public override int GetHashCode() {
+            unchecked {
+                var hash = 17;
+                hash = hash * 23 + this.fieldTag.GetHashCode();
+                hash = hash * 23 + this.fieldFileOffset.GetHashCode();
 
-                if (data != null)
-                    for (int i = 0; i < data.Length; i++)
-                        hash = hash * 23 + data[i].GetHashCode();
+                if(this.data != null) {
+                    for(var i = 0; i < this.data.Length; i++)
+                        hash = hash * 23 + this.data[i].GetHashCode();
+                }
 
                 return hash;
             }
@@ -1836,82 +1658,69 @@ namespace TGASharpLib
         /// Gets <see cref="TgaDevEntry"/> like string.
         /// </summary>
         /// <returns>String in "Tag={0}, Offset={1}, FieldSize={2}" format.</returns>
-        public override string ToString()
-        {
-            return String.Format("{0}={1}, {1}={2}, {3}={4}", nameof(Tag), fieldTag,
-                nameof(Offset), fieldFileOffset, nameof(FieldSize), FieldSize);
-        }
+        public override string ToString() => string.Format("{0}={1}, {1}={2}, {3}={4}", nameof(this.Tag), this.fieldTag,
+                nameof(this.Offset), this.fieldFileOffset, nameof(this.FieldSize), this.FieldSize);
 
         /// <summary>
         /// Convert <see cref="TgaDevEntry"/> to byte array. (Not include <see cref="Data"/>!).
         /// </summary>
         /// <returns>Byte array with length = 10.</returns>
-        public byte[] ToBytes()
-        {
-            return BitConverterExt.ToBytes(fieldTag, fieldFileOffset, (data == null ? 0 : data.Length));
-        }
+        public byte[] ToBytes() => BitConverterExt.ToBytes(this.fieldTag, this.fieldFileOffset, (this.data == null ? 0 : this.data.Length));
     } //Not full ToBytes()
 
-    public class TgaFraction : ICloneable
-    {
-        ushort numerator = 0;
-        ushort denominator = 0;
+    public class TgaFraction : ICloneable {
+        private ushort numerator = 0;
+        private ushort denominator = 0;
 
         /// <summary>
         /// Make <see cref="TgaFraction"/> from <see cref="Numerator"/> and <see cref="Denominator"/>.
         /// </summary>
         /// <param name="Numerator">Numerator value.</param>
         /// <param name="Denominator">Denominator value.</param>
-        public TgaFraction(ushort Numerator = 0, ushort Denominator = 0)
-        {
-            numerator = Numerator;
-            denominator = Denominator;
+        public TgaFraction(ushort Numerator = 0, ushort Denominator = 0) {
+            this.numerator = Numerator;
+            this.denominator = Denominator;
         }
 
         /// <summary>
         /// Make <see cref="TgaFraction"/> from bytes.
         /// </summary>
         /// <param name="Bytes">Array of bytes(byte[4]).</param>
-        public TgaFraction(byte[] Bytes)
-        {
-            if (Bytes == null)
+        public TgaFraction(byte[] Bytes) {
+            if(Bytes == null)
                 throw new ArgumentNullException(nameof(Bytes) + " = null!");
-            if (Bytes.Length != Size)
+            if(Bytes.Length != Size)
                 throw new ArgumentOutOfRangeException(nameof(Bytes.Length) + " must be equal " + Size + "!");
 
-            numerator = BitConverter.ToUInt16(Bytes, 0);
-            denominator = BitConverter.ToUInt16(Bytes, 2);
+            this.numerator = BitConverter.ToUInt16(Bytes, 0);
+            this.denominator = BitConverter.ToUInt16(Bytes, 2);
         }
 
         /// <summary>
         /// Gets or sets numerator value.
         /// </summary>
-        public ushort Numerator
-        {
-            get { return numerator; }
-            set { numerator = value; }
+        public ushort Numerator {
+            get => this.numerator;
+            set => this.numerator = value;
         }
 
         /// <summary>
         /// Gets or sets denominator value.
         /// </summary>
-        public ushort Denominator
-        {
-            get { return denominator; }
-            set { denominator = value; }
+        public ushort Denominator {
+            get => this.denominator;
+            set => this.denominator = value;
         }
 
         /// <summary>
         /// Get aspect ratio = <see cref="Numerator"/> / <see cref="Denominator"/>.
         /// </summary>
-        public float AspectRatio
-        {
-            get
-            {
-                if (numerator == denominator)
+        public float AspectRatio {
+            get {
+                if(this.numerator == this.denominator)
                     return 1f;
 
-                return numerator / (float)denominator;
+                return this.numerator / (float)this.denominator;
             }
         }
 
@@ -1934,84 +1743,57 @@ namespace TGASharpLib
         /// Make full independed copy of <see cref="TgaFraction"/>.
         /// </summary>
         /// <returns>Copy of <see cref="TgaFraction"/></returns>
-        public TgaFraction Clone()
-        {
-            return new TgaFraction(numerator, denominator);
-        }
+        public TgaFraction Clone() => new TgaFraction(this.numerator, this.denominator);
 
         /// <summary>
         /// Make full independed copy of <see cref="TgaFraction"/>.
         /// </summary>
         /// <returns>Copy of <see cref="TgaFraction"/></returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaFraction) ? Equals((TgaFraction)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaFraction) ? this.Equals((TgaFraction)obj) : false);
 
-        public bool Equals(TgaFraction item)
-        {
-            return (numerator == item.numerator && denominator == item.denominator);
-        }
+        public bool Equals(TgaFraction item) => (this.numerator == item.numerator && this.denominator == item.denominator);
 
-        public static bool operator ==(TgaFraction item1, TgaFraction item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaFraction item1, TgaFraction item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaFraction item1, TgaFraction item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaFraction item1, TgaFraction item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            return (numerator << 16 | denominator).GetHashCode();
-        }
+        public override int GetHashCode() => (this.numerator << 16 | this.denominator).GetHashCode();
 
         /// <summary>
         /// Gets <see cref="TgaFraction"/> like string.
         /// </summary>
         /// <returns>String in "Numerator=1, Denominator=2" format.</returns>
-        public override string ToString()
-        {
-            return String.Format("{0}={1}, {2}={3}", nameof(Numerator), numerator,
-                nameof(Denominator), denominator);
-        }
+        public override string ToString() => string.Format("{0}={1}, {2}={3}", nameof(this.Numerator), this.numerator,
+                nameof(this.Denominator), this.denominator);
 
         /// <summary>
         /// Convert <see cref="TgaFraction"/> to byte array.
         /// </summary>
         /// <returns>Byte array with length = 4.</returns>
-        public byte[] ToBytes()
-        {
-            return BitConverterExt.ToBytes(numerator, denominator);
-        }
+        public byte[] ToBytes() => BitConverterExt.ToBytes(this.numerator, this.denominator);
     }
 
     /// <summary>
     /// Contains image origin bits and alpha channel bits(or number of overlay bits)
     /// </summary>
-    public class TgaImageDescriptor : ICloneable
-    {
-        TgaImgOrigin imageOrigin = 0; //bits 5-4
-        byte alphaChannelBits = 0; //bits 3-0
+    public class TgaImageDescriptor : ICloneable {
+        private TgaImgOrigin imageOrigin = 0; //bits 5-4
+        private byte alphaChannelBits = 0; //bits 3-0
 
         /// <summary>
         /// Make empty <see cref="TgaImageDescriptor"/>.
         /// </summary>
-        public TgaImageDescriptor()
-        {
+        public TgaImageDescriptor() {
         }
 
         /// <summary>
@@ -2019,28 +1801,25 @@ namespace TGASharpLib
         /// </summary>
         /// <param name="b">ImageDescriptor byte with reserved 7-6 bits, bits 5-4 used for
         /// <see cref="ImageOrigin"/>, 3-0 used as alpha channel bits or number of overlay bits.</param>
-        public TgaImageDescriptor(byte b)
-        {
-            imageOrigin = (TgaImgOrigin)((b & 0x30) >> 4);
-            alphaChannelBits = (byte)(b & 0x0F);
+        public TgaImageDescriptor(byte b) {
+            this.imageOrigin = (TgaImgOrigin)((b & 0x30) >> 4);
+            this.alphaChannelBits = (byte)(b & 0x0F);
         }
 
         /// <summary>
         /// Gets or Sets Image Origin bits (select from enum only, don'n use 5-4 bits!).
         /// </summary>
-        public TgaImgOrigin ImageOrigin
-        {
-            get { return imageOrigin; }
-            set { imageOrigin = value; }
+        public TgaImgOrigin ImageOrigin {
+            get => this.imageOrigin;
+            set => this.imageOrigin = value;
         }
 
         /// <summary>
         /// Gets or Sets alpha channel bits or number of overlay bits.
         /// </summary>
-        public byte AlphaChannelBits
-        {
-            get { return alphaChannelBits; }
-            set { alphaChannelBits = value; }
+        public byte AlphaChannelBits {
+            get => this.alphaChannelBits;
+            set => this.alphaChannelBits = value;
         }
 
         /// <summary>
@@ -2052,69 +1831,45 @@ namespace TGASharpLib
         /// Make full copy of <see cref="TgaImageDescriptor"/>.
         /// </summary>
         /// <returns>Full independent copy of <see cref="TgaImageDescriptor"/>.</returns>
-        public TgaImageDescriptor Clone()
-        {
-            return new TgaImageDescriptor(ToByte());
-        }
+        public TgaImageDescriptor Clone() => new TgaImageDescriptor(this.ToByte());
 
         /// <summary>
         /// Make full copy of <see cref="TgaImageDescriptor"/>.
         /// </summary>
         /// <returns>Full independent copy of <see cref="TgaImageDescriptor"/>.</returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaImageDescriptor) ? Equals((TgaImageDescriptor)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaImageDescriptor) ? this.Equals((TgaImageDescriptor)obj) : false);
 
-        public bool Equals(TgaImageDescriptor item)
-        {
-            return (imageOrigin == item.imageOrigin && alphaChannelBits == item.alphaChannelBits);
-        }
+        public bool Equals(TgaImageDescriptor item) => (this.imageOrigin == item.imageOrigin && this.alphaChannelBits == item.alphaChannelBits);
 
-        public static bool operator ==(TgaImageDescriptor item1, TgaImageDescriptor item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaImageDescriptor item1, TgaImageDescriptor item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaImageDescriptor item1, TgaImageDescriptor item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaImageDescriptor item1, TgaImageDescriptor item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return ((int)ImageOrigin << 4 | alphaChannelBits).GetHashCode();
+        public override int GetHashCode() {
+            unchecked {
+                return ((int)this.ImageOrigin << 4 | this.alphaChannelBits).GetHashCode();
             }
         }
 
-        public override string ToString()
-        {
-            return String.Format("{0}={1}, {2}={3}, ImageDescriptor_AsByte={4}", nameof(ImageOrigin),
-                imageOrigin, nameof(AlphaChannelBits), alphaChannelBits, ToByte());
-        }
+        public override string ToString() => string.Format("{0}={1}, {2}={3}, ImageDescriptor_AsByte={4}", nameof(this.ImageOrigin),
+                this.imageOrigin, nameof(this.AlphaChannelBits), this.alphaChannelBits, this.ToByte());
 
         /// <summary>
         /// Gets ImageDescriptor byte.
         /// </summary>
         /// <returns>ImageDescriptor byte with reserved 7-6 bits, bits 5-4 used for imageOrigin,
         /// 3-0 used as alpha channel bits or number of overlay bits.</returns>
-        public byte ToByte()
-        {
-            return (byte)(((int)imageOrigin << 4) | alphaChannelBits);
-        }
+        public byte ToByte() => (byte)(((int)this.imageOrigin << 4) | this.alphaChannelBits);
     }
 
     /// <summary>
@@ -2122,17 +1877,15 @@ namespace TGASharpLib
     /// <para>This field and its sub-fields describe the image screen location, size and pixel depth.
     /// These information is always written to the file.</para>
     /// </summary>
-    public class TgaImageSpec : ICloneable
-    {
-        ushort x_Origin = 0;
-        ushort y_Origin = 0;
-        ushort imageWidth = 0;
-        ushort imageHeight = 0;
-        TgaPixelDepth pixelDepth = TgaPixelDepth.Other;
-        TgaImageDescriptor imageDescriptor = new TgaImageDescriptor();
+    public class TgaImageSpec : ICloneable {
+        private ushort x_Origin = 0;
+        private ushort y_Origin = 0;
+        private ushort imageWidth = 0;
+        private ushort imageHeight = 0;
+        private TgaPixelDepth pixelDepth = TgaPixelDepth.Other;
+        private TgaImageDescriptor imageDescriptor = new TgaImageDescriptor();
 
-        public TgaImageSpec()
-        {
+        public TgaImageSpec() {
         }
 
         /// <summary>
@@ -2152,33 +1905,31 @@ namespace TGASharpLib
         /// <param name="ImageDescriptor">Contains image origin bits and alpha channel bits
         /// (or number of overlay bits).</param>
         public TgaImageSpec(ushort X_Origin, ushort Y_Origin, ushort ImageWidth, ushort ImageHeight,
-            TgaPixelDepth PixelDepth, TgaImageDescriptor ImageDescriptor)
-        {
-            x_Origin = X_Origin;
-            y_Origin = Y_Origin;
-            imageWidth = ImageWidth;
-            imageHeight = ImageHeight;
-            pixelDepth = PixelDepth;
-            imageDescriptor = ImageDescriptor;
+            TgaPixelDepth PixelDepth, TgaImageDescriptor ImageDescriptor) {
+            this.x_Origin = X_Origin;
+            this.y_Origin = Y_Origin;
+            this.imageWidth = ImageWidth;
+            this.imageHeight = ImageHeight;
+            this.pixelDepth = PixelDepth;
+            this.imageDescriptor = ImageDescriptor;
         }
 
         /// <summary>
         /// Make ImageSpec from bytes.
         /// </summary>
         /// <param name="Bytes">Array of bytes(byte[10]).</param>
-        public TgaImageSpec(byte[] Bytes)
-        {
-            if (Bytes == null)
+        public TgaImageSpec(byte[] Bytes) {
+            if(Bytes == null)
                 throw new ArgumentNullException(nameof(Bytes) + " = null!");
-            if (Bytes.Length != Size)
+            if(Bytes.Length != Size)
                 throw new ArgumentOutOfRangeException(nameof(Bytes.Length) + " must be equal " + Size + "!");
 
-            x_Origin = BitConverter.ToUInt16(Bytes, 0);
-            y_Origin = BitConverter.ToUInt16(Bytes, 2);
-            imageWidth = BitConverter.ToUInt16(Bytes, 4);
-            imageHeight = BitConverter.ToUInt16(Bytes, 6);
-            pixelDepth = (TgaPixelDepth)Bytes[8];
-            imageDescriptor = new TgaImageDescriptor(Bytes[9]);
+            this.x_Origin = BitConverter.ToUInt16(Bytes, 0);
+            this.y_Origin = BitConverter.ToUInt16(Bytes, 2);
+            this.imageWidth = BitConverter.ToUInt16(Bytes, 4);
+            this.imageHeight = BitConverter.ToUInt16(Bytes, 6);
+            this.pixelDepth = (TgaPixelDepth)Bytes[8];
+            this.imageDescriptor = new TgaImageDescriptor(Bytes[9]);
         }
 
         /// <summary>
@@ -2186,10 +1937,9 @@ namespace TGASharpLib
         /// as it is positioned on a display device having an origin at the lower left of the
         /// screen(e.g., the TARGA series).
         /// </summary>
-        public ushort X_Origin
-        {
-            get { return x_Origin; }
-            set { x_Origin = value; }
+        public ushort X_Origin {
+            get => this.x_Origin;
+            set => this.x_Origin = value;
         }
 
         /// <summary>
@@ -2197,47 +1947,42 @@ namespace TGASharpLib
         /// as it is positioned on a display device having an origin at the lower left of the
         /// screen(e.g., the TARGA series).
         /// </summary>
-        public ushort Y_Origin
-        {
-            get { return y_Origin; }
-            set { y_Origin = value; }
+        public ushort Y_Origin {
+            get => this.y_Origin;
+            set => this.y_Origin = value;
         }
 
         /// <summary>
         /// This field specifies the width of the image in pixels.
         /// </summary>
-        public ushort ImageWidth
-        {
-            get { return imageWidth; }
-            set { imageWidth = value; }
+        public ushort ImageWidth {
+            get => this.imageWidth;
+            set => this.imageWidth = value;
         }
 
         /// <summary>
         /// This field specifies the height of the image in pixels.
         /// </summary>
-        public ushort ImageHeight
-        {
-            get { return imageHeight; }
-            set { imageHeight = value; }
+        public ushort ImageHeight {
+            get => this.imageHeight;
+            set => this.imageHeight = value;
         }
 
         /// <summary>
         /// This field indicates the number of bits per pixel. This number includes the Attribute or
         /// Alpha channel bits. Common values are 8, 16, 24 and 32 but other pixel depths could be used.
         /// </summary>
-        public TgaPixelDepth PixelDepth
-        {
-            get { return pixelDepth; }
-            set { pixelDepth = value; }
+        public TgaPixelDepth PixelDepth {
+            get => this.pixelDepth;
+            set => this.pixelDepth = value;
         }
 
         /// <summary>
         /// Contains image origin bits and alpha channel bits(or number of overlay bits).
         /// </summary>
-        public TgaImageDescriptor ImageDescriptor
-        {
-            get { return imageDescriptor; }
-            set { imageDescriptor = value; }
+        public TgaImageDescriptor ImageDescriptor {
+            get => this.imageDescriptor;
+            set => this.imageDescriptor = value;
         }
 
         /// <summary>
@@ -2249,103 +1994,77 @@ namespace TGASharpLib
         /// Make full copy of <see cref="TgaImageDescriptor"/>.
         /// </summary>
         /// <returns></returns>
-        public TgaImageSpec Clone()
-        {
-            return new TgaImageSpec(ToBytes());
-        }
+        public TgaImageSpec Clone() => new TgaImageSpec(this.ToBytes());
 
         /// <summary>
         /// Make full copy of <see cref="TgaImageDescriptor"/>.
         /// </summary>
         /// <returns></returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaImageSpec) ? Equals((TgaImageSpec)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaImageSpec) ? this.Equals((TgaImageSpec)obj) : false);
 
-        public bool Equals(TgaImageSpec item)
-        {
-            return (
-                x_Origin == item.x_Origin &&
-                y_Origin == item.y_Origin &&
-                imageWidth == item.imageWidth &&
-                imageHeight == item.imageHeight &&
-                pixelDepth == item.pixelDepth &&
-                imageDescriptor == item.imageDescriptor);
-        }
+        public bool Equals(TgaImageSpec item) => (
+                this.x_Origin == item.x_Origin &&
+                this.y_Origin == item.y_Origin &&
+                this.imageWidth == item.imageWidth &&
+                this.imageHeight == item.imageHeight &&
+                this.pixelDepth == item.pixelDepth &&
+                this.imageDescriptor == item.imageDescriptor);
 
-        public static bool operator ==(TgaImageSpec item1, TgaImageSpec item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaImageSpec item1, TgaImageSpec item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaImageSpec item1, TgaImageSpec item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaImageSpec item1, TgaImageSpec item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 17;
-                hash = hash * 23 + x_Origin.GetHashCode();
-                hash = hash * 23 + y_Origin.GetHashCode();
-                hash = hash * 23 + imageWidth.GetHashCode();
-                hash = hash * 23 + imageHeight.GetHashCode();
-                hash = hash * 23 + pixelDepth.GetHashCode();
+        public override int GetHashCode() {
+            unchecked {
+                var hash = 17;
+                hash = hash * 23 + this.x_Origin.GetHashCode();
+                hash = hash * 23 + this.y_Origin.GetHashCode();
+                hash = hash * 23 + this.imageWidth.GetHashCode();
+                hash = hash * 23 + this.imageHeight.GetHashCode();
+                hash = hash * 23 + this.pixelDepth.GetHashCode();
 
-                if (imageDescriptor != null)
-                    hash = hash * 23 + imageDescriptor.GetHashCode();
+                if(this.imageDescriptor != null)
+                    hash = hash * 23 + this.imageDescriptor.GetHashCode();
 
                 return hash;
             }
         }
 
-        public override string ToString()
-        {
-            return String.Format("{0}={1}, {2}={3}, {4}={5}, {6}={7}, {8}={9}, {10}={11}",
-                nameof(X_Origin), x_Origin,
-                nameof(Y_Origin), y_Origin,
-                nameof(ImageWidth), imageWidth,
-                nameof(ImageHeight), imageHeight,
-                nameof(PixelDepth), pixelDepth,
-                nameof(ImageDescriptor), imageDescriptor);
-        }
+        public override string ToString() => string.Format("{0}={1}, {2}={3}, {4}={5}, {6}={7}, {8}={9}, {10}={11}",
+                nameof(this.X_Origin), this.x_Origin,
+                nameof(this.Y_Origin), this.y_Origin,
+                nameof(this.ImageWidth), this.imageWidth,
+                nameof(this.ImageHeight), this.imageHeight,
+                nameof(this.PixelDepth), this.pixelDepth,
+                nameof(this.ImageDescriptor), this.imageDescriptor);
 
         /// <summary>
         /// Convert <see cref="TgaImageSpec"/> to byte array.
         /// </summary>
         /// <returns>Byte array with length = 10.</returns>
-        public byte[] ToBytes()
-        {
-            return BitConverterExt.ToBytes(x_Origin, y_Origin, imageWidth, imageHeight,
-                (byte)pixelDepth, (imageDescriptor == null ? byte.MinValue : imageDescriptor.ToByte()));
-        }
+        public byte[] ToBytes() => BitConverterExt.ToBytes(this.x_Origin, this.y_Origin, this.imageWidth, this.imageHeight,
+                (byte)this.pixelDepth, (this.imageDescriptor == null ? byte.MinValue : this.imageDescriptor.ToByte()));
     }
 
     /// <summary>
     /// Postage Stamp Image (MaxSize 64x64, uncompressed, PixelDepth like in full image).
     /// </summary>
-    public class TgaPostageStampImage : ICloneable
-    {
-        byte width = 0;
-        byte height = 0;
-        byte[] data = null;
+    public class TgaPostageStampImage : ICloneable {
+        private byte width = 0;
+        private byte height = 0;
+        private byte[] data = null;
 
-        public TgaPostageStampImage()
-        {
+        public TgaPostageStampImage() {
         }
 
         /// <summary>
@@ -2353,18 +2072,17 @@ namespace TGASharpLib
         /// </summary>
         /// <param name="Bytes">Bytes array, first 2 bytes are <see cref="Width"/> and <see cref="Height"/>,
         /// next bytes - image data.</param>
-        public TgaPostageStampImage(byte[] Bytes)
-        {
-            if (Bytes == null)
+        public TgaPostageStampImage(byte[] Bytes) {
+            if(Bytes == null)
                 throw new ArgumentNullException(nameof(Bytes) + " = null!");
-            if (Bytes.Length < 2)
+            if(Bytes.Length < 2)
                 throw new ArgumentOutOfRangeException(nameof(Bytes.Length) + " must be >= " + 2 + "!");
 
-            width = Bytes[0];
-            height = Bytes[1];
+            this.width = Bytes[0];
+            this.height = Bytes[1];
 
-            if (Bytes.Length > 2)
-                data = BitConverterExt.GetElements(Bytes, 2, Bytes.Length - 2);
+            if(Bytes.Length > 2)
+                this.data = BitConverterExt.GetElements(Bytes, 2, Bytes.Length - 2);
         }
 
         /// <summary>
@@ -2373,176 +2091,143 @@ namespace TGASharpLib
         /// <param name="Width">Image Width.</param>
         /// <param name="Height">Image Height.</param>
         /// <param name="Bytes">Postage Stamp Image Data.</param>
-        public TgaPostageStampImage(byte Width, byte Height, byte[] Bytes)
-        {
-            if (Bytes == null)
+        public TgaPostageStampImage(byte Width, byte Height, byte[] Bytes) {
+            if(Bytes == null)
                 throw new ArgumentNullException(nameof(Bytes) + " = null!");
 
-            width = Width;
-            height = Height;
-            data = Bytes;
+            this.width = Width;
+            this.height = Height;
+            this.data = Bytes;
         }
 
         /// <summary>
         /// Postage Stamp Image Data
         /// </summary>
-        public byte[] Data
-        {
-            get { return data; }
-            set { data = value; }
+        public byte[] Data {
+            get => this.data;
+            set => this.data = value;
         }
 
         /// <summary>
         /// Postage Stamp Image Width (maximum = 64).
         /// </summary>
-        public byte Width
-        {
-            get { return width; }
-            set { width = value; }
+        public byte Width {
+            get => this.width;
+            set => this.width = value;
         }
 
         /// <summary>
         /// Postage Stamp Image Height (maximum = 64).
         /// </summary>
-        public byte Height
-        {
-            get { return height; }
-            set { height = value; }
+        public byte Height {
+            get => this.height;
+            set => this.height = value;
         }
 
         /// <summary>
         /// Make full copy of <see cref="TgaPostageStampImage"/>.
         /// </summary>
         /// <returns>Full independent copy of <see cref="TgaPostageStampImage"/>.</returns>
-        public TgaPostageStampImage Clone()
-        {
-            return new TgaPostageStampImage(width, height, BitConverterExt.ToBytes(data));
-        }
+        public TgaPostageStampImage Clone() => new TgaPostageStampImage(this.width, this.height, BitConverterExt.ToBytes(this.data));
 
         /// <summary>
         /// Make full copy of <see cref="TgaPostageStampImage"/>.
         /// </summary>
         /// <returns>Full independent copy of <see cref="TgaPostageStampImage"/>.</returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaPostageStampImage) ? Equals((TgaPostageStampImage)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaPostageStampImage) ? this.Equals((TgaPostageStampImage)obj) : false);
 
-        public bool Equals(TgaPostageStampImage item)
-        {
-            return width == item.width && height == item.height && BitConverterExt.IsArraysEqual(data, item.data);
-        }
+        public bool Equals(TgaPostageStampImage item) => this.width == item.width && this.height == item.height && BitConverterExt.IsArraysEqual(this.data, item.data);
 
-        public static bool operator ==(TgaPostageStampImage item1, TgaPostageStampImage item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaPostageStampImage item1, TgaPostageStampImage item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaPostageStampImage item1, TgaPostageStampImage item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaPostageStampImage item1, TgaPostageStampImage item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 27;
-                hash = (13 * hash) + width.GetHashCode();
-                hash = (13 * hash) + height.GetHashCode();
-                if (data != null)
-                    for (int i = 0; i < data.Length; i++)
-                        hash = (13 * hash) + data[i].GetHashCode();
+        public override int GetHashCode() {
+            unchecked {
+                var hash = 27;
+                hash = (13 * hash) + this.width.GetHashCode();
+                hash = (13 * hash) + this.height.GetHashCode();
+                if(this.data != null) {
+                    for(var i = 0; i < this.data.Length; i++)
+                        hash = (13 * hash) + this.data[i].GetHashCode();
+                }
+
                 return hash;
             }
         }
 
-        public override string ToString()
-        {
-            return String.Format("{0}={1}, {2}={3}, DataLength={4}",
-                nameof(Width), width, nameof(Height), height, (data == null ? -1 : data.Length));
-        }
+        public override string ToString() => string.Format("{0}={1}, {2}={3}, DataLength={4}",
+                nameof(this.Width), this.width, nameof(this.Height), this.height, (this.data == null ? -1 : this.data.Length));
 
         /// <summary>
         /// Convert <see cref="TgaPostageStampImage"/> to byte array.
         /// </summary>
         /// <returns>Byte array.</returns>
-        public byte[] ToBytes()
-        {
-            return BitConverterExt.ToBytes(width, height, data);
-        }
+        public byte[] ToBytes() => BitConverterExt.ToBytes(this.width, this.height, this.data);
     }
 
-    public class TgaSoftVersion : ICloneable
-    {
-        ushort versionNumber = 0;
-        char versionLetter = ' ';
+    public class TgaSoftVersion : ICloneable {
+        private ushort versionNumber = 0;
+        private char versionLetter = ' ';
 
         /// <summary>
         /// Gets Empty <see cref="TgaSoftVersion"/>, <see cref="VersionLetter"/> = ' ' (space).
         /// </summary>
-        public TgaSoftVersion()
-        {
+        public TgaSoftVersion() {
         }
 
         /// <summary>
         /// Make <see cref="TgaSoftVersion"/> from string.
         /// </summary>
         /// <param name="Str">Input string, example: "123d".</param>
-        public TgaSoftVersion(string Str)
-        {
-            if (Str == null)
+        public TgaSoftVersion(string Str) {
+            if(Str == null)
                 throw new ArgumentNullException();
-            if (Str.Length < 3 || Str.Length > 4)
+            if(Str.Length < 3 || Str.Length > 4)
                 throw new ArgumentOutOfRangeException(nameof(Str.Length) + " must be equal 3 or 4!");
 
-            bool Res = ushort.TryParse(Str.Substring(0, 3), out versionNumber);
-            if (Res && Str.Length == 4)
-                versionLetter = Str[3];
+            var Res = ushort.TryParse(Str.Substring(0, 3), out this.versionNumber);
+            if(Res && Str.Length == 4)
+                this.versionLetter = Str[3];
         }
 
         /// <summary>
         /// Make <see cref="TgaSoftVersion"/> from bytes.
         /// </summary>
         /// <param name="Bytes">Bytes array (byte[3]).</param>
-        public TgaSoftVersion(byte[] Bytes)
-        {
-            if (Bytes == null)
+        public TgaSoftVersion(byte[] Bytes) {
+            if(Bytes == null)
                 throw new ArgumentNullException(nameof(Bytes) + " = null!");
-            if (Bytes.Length != Size)
+            if(Bytes.Length != Size)
                 throw new ArgumentOutOfRangeException(nameof(Bytes.Length) + " must be equal " + Size + "!");
 
-            versionNumber = BitConverter.ToUInt16(Bytes, 0);
-            versionLetter = Encoding.ASCII.GetString(Bytes, 2, 1)[0];
+            this.versionNumber = BitConverter.ToUInt16(Bytes, 0);
+            this.versionLetter = Encoding.ASCII.GetString(Bytes, 2, 1)[0];
         }
 
-        public TgaSoftVersion(ushort VersionNumber, char VersionLetter = ' ')
-        {
-            versionNumber = VersionNumber;
-            versionLetter = VersionLetter;
+        public TgaSoftVersion(ushort VersionNumber, char VersionLetter = ' ') {
+            this.versionNumber = VersionNumber;
+            this.versionLetter = VersionLetter;
         }
 
-        public ushort VersionNumber
-        {
-            get { return versionNumber; }
-            set { versionNumber = value; }
+        public ushort VersionNumber {
+            get => this.versionNumber;
+            set => this.versionNumber = value;
         }
 
-        public char VersionLetter
-        {
-            get { return versionLetter; }
-            set { versionLetter = value; }
+        public char VersionLetter {
+            get => this.versionLetter;
+            set => this.versionLetter = value;
         }
 
         /// <summary>
@@ -2554,65 +2239,40 @@ namespace TGASharpLib
         /// Make full copy of <see cref="TgaSoftVersion"/>.
         /// </summary>
         /// <returns></returns>
-        public TgaSoftVersion Clone()
-        {
-            return new TgaSoftVersion(versionNumber, versionLetter);
-        }
+        public TgaSoftVersion Clone() => new TgaSoftVersion(this.versionNumber, this.versionLetter);
 
         /// <summary>
         /// Make full copy of <see cref="TgaSoftVersion"/>.
         /// </summary>
         /// <returns></returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaSoftVersion) ? Equals((TgaSoftVersion)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaSoftVersion) ? this.Equals((TgaSoftVersion)obj) : false);
 
-        public bool Equals(TgaSoftVersion item)
-        {
-            return (versionNumber == item.versionNumber && versionLetter == item.versionLetter);
-        }
+        public bool Equals(TgaSoftVersion item) => (this.versionNumber == item.versionNumber && this.versionLetter == item.versionLetter);
 
-        public static bool operator ==(TgaSoftVersion item1, TgaSoftVersion item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaSoftVersion item1, TgaSoftVersion item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaSoftVersion item1, TgaSoftVersion item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaSoftVersion item1, TgaSoftVersion item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            return versionNumber.GetHashCode() ^ versionLetter.GetHashCode();
-        }
+        public override int GetHashCode() => this.versionNumber.GetHashCode() ^ this.versionLetter.GetHashCode();
 
-        public override string ToString()
-        {
-            return (versionNumber.ToString("000") + versionLetter).TrimEnd(new char[] { ' ', '\0' });
-        }
+        public override string ToString() => (this.versionNumber.ToString("000") + this.versionLetter).TrimEnd(new char[] { ' ', '\0' });
 
         /// <summary>
         /// Convert <see cref="TgaSoftVersion"/> to byte array.
         /// </summary>
         /// <returns>Byte array, <see cref="VersionNumber"/> (2 bytes) and
         /// <see cref="VersionLetter"/> (ASCII symbol).</returns>
-        public byte[] ToBytes()
-        {
-            return ToBytes(versionNumber, versionLetter);
-        }
+        public byte[] ToBytes() => ToBytes(this.versionNumber, this.versionLetter);
 
         /// <summary>
         /// Convert <see cref="TgaSoftVersion"/> to byte array.
@@ -2620,92 +2280,77 @@ namespace TGASharpLib
         /// <param name="VersionNumber">Set 123 for 1.23 version.</param>
         /// <param name="VersionLetter">Version letter, example: for 'a' - "1.23a".</param>
         /// <returns>Byte array, <see cref="VersionNumber"/> (2 bytes) and <see cref="VersionLetter"/> (ASCII symbol).</returns>
-        public static byte[] ToBytes(ushort VersionNumber, char VersionLetter = ' ')
-        {
-            return BitConverterExt.ToBytes(VersionNumber, Encoding.ASCII.GetBytes(VersionLetter.ToString()));
-        }
+        public static byte[] ToBytes(ushort VersionNumber, char VersionLetter = ' ') => BitConverterExt.ToBytes(VersionNumber, Encoding.ASCII.GetBytes(VersionLetter.ToString()));
     }
 
     /// <summary>
     /// Use it for working with ASCII strings in TGA files.
     /// </summary>
-    public class TgaString : ICloneable
-    {
+    public class TgaString : ICloneable {
         public const string XFileSignatuteConst = "TRUEVISION-XFILE";
         public const string DotSymbolConst = ".";
+        private string origString = string.Empty;
+        private int length = 0;
+        private char blankSpaceChar = DefaultBlankSpaceChar;
+        private bool useEnding = false;
 
-        string origString = String.Empty;
-        int length = 0;
-        char blankSpaceChar = DefaultBlankSpaceChar;
-        bool useEnding = false;
+        public TgaString(bool UseEnding = false) => this.useEnding = UseEnding;
 
-        public TgaString(bool UseEnding = false)
-        {
-            useEnding = UseEnding;
-        }
-
-        public TgaString(byte[] Bytes, bool UseEnding = false)
-        {
-            if (Bytes == null)
+        public TgaString(byte[] Bytes, bool UseEnding = false) {
+            if(Bytes == null)
                 throw new ArgumentNullException(nameof(Bytes) + " = null!");
 
-            length = Bytes.Length;
-            useEnding = UseEnding;
-            string s = Encoding.ASCII.GetString(Bytes, 0, Bytes.Length - (useEnding ? 1 : 0));
+            this.length = Bytes.Length;
+            this.useEnding = UseEnding;
+            var s = Encoding.ASCII.GetString(Bytes, 0, Bytes.Length - (this.useEnding ? 1 : 0));
 
-            if (s.Length > 0)
-                switch (s[s.Length - 1])
-                {
-                    case '\0':
-                    case ' ':
-                        blankSpaceChar = s[s.Length - 1];
-                        origString = s.TrimEnd(new char[] { s[s.Length - 1] });
-                        break;
-                    default:
-                        origString = s;
-                        break;
+            if(s.Length > 0) {
+                switch(s[s.Length - 1]) {
+                case '\0':
+                case ' ':
+                    this.blankSpaceChar = s[s.Length - 1];
+                    this.origString = s.TrimEnd(new char[] { s[s.Length - 1] });
+                    break;
+                default:
+                    this.origString = s;
+                    break;
                 }
+            }
         }
 
-        public TgaString(int Length, bool UseEnding = false)
-        {
-            length = Length;
-            useEnding = UseEnding;
+        public TgaString(int Length, bool UseEnding = false) {
+            this.length = Length;
+            this.useEnding = UseEnding;
         }
 
-        public TgaString(string Str, int Length, bool UseEnding = false, char BlankSpaceChar = '\0')
-        {
-            if (Str == null)
+        public TgaString(string Str, int Length, bool UseEnding = false, char BlankSpaceChar = '\0') {
+            if(Str == null)
                 throw new ArgumentNullException(nameof(Str) + " = null!");
 
-            origString = Str;
-            length = Length;
-            blankSpaceChar = BlankSpaceChar;
-            useEnding = UseEnding;
+            this.origString = Str;
+            this.length = Length;
+            this.blankSpaceChar = BlankSpaceChar;
+            this.useEnding = UseEnding;
         }
 
-        public string OriginalString
-        {
-            get { return origString; }
-            set { origString = value; }
+        public string OriginalString {
+            get => this.origString;
+            set => this.origString = value;
         }
 
-        public int Length
-        {
-            get { return length; }
-            set { length = value; }
+        public int Length {
+            get => this.length;
+            set => this.length = value;
         }
 
-        public char BlankSpaceChar
-        {
-            get { return blankSpaceChar; }
-            set { blankSpaceChar = value; }
+        public char BlankSpaceChar {
+            get => this.blankSpaceChar;
+            set => this.blankSpaceChar = value;
         }
 
-        public bool UseEndingChar
-        {
-            get { return useEnding; }
-            set { useEnding = value; }
+        public bool UseEndingChar {
+            get => this.useEnding;
+            set => this.useEnding = value;
         }
 
         /// <summary>
@@ -2742,67 +2387,48 @@ namespace TGASharpLib
         /// Make full independed copy of <see cref="TgaString"/>.
         /// </summary>
         /// <returns>Copy of <see cref="TgaString"/></returns>
-        public TgaString Clone()
-        {
-            return new TgaString(origString, length, useEnding, blankSpaceChar);
-        }
+        public TgaString Clone() => new TgaString(this.origString, this.length, this.useEnding, this.blankSpaceChar);
 
         /// <summary>
         /// Make full independed copy of <see cref="TgaString"/>.
         /// </summary>
         /// <returns>Copy of <see cref="TgaString"/></returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaString) ? Equals((TgaString)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaString) ? this.Equals((TgaString)obj) : false);
 
-        public bool Equals(TgaString item)
-        {
-            return (
-                origString == item.origString &&
-                length == item.length &&
-                blankSpaceChar == item.blankSpaceChar &&
-                useEnding == item.useEnding);
-        }
+        public bool Equals(TgaString item) => (
+                this.origString == item.origString &&
+                this.length == item.length &&
+                this.blankSpaceChar == item.blankSpaceChar &&
+                this.useEnding == item.useEnding);
 
-        public static bool operator ==(TgaString item1, TgaString item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaString item1, TgaString item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaString item1, TgaString item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaString item1, TgaString item2) => !(item1 == item2);
 
-        public static TgaString operator +(TgaString item1, TgaString item2)
-        {
-            if (ReferenceEquals(item1, null) || ReferenceEquals(item2, null))
+        public static TgaString operator +(TgaString item1, TgaString item2) {
+            if(ReferenceEquals(item1, null) || ReferenceEquals(item2, null))
                 throw new ArgumentNullException();
 
             return new TgaString(BitConverterExt.ToBytes(item1.ToBytes(), item2.ToBytes()));
         }
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 17;
-                hash = hash * 23 + origString.GetHashCode();
-                hash = hash * 23 + length.GetHashCode();
-                hash = hash * 23 + blankSpaceChar.GetHashCode();
-                hash = hash * 23 + useEnding.GetHashCode();
+        public override int GetHashCode() {
+            unchecked {
+                var hash = 17;
+                hash = hash * 23 + this.origString.GetHashCode();
+                hash = hash * 23 + this.length.GetHashCode();
+                hash = hash * 23 + this.blankSpaceChar.GetHashCode();
+                hash = hash * 23 + this.useEnding.GetHashCode();
                 return hash;
             }
         }
@@ -2811,21 +2437,17 @@ namespace TGASharpLib
         /// Get ASCII-Like string with string-terminators, example: "Some string\0\0\0\0\0".
         /// </summary>
         /// <returns>String with replaced string-terminators to "\0".</returns>
-        public override string ToString()
-        {
-            return Encoding.ASCII.GetString(ToBytes()).Replace("\0", @"\0");
-        }
+        public override string ToString() => Encoding.ASCII.GetString(this.ToBytes()).Replace("\0", @"\0");
 
         /// <summary>
         /// Get ASCII-Like string to first string-terminator, example:
         /// "Some string \0 Some Data \0" - > "Some string".
         /// </summary>
         /// <returns>String to first string-terminator.</returns>
-        public string GetString()
-        {
-            String Str = Encoding.ASCII.GetString(ToBytes());
-            int EndIndex = Str.IndexOf('\0');
-            if (EndIndex != -1)
+        public string GetString() {
+            var Str = Encoding.ASCII.GetString(this.ToBytes());
+            var EndIndex = Str.IndexOf('\0');
+            if(EndIndex != -1)
                 Str = Str.Substring(0, EndIndex);
             return Str;
         }
@@ -2834,10 +2456,7 @@ namespace TGASharpLib
         /// Convert <see cref="TgaString"/> to byte array.
         /// </summary>
         /// <returns>Byte array, every byte is ASCII symbol.</returns>
-        public byte[] ToBytes()
-        {
-            return ToBytes(origString, length, useEnding, blankSpaceChar);
-        }
+        public byte[] ToBytes() => ToBytes(this.origString, this.length, this.useEnding, this.blankSpaceChar);
 
         /// <summary>
         /// Convert <see cref="TgaString"/> to byte array.
@@ -2849,42 +2468,38 @@ namespace TGASharpLib
         /// for string "ABC" with <see cref="Length"/> = 7, with <see cref="UseEnding"/> = true,
         /// <see cref="DefaultEndingChar"/> is '\0', result string is "ABC---\0".</param>
         /// <returns>Byte array, every byte is ASCII symbol.</returns>
-        public static byte[] ToBytes(string str, int Length, bool UseEnding = true, char BlankSpaceChar = '\0')
-        {
-            char[] C = new char[Math.Max(Length, (UseEnding ? 1 : 0))];
+        public static byte[] ToBytes(string str, int Length, bool UseEnding = true, char BlankSpaceChar = '\0') {
+            var C = new char[Math.Max(Length, (UseEnding ? 1 : 0))];
 
-            for (int i = 0; i < C.Length; i++)
+            for(var i = 0; i < C.Length; i++)
                 C[i] = (i < str.Length ? str[i] : BlankSpaceChar);
 
-            if (UseEnding)
+            if(UseEnding)
                 C[C.Length - 1] = DefaultEndingChar;
 
             return Encoding.ASCII.GetBytes(C);
         }
     }
 
-    public class TgaTime : ICloneable
-    {
-        ushort hours = 0;
-        ushort minutes = 0;
-        ushort seconds = 0;
+    public class TgaTime : ICloneable {
+        private ushort hours = 0;
+        private ushort minutes = 0;
+        private ushort seconds = 0;
 
         /// <summary>
         /// Make empty <see cref="TgaTime"/>.
         /// </summary>
-        public TgaTime()
-        {
+        public TgaTime() {
         }
 
         /// <summary>
         /// Make <see cref="TgaTime"/> from <see cref="TimeSpan"/>.
         /// </summary>
         /// <param name="Time">Some <see cref="TimeSpan"/> variable.</param>
-        public TgaTime(TimeSpan Time)
-        {
-            hours = (ushort)Time.TotalHours;
-            minutes = (ushort)Time.Minutes;
-            seconds = (ushort)Time.Seconds;
+        public TgaTime(TimeSpan Time) {
+            this.hours = (ushort)Time.TotalHours;
+            this.minutes = (ushort)Time.Minutes;
+            this.seconds = (ushort)Time.Seconds;
         }
 
         /// <summary>
@@ -2893,54 +2508,49 @@ namespace TGASharpLib
         /// <param name="Hours">Hour (0 - 65535).</param>
         /// <param name="Minutes">Minute (0 - 59).</param>
         /// <param name="Seconds">Second (0 - 59).</param>
-        public TgaTime(ushort Hours, ushort Minutes, ushort Seconds)
-        {
-            hours = Hours;
-            minutes = Minutes;
-            seconds = Seconds;
+        public TgaTime(ushort Hours, ushort Minutes, ushort Seconds) {
+            this.hours = Hours;
+            this.minutes = Minutes;
+            this.seconds = Seconds;
         }
 
         /// <summary>
         /// Make <see cref="TgaTime"/> from bytes.
         /// </summary>
         /// <param name="Bytes">Array of bytes(byte[6]).</param>
-        public TgaTime(byte[] Bytes)
-        {
-            if (Bytes == null)
+        public TgaTime(byte[] Bytes) {
+            if(Bytes == null)
                 throw new ArgumentNullException(nameof(Bytes) + " = null!");
-            else if (Bytes.Length != Size)
+            else if(Bytes.Length != Size)
                 throw new ArgumentOutOfRangeException(nameof(Bytes) + " must be equal " + Size + "!");
 
-            hours = BitConverter.ToUInt16(Bytes, 0);
-            minutes = BitConverter.ToUInt16(Bytes, 2);
-            seconds = BitConverter.ToUInt16(Bytes, 4);
+            this.hours = BitConverter.ToUInt16(Bytes, 0);
+            this.minutes = BitConverter.ToUInt16(Bytes, 2);
+            this.seconds = BitConverter.ToUInt16(Bytes, 4);
         }
 
         /// <summary>
         /// Gets or Sets hour (0 - 65535).
         /// </summary>
-        public ushort Hours
-        {
-            get { return hours; }
-            set { hours = value; }
+        public ushort Hours {
+            get => this.hours;
+            set => this.hours = value;
         }
 
         /// <summary>
         /// Gets or Sets minute (0 - 59).
         /// </summary>
-        public ushort Minutes
-        {
-            get { return minutes; }
-            set { minutes = value; }
+        public ushort Minutes {
+            get => this.minutes;
+            set => this.minutes = value;
         }
 
         /// <summary>
         /// Gets or Sets second (0 - 59).
         /// </summary>
-        public ushort Seconds
-        {
-            get { return seconds; }
-            set { seconds = value; }
+        public ushort Seconds {
+            get => this.seconds;
+            set => this.seconds = value;
         }
 
         /// <summary>
@@ -2952,53 +2562,35 @@ namespace TGASharpLib
         /// Make full independed copy of <see cref="TgaTime"/>.
         /// </summary>
         /// <returns>Copy of <see cref="TgaTime"/></returns>
-        public TgaTime Clone()
-        {
-            return new TgaTime(hours, minutes, seconds);
-        }
+        public TgaTime Clone() => new TgaTime(this.hours, this.minutes, this.seconds);
 
         /// <summary>
         /// Make full independed copy of <see cref="TgaTime"/>.
         /// </summary>
         /// <returns>Copy of <see cref="TgaTime"/></returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaTime) ? Equals((TgaTime)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaTime) ? this.Equals((TgaTime)obj) : false);
 
-        public bool Equals(TgaTime item)
-        {
-            return (hours == item.hours && minutes == item.minutes && seconds == item.seconds);
-        }
+        public bool Equals(TgaTime item) => (this.hours == item.hours && this.minutes == item.minutes && this.seconds == item.seconds);
 
-        public static bool operator ==(TgaTime item1, TgaTime item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaTime item1, TgaTime item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaTime item1, TgaTime item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaTime item1, TgaTime item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 17;
-                hash = hash * 23 + hours.GetHashCode();
-                hash = hash * 23 + (minutes << 16 | seconds).GetHashCode();
+        public override int GetHashCode() {
+            unchecked {
+                var hash = 17;
+                hash = hash * 23 + this.hours.GetHashCode();
+                hash = hash * 23 + (this.minutes << 16 | this.seconds).GetHashCode();
                 return hash;
             }
         }
@@ -3007,28 +2599,19 @@ namespace TGASharpLib
         /// Gets <see cref="TgaTime"/> like string.
         /// </summary>
         /// <returns>String in "H:M:S" format.</returns>
-        public override string ToString()
-        {
-            return String.Format("{0}:{1}:{2}", hours, minutes, seconds);
-        }
+        public override string ToString() => string.Format("{0}:{1}:{2}", this.hours, this.minutes, this.seconds);
 
         /// <summary>
         /// Convert <see cref="TgaTime"/> to byte array.
         /// </summary>
         /// <returns>Byte array with length = 6.</returns>
-        public byte[] ToBytes()
-        {
-            return BitConverterExt.ToBytes(hours, minutes, seconds);
-        }
+        public byte[] ToBytes() => BitConverterExt.ToBytes(this.hours, this.minutes, this.seconds);
 
         /// <summary>
         /// Gets <see cref="TgaTime"/> like <see cref="TimeSpan"/>.
         /// </summary>
         /// <returns><see cref="TimeSpan"/> value of <see cref="TgaTime"/>.</returns>
-        public TimeSpan ToTimeSpan()
-        {
-            return new TimeSpan(hours, minutes, seconds);
-        }
+        public TimeSpan ToTimeSpan() => new TimeSpan(this.hours, this.minutes, this.seconds);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3036,37 +2619,34 @@ namespace TGASharpLib
     /// <summary>
     /// File Header Area (18 bytes)
     /// </summary>
-    public class TgaHeader : ICloneable
-    {
-        byte idLength = 0;
-        TgaColorMapType colorMapType = TgaColorMapType.NoColorMap;
-        TgaImageType imageType = TgaImageType.NoImageData;
-        TgaColorMapSpec colorMapSpec = new TgaColorMapSpec();
-        TgaImageSpec imageSpec = new TgaImageSpec();
+    public class TgaHeader : ICloneable {
+        private byte idLength = 0;
+        private TgaColorMapType colorMapType = TgaColorMapType.NoColorMap;
+        private TgaImageType imageType = TgaImageType.NoImageData;
+        private TgaColorMapSpec colorMapSpec = new TgaColorMapSpec();
+        private TgaImageSpec imageSpec = new TgaImageSpec();
 
         /// <summary>
         /// Make empty <see cref="TgaHeader"/>.
         /// </summary>
-        public TgaHeader()
-        {
+        public TgaHeader() {
         }
 
         /// <summary>
         /// Make <see cref="TgaHeader"/> from bytes.
         /// </summary>
         /// <param name="Bytes">Bytes array (byte[18]).</param>
-        public TgaHeader(byte[] Bytes)
-        {
-            if (Bytes == null)
+        public TgaHeader(byte[] Bytes) {
+            if(Bytes == null)
                 throw new ArgumentNullException(nameof(Bytes) + " = null!");
-            if (Bytes.Length != Size)
+            if(Bytes.Length != Size)
                 throw new ArgumentOutOfRangeException(nameof(Bytes.Length) + " must be equal " + Size + "!");
 
-            idLength = Bytes[0];
-            colorMapType = (TgaColorMapType)Bytes[1];
-            imageType = (TgaImageType)Bytes[2];
-            colorMapSpec = new TgaColorMapSpec(BitConverterExt.GetElements(Bytes, 3, TgaColorMapSpec.Size));
-            imageSpec = new TgaImageSpec(BitConverterExt.GetElements(Bytes, 8, TgaImageSpec.Size));
+            this.idLength = Bytes[0];
+            this.colorMapType = (TgaColorMapType)Bytes[1];
+            this.imageType = (TgaImageType)Bytes[2];
+            this.colorMapSpec = new TgaColorMapSpec(BitConverterExt.GetElements(Bytes, 3, TgaColorMapSpec.Size));
+            this.imageSpec = new TgaImageSpec(BitConverterExt.GetElements(Bytes, 8, TgaImageSpec.Size));
         }
 
         /// <summary>
@@ -3075,10 +2655,9 @@ namespace TGASharpLib
         /// The maximum number of characters is 255. A value of zero indicates that no Image ID
         /// field is included with the image.
         /// </summary>
-        public byte IDLength
-        {
-            get { return idLength; }
-            set { idLength = value; }
+        public byte IDLength {
+            get => this.idLength;
+            set => this.idLength = value;
         }
 
         /// <summary>
@@ -3088,10 +2667,9 @@ namespace TGASharpLib
         /// <para>0 - indicates that no color-map data is included with this image;</para>
         /// <para>1 - indicates that a color-map is included with this image.</para>
         /// </summary>
-        public TgaColorMapType ColorMapType
-        {
-            get { return colorMapType; }
-            set { colorMapType = value; }
+        public TgaColorMapType ColorMapType {
+            get => this.colorMapType;
+            set => this.colorMapType = value;
         }
 
         /// <summary>
@@ -3099,10 +2677,9 @@ namespace TGASharpLib
         /// <para>The TGA File Format can be used to store Pseudo-Color, True-Color and Direct-Color images
         /// of various pixel depths.</para>
         /// </summary>
-        public TgaImageType ImageType
-        {
-            get { return imageType; }
-            set { imageType = value; }
+        public TgaImageType ImageType {
+            get => this.imageType;
+            set => this.imageType = value;
         }
 
         /// <summary>
@@ -3111,10 +2688,9 @@ namespace TGASharpLib
         /// If the Color Map Type field is set to zero, indicating that no color map exists, then
         /// these 5 bytes should be set to zero. These bytes always must be written to the file.</para>
         /// </summary>
-        public TgaColorMapSpec ColorMapSpec
-        {
-            get { return colorMapSpec; }
-            set { colorMapSpec = value; }
+        public TgaColorMapSpec ColorMapSpec {
+            get => this.colorMapSpec;
+            set => this.colorMapSpec = value;
         }
 
         /// <summary>
@@ -3122,10 +2698,9 @@ namespace TGASharpLib
         /// <para>This field and its sub-fields describe the image screen location, size and pixel depth.
         /// These information is always written to the file.</para>
         /// </summary>
-        public TgaImageSpec ImageSpec
-        {
-            get { return imageSpec; }
-            set { imageSpec = value; }
+        public TgaImageSpec ImageSpec {
+            get => this.imageSpec;
+            set => this.imageSpec = value;
         }
 
         /// <summary>
@@ -3137,103 +2712,77 @@ namespace TGASharpLib
         /// Make full copy of <see cref="TgaHeader"/>.
         /// </summary>
         /// <returns>Full independent copy of <see cref="TgaHeader"/>.</returns>
-        public TgaHeader Clone()
-        {
-            return new TgaHeader(ToBytes());
-        }
+        public TgaHeader Clone() => new TgaHeader(this.ToBytes());
 
         /// <summary>
         /// Make full copy of <see cref="TgaHeader"/>.
         /// </summary>
         /// <returns>Full independent copy of <see cref="TgaHeader"/>.</returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaHeader) ? Equals((TgaHeader)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaHeader) ? this.Equals((TgaHeader)obj) : false);
 
-        public bool Equals(TgaHeader item)
-        {
-            return (idLength == item.idLength &&
-                colorMapType == item.colorMapType &&
-                imageType == item.imageType &&
-                colorMapSpec == item.colorMapSpec &&
-                imageSpec == item.imageSpec);
-        }
+        public bool Equals(TgaHeader item) => (this.idLength == item.idLength &&
+                this.colorMapType == item.colorMapType &&
+                this.imageType == item.imageType &&
+                this.colorMapSpec == item.colorMapSpec &&
+                this.imageSpec == item.imageSpec);
 
-        public static bool operator ==(TgaHeader item1, TgaHeader item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaHeader item1, TgaHeader item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaHeader item1, TgaHeader item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaHeader item1, TgaHeader item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 17;
-                hash = hash * 23 + (idLength << 24 | (byte)colorMapType << 8 | (byte)imageType).GetHashCode();
+        public override int GetHashCode() {
+            unchecked {
+                var hash = 17;
+                hash = hash * 23 + (this.idLength << 24 | (byte)this.colorMapType << 8 | (byte)this.imageType).GetHashCode();
 
-                if (colorMapSpec != null)
-                    hash = hash * 23 + colorMapSpec.GetHashCode();
+                if(this.colorMapSpec != null)
+                    hash = hash * 23 + this.colorMapSpec.GetHashCode();
 
-                if (imageSpec != null)
-                    hash = hash * 23 + imageSpec.GetHashCode();
+                if(this.imageSpec != null)
+                    hash = hash * 23 + this.imageSpec.GetHashCode();
 
                 return hash;
             }
         }
 
-        public override string ToString()
-        {
-            return String.Format("{0}={1}, {2}={3}, {4}={5}, {6}={7}, {8}={9}",
-                nameof(IDLength), idLength,
-                nameof(ColorMapType), colorMapType,
-                nameof(ImageType), imageType,
-                nameof(ColorMapSpec), colorMapSpec,
-                nameof(ImageSpec), imageSpec);
-        }
+        public override string ToString() => string.Format("{0}={1}, {2}={3}, {4}={5}, {6}={7}, {8}={9}",
+                nameof(this.IDLength), this.idLength,
+                nameof(this.ColorMapType), this.colorMapType,
+                nameof(this.ImageType), this.imageType,
+                nameof(this.ColorMapSpec), this.colorMapSpec,
+                nameof(this.ImageSpec), this.imageSpec);
 
         /// <summary>
         /// Convert <see cref="TgaHeader"/> to byte array.
         /// </summary>
         /// <returns>Byte array with size equal <see cref="Size"/>.</returns>
-        public byte[] ToBytes()
-        {
-            return BitConverterExt.ToBytes(idLength, (byte)colorMapType, (byte)imageType,
-                (colorMapSpec == null ? new byte[TgaColorMapSpec.Size] : colorMapSpec.ToBytes()),
-                (imageSpec == null ? new byte[TgaImageSpec.Size] : imageSpec.ToBytes()));
-        }
+        public byte[] ToBytes() => BitConverterExt.ToBytes(this.idLength, (byte)this.colorMapType, (byte)this.imageType,
+                (this.colorMapSpec == null ? new byte[TgaColorMapSpec.Size] : this.colorMapSpec.ToBytes()),
+                (this.imageSpec == null ? new byte[TgaImageSpec.Size] : this.imageSpec.ToBytes()));
     }
 
     /// <summary>
     /// Image Or ColorMap Area
     /// </summary>
-    public class TgaImgOrColMap : ICloneable
-    {
-        TgaString imageID = null;
-        byte[] colorMapData = null;
-        byte[] imageData = null;
+    public class TgaImgOrColMap : ICloneable {
+        private TgaString imageID = null;
+        private byte[] colorMapData = null;
+        private byte[] imageData = null;
 
         /// <summary>
         /// Make empty <see cref="TgaImgOrColMap"/>.
         /// </summary>
-        public TgaImgOrColMap()
-        {
+        public TgaImgOrColMap() {
         }
 
         /// <summary>
@@ -3245,11 +2794,10 @@ namespace TGASharpLib
         /// then these bytes are not written to the file.</param>
         /// <param name="ColorMapData">Color Map Data, see <see cref="ColorMapData"/> description.</param>
         /// <param name="ImageData">Image Data, see <see cref="ImageData"/> description.</param>
-        public TgaImgOrColMap(TgaString ImageID, byte[] ColorMapData, byte[] ImageData)
-        {
-            imageID = ImageID;
-            colorMapData = ColorMapData;
-            imageData = ImageData;
+        public TgaImgOrColMap(TgaString ImageID, byte[] ColorMapData, byte[] ImageData) {
+            this.imageID = ImageID;
+            this.colorMapData = ColorMapData;
+            this.imageData = ImageData;
         }
 
         /// <summary>
@@ -3259,10 +2807,9 @@ namespace TGASharpLib
         /// field. If field 1 is set to Zero indicating that no Image ID exists then these bytes are not
         /// written to the file. Can have text inside (ASCII).</para>
         /// </summary>
-        public TgaString ImageID
-        {
-            get { return imageID; }
-            set { imageID = value; }
+        public TgaString ImageID {
+            get => this.imageID;
+            set => this.imageID = value;
         }
 
         /// <summary>
@@ -3283,10 +2830,9 @@ namespace TGASharpLib
         /// For the TARGA M-8, ATVista and NuVista, the number of bits in a color map specification is
         /// 24 (or 32). The red, green, and blue components are each represented by one byte.
         /// </summary>
-        public byte[] ColorMapData
-        {
-            get { return colorMapData; }
-            set { colorMapData = value; }
+        public byte[] ColorMapData {
+            get => this.colorMapData;
+            set => this.colorMapData = value;
         }
 
         /// <summary>
@@ -3300,75 +2846,59 @@ namespace TGASharpLib
         /// The number of attribute and color-definition bits for each pixel are defined in Fields 5.6
         /// and 5.5, respectively.Each pixel is stored as an integral number of bytes.</para>
         /// </summary>
-        public byte[] ImageData
-        {
-            get { return imageData; }
-            set { imageData = value; }
+        public byte[] ImageData {
+            get => this.imageData;
+            set => this.imageData = value;
         }
 
         /// <summary>
         /// Make full copy of <see cref="TgaImgOrColMap"/>.
         /// </summary>
         /// <returns>Full independed copy of <see cref="TgaImgOrColMap"/>.</returns>
-        public TgaImgOrColMap Clone()
-        {
-            return new TgaImgOrColMap(
-                (imageID == null ? null : imageID.Clone()),
-                (colorMapData == null ? null : (byte[])colorMapData.Clone()),
-                (imageData == null ? null : (byte[])imageData.Clone()));
-        }
+        public TgaImgOrColMap Clone() => new TgaImgOrColMap(
+                (this.imageID == null ? null : this.imageID.Clone()),
+                (this.colorMapData == null ? null : (byte[])this.colorMapData.Clone()),
+                (this.imageData == null ? null : (byte[])this.imageData.Clone()));
 
         /// <summary>
         /// Make full copy of <see cref="TgaImgOrColMap"/>.
         /// </summary>
         /// <returns>Full independed copy of <see cref="TgaImgOrColMap"/>.</returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaImgOrColMap) ? Equals((TgaImgOrColMap)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaImgOrColMap) ? this.Equals((TgaImgOrColMap)obj) : false);
 
-        public bool Equals(TgaImgOrColMap item)
-        {
-            return imageID == item.imageID &&
-                BitConverterExt.IsArraysEqual(colorMapData, item.colorMapData) &&
-                BitConverterExt.IsArraysEqual(imageData, item.imageData);
-        }
+        public bool Equals(TgaImgOrColMap item) => this.imageID == item.imageID &&
+                BitConverterExt.IsArraysEqual(this.colorMapData, item.colorMapData) &&
+                BitConverterExt.IsArraysEqual(this.imageData, item.imageData);
 
-        public static bool operator ==(TgaImgOrColMap item1, TgaImgOrColMap item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaImgOrColMap item1, TgaImgOrColMap item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaImgOrColMap item1, TgaImgOrColMap item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaImgOrColMap item1, TgaImgOrColMap item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 27;
+        public override int GetHashCode() {
+            unchecked {
+                var hash = 27;
 
-                if (imageID != null)
-                    hash = (13 * hash) + imageID.GetHashCode();
-                if (colorMapData != null)
-                    for (int i = 0; i < colorMapData.Length; i++)
-                        hash = (13 * hash) + colorMapData[i].GetHashCode();
-                if (imageData != null)
-                    for (int i = 0; i < imageData.Length; i++)
-                        hash = (13 * hash) + imageData[i].GetHashCode();
+                if(this.imageID != null)
+                    hash = (13 * hash) + this.imageID.GetHashCode();
+                if(this.colorMapData != null) {
+                    for(var i = 0; i < this.colorMapData.Length; i++)
+                        hash = (13 * hash) + this.colorMapData[i].GetHashCode();
+                }
+
+                if(this.imageData != null) {
+                    for(var i = 0; i < this.imageData.Length; i++)
+                        hash = (13 * hash) + this.imageData[i].GetHashCode();
+                }
 
                 return hash;
             }
@@ -3378,54 +2908,45 @@ namespace TGASharpLib
     /// <summary>
     /// Developer Area
     /// </summary> //?
-    public class TgaDevArea : ICloneable
-    {
-        List<TgaDevEntry> entries = new List<TgaDevEntry>();
+    public class TgaDevArea : ICloneable {
+        private List<TgaDevEntry> entries = new List<TgaDevEntry>();
 
-        public TgaDevArea()
-        {
+        public TgaDevArea() {
         }
 
-        public TgaDevArea(List<TgaDevEntry> Entries)
-        {
-            if (Entries == null)
+        public TgaDevArea(List<TgaDevEntry> Entries) {
+            if(Entries == null)
                 throw new ArgumentNullException(nameof(Entries) + " = null!");
 
-            entries = Entries;
+            this.entries = Entries;
         }
 
         /// <summary>
         /// Developer Data - Field 9 (variable):
         /// </summary>
-        public List<TgaDevEntry> Entries
-        {
-            get { return entries; }
-            set { entries = value; }
+        public List<TgaDevEntry> Entries {
+            get => this.entries;
+            set => this.entries = value;
         }
 
-        public int Count
-        {
-            get { return entries.Count; }
-        }
+        public int Count => this.entries.Count;
 
-        public TgaDevEntry this[int index]
-        {
-            get { return entries[index]; }
-            set { entries[index] = value; }
+        public TgaDevEntry this[int index] {
+            get => this.entries[index];
+            set => this.entries[index] = value;
         }
 
         /// <summary>
         /// Make full copy of <see cref="TgaDevArea"/>.
         /// </summary>
         /// <returns>Full independent copy of <see cref="TgaDevArea"/>.</returns>
-        public TgaDevArea Clone()
-        {
-            if (entries == null)
+        public TgaDevArea Clone() {
+            if(this.entries == null)
                 return new TgaDevArea(null);
 
-            List<TgaDevEntry> L = new List<TgaDevEntry>();
-            for (int i = 0; i < entries.Count; i++)
-                L.Add(entries[i].Clone());
+            var L = new List<TgaDevEntry>();
+            for(var i = 0; i < this.entries.Count; i++)
+                L.Add(this.entries[i].Clone());
 
             return new TgaDevArea(L);
         }
@@ -3434,45 +2955,32 @@ namespace TGASharpLib
         /// Make full copy of <see cref="TgaDevArea"/>.
         /// </summary>
         /// <returns>Full independent copy of <see cref="TgaDevArea"/>.</returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaDevArea) ? Equals((TgaDevArea)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaDevArea) ? this.Equals((TgaDevArea)obj) : false);
 
-        public bool Equals(TgaDevArea item)
-        {
-            return BitConverterExt.IsListsEqual(entries, item.entries);
-        }
+        public bool Equals(TgaDevArea item) => BitConverterExt.IsListsEqual(this.entries, item.entries);
 
-        public static bool operator ==(TgaDevArea item1, TgaDevArea item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaDevArea item1, TgaDevArea item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaDevArea item1, TgaDevArea item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaDevArea item1, TgaDevArea item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 27;
-                if (entries != null)
-                    for (int i = 0; i < entries.Count; i++)
-                        hash = (13 * hash) + entries[i].GetHashCode();
+        public override int GetHashCode() {
+            unchecked {
+                var hash = 27;
+                if(this.entries != null) {
+                    for(var i = 0; i < this.entries.Count; i++)
+                        hash = (13 * hash) + this.entries[i].GetHashCode();
+                }
+
                 return hash;
             }
         }
@@ -3482,19 +2990,17 @@ namespace TGASharpLib
         /// </summary>
         /// <returns>Byte array, Len = (NUMBER_OF_TAGS_IN_THE_DIRECTORY * 10) + 2 bytes in size.
         /// The "+ 2" includes the 2 bytes for the number of tags in the directory.</returns>
-        public byte[] ToBytes()
-        {
-            if (entries == null)
-                throw new Exception(nameof(Entries) + " = null!");
+        public byte[] ToBytes() {
+            if(this.entries == null)
+                throw new Exception(nameof(this.Entries) + " = null!");
 
-            ushort NumberOfEntries = (ushort)Math.Min(ushort.MaxValue, entries.Count);
-            List<byte> DevDir = new List<byte>(BitConverter.GetBytes(NumberOfEntries));
+            var NumberOfEntries = (ushort)Math.Min(ushort.MaxValue, this.entries.Count);
+            var DevDir = new List<byte>(BitConverter.GetBytes(NumberOfEntries));
 
-            for (int i = 0; i < entries.Count; i++)
-            {
-                DevDir.AddRange(BitConverter.GetBytes(entries[i].Tag));
-                DevDir.AddRange(BitConverter.GetBytes(entries[i].Offset));
-                DevDir.AddRange(BitConverter.GetBytes(entries[i].FieldSize));
+            for(var i = 0; i < this.entries.Count; i++) {
+                DevDir.AddRange(BitConverter.GetBytes(this.entries[i].Tag));
+                DevDir.AddRange(BitConverter.GetBytes(this.entries[i].Offset));
+                DevDir.AddRange(BitConverter.GetBytes(this.entries[i].FieldSize));
             }
 
             return DevDir.ToArray();
@@ -3504,32 +3010,30 @@ namespace TGASharpLib
     /// <summary>
     /// Extension Area
     /// </summary>
-    public class TgaExtArea : ICloneable
-    {
+    public class TgaExtArea : ICloneable {
         public const int MinSize = 495; //bytes
 
-        ushort extensionSize = MinSize;
-        TgaString authorName = new TgaString(41, true);
-        TgaComment authorComments = new TgaComment();
-        TgaDateTime dateTimeStamp = new TgaDateTime();
-        TgaString jobNameOrID = new TgaString(41, true);
-        TgaTime jobTime = new TgaTime();
-        TgaString softwareID = new TgaString(41, true);
-        TgaSoftVersion softVersion = new TgaSoftVersion();
-        TgaColorKey keyColor = new TgaColorKey();
-        TgaFraction pixelAspectRatio = TgaFraction.Empty;
-        TgaFraction gammaValue = TgaFraction.Empty;
-        uint colorCorrectionOffset = 0;
-        uint postageStampOffset = 0;
-        uint scanLineOffset = 0;
-        TgaAttrType attributesType = TgaAttrType.NoAlpha;
-        uint[] scanLineTable = null;
-        TgaPostageStampImage postageStampImage = null;
-        ushort[] colorCorrectionTable = null;
-        byte[] otherDataInExtensionArea = null;
+        private ushort extensionSize = MinSize;
+        private TgaString authorName = new TgaString(41, true);
+        private TgaComment authorComments = new TgaComment();
+        private TgaDateTime dateTimeStamp = new TgaDateTime();
+        private TgaString jobNameOrID = new TgaString(41, true);
+        private TgaTime jobTime = new TgaTime();
+        private TgaString softwareID = new TgaString(41, true);
+        private TgaSoftVersion softVersion = new TgaSoftVersion();
+        private TgaColorKey keyColor = new TgaColorKey();
+        private TgaFraction pixelAspectRatio = TgaFraction.Empty;
+        private TgaFraction gammaValue = TgaFraction.Empty;
+        private uint colorCorrectionOffset = 0;
+        private uint postageStampOffset = 0;
+        private uint scanLineOffset = 0;
+        private TgaAttrType attributesType = TgaAttrType.NoAlpha;
+        private uint[] scanLineTable = null;
+        private TgaPostageStampImage postageStampImage = null;
+        private ushort[] colorCorrectionTable = null;
+        private byte[] otherDataInExtensionArea = null;
 
-        public TgaExtArea()
-        {
+        public TgaExtArea() {
         }
 
         /// <summary>
@@ -3541,35 +3045,34 @@ namespace TGASharpLib
         /// <param name="SLT">Scan Line Table.</param>
         /// <param name="PostImg">Postage Stamp Image.</param>
         /// <param name="CCT">Color Correction Table.</param>
-        public TgaExtArea(byte[] Bytes, uint[] SLT = null, TgaPostageStampImage PostImg = null, ushort[] CCT = null)
-        {
-            if (Bytes == null)
+        public TgaExtArea(byte[] Bytes, uint[] SLT = null, TgaPostageStampImage PostImg = null, ushort[] CCT = null) {
+            if(Bytes == null)
                 throw new ArgumentNullException(nameof(Bytes) + " = null!");
-            if (Bytes.Length < MinSize)
+            if(Bytes.Length < MinSize)
                 throw new ArgumentOutOfRangeException(nameof(Bytes.Length) + " must be >= " + MinSize + "!");
 
-            extensionSize = BitConverter.ToUInt16(Bytes, 0);
-            authorName = new TgaString(BitConverterExt.GetElements(Bytes, 2, 41), true);
-            authorComments = new TgaComment(BitConverterExt.GetElements(Bytes, 43, TgaComment.Size));
-            dateTimeStamp = new TgaDateTime(BitConverterExt.GetElements(Bytes, 367, TgaDateTime.Size));
-            jobNameOrID = new TgaString(BitConverterExt.GetElements(Bytes, 379, 41), true);
-            jobTime = new TgaTime(BitConverterExt.GetElements(Bytes, 420, TgaTime.Size));
-            softwareID = new TgaString(BitConverterExt.GetElements(Bytes, 426, 41), true);
-            softVersion = new TgaSoftVersion(BitConverterExt.GetElements(Bytes, 467, TgaSoftVersion.Size));
-            keyColor = new TgaColorKey(BitConverterExt.GetElements(Bytes, 470, TgaColorKey.Size));
-            pixelAspectRatio = new TgaFraction(BitConverterExt.GetElements(Bytes, 474, TgaFraction.Size));
-            gammaValue = new TgaFraction(BitConverterExt.GetElements(Bytes, 478, TgaFraction.Size));
-            colorCorrectionOffset = BitConverter.ToUInt32(Bytes, 482);
-            postageStampOffset = BitConverter.ToUInt32(Bytes, 486);
-            scanLineOffset = BitConverter.ToUInt32(Bytes, 490);
-            attributesType = (TgaAttrType)Bytes[494];
+            this.extensionSize = BitConverter.ToUInt16(Bytes, 0);
+            this.authorName = new TgaString(BitConverterExt.GetElements(Bytes, 2, 41), true);
+            this.authorComments = new TgaComment(BitConverterExt.GetElements(Bytes, 43, TgaComment.Size));
+            this.dateTimeStamp = new TgaDateTime(BitConverterExt.GetElements(Bytes, 367, TgaDateTime.Size));
+            this.jobNameOrID = new TgaString(BitConverterExt.GetElements(Bytes, 379, 41), true);
+            this.jobTime = new TgaTime(BitConverterExt.GetElements(Bytes, 420, TgaTime.Size));
+            this.softwareID = new TgaString(BitConverterExt.GetElements(Bytes, 426, 41), true);
+            this.softVersion = new TgaSoftVersion(BitConverterExt.GetElements(Bytes, 467, TgaSoftVersion.Size));
+            this.keyColor = new TgaColorKey(BitConverterExt.GetElements(Bytes, 470, TgaColorKey.Size));
+            this.pixelAspectRatio = new TgaFraction(BitConverterExt.GetElements(Bytes, 474, TgaFraction.Size));
+            this.gammaValue = new TgaFraction(BitConverterExt.GetElements(Bytes, 478, TgaFraction.Size));
+            this.colorCorrectionOffset = BitConverter.ToUInt32(Bytes, 482);
+            this.postageStampOffset = BitConverter.ToUInt32(Bytes, 486);
+            this.scanLineOffset = BitConverter.ToUInt32(Bytes, 490);
+            this.attributesType = (TgaAttrType)Bytes[494];
 
-            if (extensionSize > MinSize)
-                otherDataInExtensionArea = BitConverterExt.GetElements(Bytes, 495, Bytes.Length - MinSize);
+            if(this.extensionSize > MinSize)
+                this.otherDataInExtensionArea = BitConverterExt.GetElements(Bytes, 495, Bytes.Length - MinSize);
 
-            scanLineTable = SLT;
-            postageStampImage = PostImg;
-            colorCorrectionTable = CCT;
+            this.scanLineTable = SLT;
+            this.postageStampImage = PostImg;
+            this.colorCorrectionTable = CCT;
         }
 
         #region Properties
@@ -3582,10 +3085,9 @@ namespace TGASharpLib
         /// will be controlled by Truevision, and will be accompanied by a revision to the TGA File
         /// Format with an accompanying change in the version number.
         /// </summary>
-        public ushort ExtensionSize
-        {
-            get { return extensionSize; }
-            set { extensionSize = value; }
+        public ushort ExtensionSize {
+            get => this.extensionSize;
+            set => this.extensionSize = value;
         }
 
         /// <summary>
@@ -3596,10 +3098,9 @@ namespace TGASharpLib
         /// used, you may fill it with nulls or a series of blanks(spaces) terminated by a null.
         /// The 41st byte must always be a null.
         /// </summary>
-        public TgaString AuthorName
-        {
-            get { return authorName; }
-            set { authorName = value; }
+        public TgaString AuthorName {
+            get => this.authorName;
+            set => this.authorName = value;
         }
 
         /// <summary>
@@ -3614,10 +3115,9 @@ namespace TGASharpLib
         /// character and blank or null fill the rest of the line. The 81st byte of each of the four
         /// lines must be null.
         /// </summary>
-        public TgaComment AuthorComments
-        {
-            get { return authorComments; }
-            set { authorComments = value; }
+        public TgaComment AuthorComments {
+            get => this.authorComments;
+            set => this.authorComments = value;
         }
 
         /// <summary>
@@ -3635,10 +3135,9 @@ namespace TGASharpLib
         /// copied. By using this area, you are guaranteed an unmodified region for date and time
         /// recording. If the fields are not used, you should fill them with binary zeros (0).
         /// </summary>
-        public TgaDateTime DateTimeStamp
-        {
-            get { return dateTimeStamp; }
-            set { dateTimeStamp = value; }
+        public TgaDateTime DateTimeStamp {
+            get => this.dateTimeStamp;
+            set => this.dateTimeStamp = value;
         }
 
         /// <summary>
@@ -3651,10 +3150,9 @@ namespace TGASharpLib
         /// (i.e., CITY023). If the field is not used, you may fill it with a null terminated series
         /// of blanks (spaces) or nulls. In any case, the 41st byte must be a null.
         /// </summary>
-        public TgaString JobNameOrID
-        {
-            get { return jobNameOrID; }
-            set { jobNameOrID = value; }
+        public TgaString JobNameOrID {
+            get => this.jobNameOrID;
+            set => this.jobNameOrID = value;
         }
 
         /// <summary>
@@ -3668,10 +3166,9 @@ namespace TGASharpLib
         /// of the amount of time invested in a particular image. This may be useful for billing, costing,
         /// and time estimating. If the fields are not used, you should fill them with binary zeros (0).
         /// </summary>
-        public TgaTime JobTime
-        {
-            get { return jobTime; }
-            set { jobTime = value; }
+        public TgaTime JobTime {
+            get => this.jobTime;
+            set => this.jobTime = value;
         }
 
         /// <summary>
@@ -3682,10 +3179,9 @@ namespace TGASharpLib
         /// a particular image was created.If the field is not used, you may fill it with a
         /// null terminated series of blanks (spaces) or nulls. The 41st byte must always be a null.
         /// </summary>
-        public TgaString SoftwareID
-        {
-            get { return softwareID; }
-            set { softwareID = value; }
+        public TgaString SoftwareID {
+            get => this.softwareID;
+            set => this.softwareID = value;
         }
 
         /// <summary>
@@ -3703,10 +3199,9 @@ namespace TGASharpLib
         /// <para>BYTE(Byte 2): Version Letter</para>
         /// If you do not use this field, set the SHORT to binary zero, and the BYTE to a space(“ “)
         /// </summary>
-        public TgaSoftVersion SoftVersion
-        {
-            get { return softVersion; }
-            set { softVersion = value; }
+        public TgaSoftVersion SoftVersion {
+            get => this.softVersion;
+            set => this.softVersion = value;
         }
 
         /// <summary>
@@ -3722,10 +3217,9 @@ namespace TGASharpLib
         /// color of black.</para>
         /// A good example of a key color is the ‘transparent color’ used in TIPS™ for WINDOW loading/saving.
         /// </summary>
-        public TgaColorKey KeyColor
-        {
-            get { return keyColor; }
-            set { keyColor = value; }
+        public TgaColorKey KeyColor {
+            get => this.keyColor;
+            set => this.keyColor = value;
         }
 
         /// <summary>
@@ -3739,10 +3233,9 @@ namespace TGASharpLib
         /// are set to the same non-zero value, then the image is composed of square pixels. A zero
         /// in the second sub-field (denominator) indicates that no pixel aspect ratio is specified.
         /// </summary>
-        public TgaFraction PixelAspectRatio
-        {
-            get { return pixelAspectRatio; }
-            set { pixelAspectRatio = value; }
+        public TgaFraction PixelAspectRatio {
+            get => this.pixelAspectRatio;
+            set => this.pixelAspectRatio = value;
         }
 
         /// <summary>
@@ -3757,10 +3250,9 @@ namespace TGASharpLib
         /// (i.e., 1/1). If you decide to totally ignore this field, please set the denominator (the second
         /// SHORT) to the value zero. This will indicate that the Gamma Value field is not being used.
         /// </summary>
-        public TgaFraction GammaValue
-        {
-            get { return gammaValue; }
-            set { gammaValue = value; }
+        public TgaFraction GammaValue {
+            get => this.gammaValue;
+            set => this.gammaValue = value;
         }
 
         /// <summary>
@@ -3771,10 +3263,9 @@ namespace TGASharpLib
         /// File Footer. If the image has no Color Correction Table or if the Gamma Value setting is
         /// sufficient, set this value to zero and do not write a Correction Table anywhere.
         /// </summary>
-        public uint ColorCorrectionTableOffset
-        {
-            get { return colorCorrectionOffset; }
-            set { colorCorrectionOffset = value; }
+        public uint ColorCorrectionTableOffset {
+            get => this.colorCorrectionOffset;
+            set => this.colorCorrectionOffset = value;
         }
 
         /// <summary>
@@ -3784,10 +3275,9 @@ namespace TGASharpLib
         /// must be written after Field 25 (Scan Line Table) but before the start of the TGA File Footer.
         /// If no postage stamp is stored, set this field to the value zero (0).
         /// </summary>
-        public uint PostageStampOffset
-        {
-            get { return postageStampOffset; }
-            set { postageStampOffset = value; }
+        public uint PostageStampOffset {
+            get => this.postageStampOffset;
+            set => this.postageStampOffset = value;
         }
 
         /// <summary>
@@ -3795,10 +3285,9 @@ namespace TGASharpLib
         /// Bytes 490-493 - This field is a 4-byte field containing a single offset value. This is an
         /// offset from the beginning of the file to the start of the Scan Line Table.
         /// </summary>
-        public uint ScanLineOffset
-        {
-            get { return scanLineOffset; }
-            set { scanLineOffset = value; }
+        public uint ScanLineOffset {
+            get => this.scanLineOffset;
+            set => this.scanLineOffset = value;
         }
 
         /// <summary>
@@ -3823,10 +3312,9 @@ namespace TGASharpLib
         /// A value of 3 in the Attributes Type Field(field 23) would indicate that the color components
         /// of the pixel have already been scaled by the value in the Alpha channel.
         /// </summary>
-        public TgaAttrType AttributesType
-        {
-            get { return attributesType; }
-            set { attributesType = value; }
+        public TgaAttrType AttributesType {
+            get => this.attributesType;
+            set => this.attributesType = value;
         }
 
         /// <summary>
@@ -3841,10 +3329,9 @@ namespace TGASharpLib
         /// 4-byte offset pointers (for a total of 3072 bytes). This size is not extreme, and thus this table
         /// can be built and maintained in memory, and then written out at the proper time.
         /// </summary>
-        public uint[] ScanLineTable
-        {
-            get { return scanLineTable; }
-            set { scanLineTable = value; }
+        public uint[] ScanLineTable {
+            get => this.scanLineTable;
+            set => this.scanLineTable = value;
         }
 
         /// <summary>
@@ -3861,10 +3348,9 @@ namespace TGASharpLib
         /// the assumption that if you can read the image, then you can read the postage stamp. If the original
         /// image is color mapped, DO NOT average the postage stamp, as you will create new colors not in your map.
         /// </summary>
-        public TgaPostageStampImage PostageStampImage
-        {
-            get { return postageStampImage; }
-            set { postageStampImage = value; }
+        public TgaPostageStampImage PostageStampImage {
+            get => this.postageStampImage;
+            set => this.postageStampImage = value;
         }
 
         /// <summary>
@@ -3876,19 +3362,17 @@ namespace TGASharpLib
         /// A, R, G, B) is 65535, and the minimum value is zero.Therefore, BLACK maps to
         /// 0, 0, 0, 0 and WHITE maps to 65535, 65535, 65535, 65535.
         /// </summary>
-        public ushort[] ColorCorrectionTable
-        {
-            get { return colorCorrectionTable; }
-            set { colorCorrectionTable = value; }
+        public ushort[] ColorCorrectionTable {
+            get => this.colorCorrectionTable;
+            set => this.colorCorrectionTable = value;
         }
 
         /// <summary>
         /// Other Data In Extension Area (if <see cref="ExtensionSize"/> > 495).
         /// </summary>
-        public byte[] OtherDataInExtensionArea
-        {
-            get { return otherDataInExtensionArea; }
-            set { otherDataInExtensionArea = value; }
+        public byte[] OtherDataInExtensionArea {
+            get => this.otherDataInExtensionArea;
+            set => this.otherDataInExtensionArea = value;
         }
         #endregion
 
@@ -3896,34 +3380,34 @@ namespace TGASharpLib
         /// Make full copy of <see cref="TgaExtArea"/>.
         /// </summary>
         /// <returns>Full independent copy of <see cref="TgaExtArea"/>.</returns>
-        public TgaExtArea Clone()
-        {
-            TgaExtArea NewExtArea = new TgaExtArea();
-            NewExtArea.extensionSize = extensionSize;
-            NewExtArea.authorName = authorName.Clone();
-            NewExtArea.authorComments = authorComments.Clone();
-            NewExtArea.dateTimeStamp = dateTimeStamp.Clone();
-            NewExtArea.jobNameOrID = jobNameOrID.Clone();
-            NewExtArea.jobTime = jobTime.Clone();
-            NewExtArea.softwareID = softwareID.Clone();
-            NewExtArea.softVersion = softVersion.Clone();
-            NewExtArea.keyColor = keyColor.Clone();
-            NewExtArea.pixelAspectRatio = pixelAspectRatio.Clone();
-            NewExtArea.gammaValue = gammaValue.Clone();
-            NewExtArea.colorCorrectionOffset = colorCorrectionOffset;
-            NewExtArea.postageStampOffset = postageStampOffset;
-            NewExtArea.scanLineOffset = scanLineOffset;
-            NewExtArea.attributesType = attributesType;
+        public TgaExtArea Clone() {
+            var NewExtArea = new TgaExtArea {
+                extensionSize = this.extensionSize,
+                authorName = this.authorName.Clone(),
+                authorComments = this.authorComments.Clone(),
+                dateTimeStamp = this.dateTimeStamp.Clone(),
+                jobNameOrID = this.jobNameOrID.Clone(),
+                jobTime = this.jobTime.Clone(),
+                softwareID = this.softwareID.Clone(),
+                softVersion = this.softVersion.Clone(),
+                keyColor = this.keyColor.Clone(),
+                pixelAspectRatio = this.pixelAspectRatio.Clone(),
+                gammaValue = this.gammaValue.Clone(),
+                colorCorrectionOffset = this.colorCorrectionOffset,
+                postageStampOffset = this.postageStampOffset,
+                scanLineOffset = this.scanLineOffset,
+                attributesType = this.attributesType
+            };
 
-            if (scanLineTable != null)
-                NewExtArea.scanLineTable = (uint[])scanLineTable.Clone();
-            if (postageStampImage != null)
-                NewExtArea.postageStampImage = new TgaPostageStampImage(postageStampImage.ToBytes());
-            if (colorCorrectionTable != null)
-                NewExtArea.colorCorrectionTable = (ushort[])colorCorrectionTable.Clone();
+            if(this.scanLineTable != null)
+                NewExtArea.scanLineTable = (uint[])this.scanLineTable.Clone();
+            if(this.postageStampImage != null)
+                NewExtArea.postageStampImage = new TgaPostageStampImage(this.postageStampImage.ToBytes());
+            if(this.colorCorrectionTable != null)
+                NewExtArea.colorCorrectionTable = (ushort[])this.colorCorrectionTable.Clone();
 
-            if (otherDataInExtensionArea != null)
-                NewExtArea.otherDataInExtensionArea = (byte[])otherDataInExtensionArea.Clone();
+            if(this.otherDataInExtensionArea != null)
+                NewExtArea.otherDataInExtensionArea = (byte[])this.otherDataInExtensionArea.Clone();
 
             return NewExtArea;
         }
@@ -3932,92 +3416,80 @@ namespace TGASharpLib
         /// Make full copy of <see cref="TgaExtArea"/>.
         /// </summary>
         /// <returns>Full independent copy of <see cref="TgaExtArea"/>.</returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaExtArea) ? Equals((TgaExtArea)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaExtArea) ? this.Equals((TgaExtArea)obj) : false);
 
-        public bool Equals(TgaExtArea item)
-        {
-            return (extensionSize == item.extensionSize &&
-                authorName == item.authorName &&
-                authorComments == item.authorComments &&
-                dateTimeStamp == item.dateTimeStamp &&
-                jobNameOrID == item.jobNameOrID &&
-                jobTime == item.jobTime &&
-                softwareID == item.softwareID &&
-                softVersion == item.softVersion &&
-                keyColor == item.keyColor &&
-                pixelAspectRatio == item.pixelAspectRatio &&
-                gammaValue == item.gammaValue &&
-                colorCorrectionOffset == item.colorCorrectionOffset &&
-                postageStampOffset == item.postageStampOffset &&
-                scanLineOffset == item.scanLineOffset &&
-                attributesType == item.attributesType &&
+        public bool Equals(TgaExtArea item) => (this.extensionSize == item.extensionSize &&
+                this.authorName == item.authorName &&
+                this.authorComments == item.authorComments &&
+                this.dateTimeStamp == item.dateTimeStamp &&
+                this.jobNameOrID == item.jobNameOrID &&
+                this.jobTime == item.jobTime &&
+                this.softwareID == item.softwareID &&
+                this.softVersion == item.softVersion &&
+                this.keyColor == item.keyColor &&
+                this.pixelAspectRatio == item.pixelAspectRatio &&
+                this.gammaValue == item.gammaValue &&
+                this.colorCorrectionOffset == item.colorCorrectionOffset &&
+                this.postageStampOffset == item.postageStampOffset &&
+                this.scanLineOffset == item.scanLineOffset &&
+                this.attributesType == item.attributesType &&
 
-                BitConverterExt.IsArraysEqual(scanLineTable, item.scanLineTable) &&
-                postageStampImage == item.postageStampImage &&
-                BitConverterExt.IsArraysEqual(colorCorrectionTable, item.colorCorrectionTable) &&
+                BitConverterExt.IsArraysEqual(this.scanLineTable, item.scanLineTable) &&
+                this.postageStampImage == item.postageStampImage &&
+                BitConverterExt.IsArraysEqual(this.colorCorrectionTable, item.colorCorrectionTable) &&
 
-                BitConverterExt.IsArraysEqual(otherDataInExtensionArea, item.otherDataInExtensionArea));
-        }
+                BitConverterExt.IsArraysEqual(this.otherDataInExtensionArea, item.otherDataInExtensionArea));
 
-        public static bool operator ==(TgaExtArea item1, TgaExtArea item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaExtArea item1, TgaExtArea item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaExtArea item1, TgaExtArea item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaExtArea item1, TgaExtArea item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 27;
-                hash = (13 * hash) + extensionSize.GetHashCode();
-                hash = (13 * hash) + authorName.GetHashCode();
-                hash = (13 * hash) + authorComments.GetHashCode();
-                hash = (13 * hash) + dateTimeStamp.GetHashCode();
-                hash = (13 * hash) + jobNameOrID.GetHashCode();
-                hash = (13 * hash) + jobTime.GetHashCode();
-                hash = (13 * hash) + softwareID.GetHashCode();
-                hash = (13 * hash) + softVersion.GetHashCode();
-                hash = (13 * hash) + keyColor.GetHashCode();
-                hash = (13 * hash) + pixelAspectRatio.GetHashCode();
-                hash = (13 * hash) + gammaValue.GetHashCode();
-                hash = (13 * hash) + colorCorrectionOffset.GetHashCode();
-                hash = (13 * hash) + postageStampOffset.GetHashCode();
-                hash = (13 * hash) + scanLineOffset.GetHashCode();
-                hash = (13 * hash) + attributesType.GetHashCode();
+        public override int GetHashCode() {
+            unchecked {
+                var hash = 27;
+                hash = (13 * hash) + this.extensionSize.GetHashCode();
+                hash = (13 * hash) + this.authorName.GetHashCode();
+                hash = (13 * hash) + this.authorComments.GetHashCode();
+                hash = (13 * hash) + this.dateTimeStamp.GetHashCode();
+                hash = (13 * hash) + this.jobNameOrID.GetHashCode();
+                hash = (13 * hash) + this.jobTime.GetHashCode();
+                hash = (13 * hash) + this.softwareID.GetHashCode();
+                hash = (13 * hash) + this.softVersion.GetHashCode();
+                hash = (13 * hash) + this.keyColor.GetHashCode();
+                hash = (13 * hash) + this.pixelAspectRatio.GetHashCode();
+                hash = (13 * hash) + this.gammaValue.GetHashCode();
+                hash = (13 * hash) + this.colorCorrectionOffset.GetHashCode();
+                hash = (13 * hash) + this.postageStampOffset.GetHashCode();
+                hash = (13 * hash) + this.scanLineOffset.GetHashCode();
+                hash = (13 * hash) + this.attributesType.GetHashCode();
 
-                if (scanLineTable != null)
-                    for (int i = 0; i < scanLineTable.Length; i++)
-                        hash = (13 * hash) + scanLineTable[i].GetHashCode();
+                if(this.scanLineTable != null) {
+                    for(var i = 0; i < this.scanLineTable.Length; i++)
+                        hash = (13 * hash) + this.scanLineTable[i].GetHashCode();
+                }
 
-                if (postageStampImage != null)
-                    hash = (13 * hash) + postageStampImage.GetHashCode();
+                if(this.postageStampImage != null)
+                    hash = (13 * hash) + this.postageStampImage.GetHashCode();
 
-                if (colorCorrectionTable != null)
-                    for (int i = 0; i < colorCorrectionTable.Length; i++)
-                        hash = (13 * hash) + colorCorrectionTable[i].GetHashCode();
+                if(this.colorCorrectionTable != null) {
+                    for(var i = 0; i < this.colorCorrectionTable.Length; i++)
+                        hash = (13 * hash) + this.colorCorrectionTable[i].GetHashCode();
+                }
 
-                if (otherDataInExtensionArea != null)
-                    for (int i = 0; i < otherDataInExtensionArea.Length; i++)
-                        hash = (13 * hash) + otherDataInExtensionArea[i].GetHashCode();
+                if(this.otherDataInExtensionArea != null) {
+                    for(var i = 0; i < this.otherDataInExtensionArea.Length; i++)
+                        hash = (13 * hash) + this.otherDataInExtensionArea[i].GetHashCode();
+                }
 
                 return hash;
             }
@@ -4029,77 +3501,74 @@ namespace TGASharpLib
         /// because thea are can be not in the Extension Area of TGA file!
         /// </summary>
         /// <returns>Byte array.</returns>
-        public byte[] ToBytes()
-        {
+        public byte[] ToBytes() {
             #region Exceptions check
-            if (authorName == null)
-                authorName = new TgaString(41, true);
+            if(this.authorName == null)
+                this.authorName = new TgaString(41, true);
 
-            if (authorComments == null)
-                authorComments = new TgaComment();
+            if(this.authorComments == null)
+                this.authorComments = new TgaComment();
 
-            if (dateTimeStamp == null)
-                dateTimeStamp = new TgaDateTime(DateTime.UtcNow);
+            if(this.dateTimeStamp == null)
+                this.dateTimeStamp = new TgaDateTime(DateTime.UtcNow);
 
-            if (jobNameOrID == null)
-                jobNameOrID = new TgaString(41, true);
+            if(this.jobNameOrID == null)
+                this.jobNameOrID = new TgaString(41, true);
 
-            if (jobTime == null)
-                jobTime = new TgaTime();
+            if(this.jobTime == null)
+                this.jobTime = new TgaTime();
 
-            if (softwareID == null)
-                softwareID = new TgaString(41, true);
+            if(this.softwareID == null)
+                this.softwareID = new TgaString(41, true);
 
-            if (softVersion == null)
-                softVersion = new TgaSoftVersion();
+            if(this.softVersion == null)
+                this.softVersion = new TgaSoftVersion();
 
-            if (keyColor == null)
-                keyColor = new TgaColorKey();
+            if(this.keyColor == null)
+                this.keyColor = new TgaColorKey();
 
-            if (pixelAspectRatio == null)
-                pixelAspectRatio = new TgaFraction();
+            if(this.pixelAspectRatio == null)
+                this.pixelAspectRatio = new TgaFraction();
 
-            if (gammaValue == null)
-                gammaValue = new TgaFraction();
+            if(this.gammaValue == null)
+                this.gammaValue = new TgaFraction();
             #endregion
 
             return BitConverterExt.ToBytes(
-                extensionSize,
-                authorName.ToBytes(),
-                authorComments.ToBytes(),
-                dateTimeStamp.ToBytes(),
-                jobNameOrID.ToBytes(),
-                jobTime.ToBytes(),
-                softwareID.ToBytes(),
-                softVersion.ToBytes(),
-                keyColor.ToBytes(),
-                pixelAspectRatio.ToBytes(),
-                gammaValue.ToBytes(),
-                colorCorrectionOffset,
-                postageStampOffset,
-                scanLineOffset,
-                (byte)attributesType,
-                otherDataInExtensionArea);
+                this.extensionSize,
+                this.authorName.ToBytes(),
+                this.authorComments.ToBytes(),
+                this.dateTimeStamp.ToBytes(),
+                this.jobNameOrID.ToBytes(),
+                this.jobTime.ToBytes(),
+                this.softwareID.ToBytes(),
+                this.softVersion.ToBytes(),
+                this.keyColor.ToBytes(),
+                this.pixelAspectRatio.ToBytes(),
+                this.gammaValue.ToBytes(),
+                this.colorCorrectionOffset,
+                this.postageStampOffset,
+                this.scanLineOffset,
+                (byte)this.attributesType,
+                this.otherDataInExtensionArea);
         }
     } //Not full ToBytes()
 
     /// <summary>
     /// File Footer Area
     /// </summary>
-    public class TgaFooter : ICloneable
-    {
-        uint extAreaOffset = 0;
-        uint devDirOffset = 0;
-        TgaString signature = TgaString.XFileSignatute;
-        TgaString reservedChar = TgaString.DotSymbol;
-        TgaString zeroStrTerminator = TgaString.ZeroTerminator;
+    public class TgaFooter : ICloneable {
+        private uint extAreaOffset = 0;
+        private uint devDirOffset = 0;
+        private TgaString signature = TgaString.XFileSignatute;
+        private TgaString reservedChar = TgaString.DotSymbol;
+        private TgaString zeroStrTerminator = TgaString.ZeroTerminator;
 
         /// <summary>
         /// Make NewXFile format TGA Footer with <see cref="ExtensionAreaOffset"/> = 0 and
         /// <see cref="DeveloperDirectoryOffset"/> = 0.
         /// </summary>
-        public TgaFooter()
-        {
+        public TgaFooter() {
         }
 
         /// <summary>
@@ -4110,31 +3579,29 @@ namespace TGASharpLib
         /// <param name="Sign">New TGA format signature.</param>
         /// <param name="ReservChr">Reserved Character - ASCII character “.” (period).</param>
         /// <param name="Termin">Binary Zero Terminator, a binary zero which acts as a final terminator.</param>
-        public TgaFooter(uint ExtOff, uint DevDirOff, TgaString Sign, TgaString ReservChr, TgaString Termin)
-        {
-            extAreaOffset = ExtOff;
-            devDirOffset = DevDirOff;
-            signature = Sign;
-            reservedChar = ReservChr;
-            zeroStrTerminator = Termin;
+        public TgaFooter(uint ExtOff, uint DevDirOff, TgaString Sign, TgaString ReservChr, TgaString Termin) {
+            this.extAreaOffset = ExtOff;
+            this.devDirOffset = DevDirOff;
+            this.signature = Sign;
+            this.reservedChar = ReservChr;
+            this.zeroStrTerminator = Termin;
         }
 
         /// <summary>
         /// Make <see cref="TgaFooter"/> from bytes (if signature is right).
         /// </summary>
         /// <param name="Bytes">Bytes array (byte[26]).</param>
-        public TgaFooter(byte[] Bytes)
-        {
-            if (Bytes == null)
+        public TgaFooter(byte[] Bytes) {
+            if(Bytes == null)
                 throw new ArgumentNullException(nameof(Bytes) + " = null!");
-            if (Bytes.Length != Size)
+            if(Bytes.Length != Size)
                 throw new ArgumentOutOfRangeException(nameof(Bytes.Length) + " must be equal " + Size + "!");
 
-            extAreaOffset = BitConverter.ToUInt32(Bytes, 0);
-            devDirOffset = BitConverter.ToUInt32(Bytes, 4);
-            signature = new TgaString(BitConverterExt.GetElements(Bytes, 8, TgaString.XFileSignatuteConst.Length));
-            reservedChar = new TgaString(new byte[] { Bytes[24] });
-            zeroStrTerminator = new TgaString(new byte[] { Bytes[25] });
+            this.extAreaOffset = BitConverter.ToUInt32(Bytes, 0);
+            this.devDirOffset = BitConverter.ToUInt32(Bytes, 4);
+            this.signature = new TgaString(BitConverterExt.GetElements(Bytes, 8, TgaString.XFileSignatuteConst.Length));
+            this.reservedChar = new TgaString(new byte[] { Bytes[24] });
+            this.zeroStrTerminator = new TgaString(new byte[] { Bytes[25] });
         }
 
         /// <summary>
@@ -4144,10 +3611,9 @@ namespace TGASharpLib
         /// SEEK to this location to position to the start of the Extension Area. If the
         /// Extension Area Offset is zero, no Extension Area exists in the file.
         /// </summary>
-        public uint ExtensionAreaOffset
-        {
-            get { return extAreaOffset; }
-            set { extAreaOffset = value; }
+        public uint ExtensionAreaOffset {
+            get => this.extAreaOffset;
+            set => this.extAreaOffset = value;
         }
 
         /// <summary>
@@ -4156,10 +3622,9 @@ namespace TGASharpLib
         /// beginning of the file to the start of the Developer Directory. If the Developer
         /// Directory Offset is zero, then the Developer Area does not exist.
         /// </summary>
-        public uint DeveloperDirectoryOffset
-        {
-            get { return devDirOffset; }
-            set { devDirOffset = value; }
+        public uint DeveloperDirectoryOffset {
+            get => this.devDirOffset;
+            set => this.devDirOffset = value;
         }
 
         /// <summary>
@@ -4170,10 +3635,9 @@ namespace TGASharpLib
         /// therefore, contain the Developer Area and/or the Extension Area fields.If the
         /// signature is not found, then the file is assumed to be in the Original TGA format.
         /// </summary>
-        public TgaString Signature
-        {
-            get { return signature; }
-            set { signature = value; }
+        public TgaString Signature {
+            get => this.signature;
+            set => this.signature = value;
         }
 
         /// <summary>
@@ -4181,10 +3645,9 @@ namespace TGASharpLib
         /// Byte 24 is an ASCII character “.” (period). This character MUST BE a period or
         /// the file is not considered a proper TGA file.
         /// </summary>
-        public TgaString ReservedCharacter
-        {
-            get { return reservedChar; }
-            set { reservedChar = value; }
+        public TgaString ReservedCharacter {
+            get => this.reservedChar;
+            set => this.reservedChar = value;
         }
 
         /// <summary>
@@ -4192,112 +3655,84 @@ namespace TGASharpLib
         /// Byte 25 is a binary zero which acts as a final terminator and allows the entire TGA
         /// File Footer to be read and utilized as a “C” string.
         /// </summary>
-        public TgaString BinaryZeroStringTerminator
-        {
-            get { return zeroStrTerminator; }
-            set { zeroStrTerminator = value; }
+        public TgaString BinaryZeroStringTerminator {
+            get => this.zeroStrTerminator;
+            set => this.zeroStrTerminator = value;
         }
 
         /// <summary>
         /// Make full copy of <see cref="TgaFooter"/>.
         /// </summary>
         /// <returns></returns>
-        public TgaFooter Clone()
-        {
-            return new TgaFooter(extAreaOffset, devDirOffset, signature.Clone(),
-                reservedChar.Clone(), zeroStrTerminator.Clone());
-        }
+        public TgaFooter Clone() => new TgaFooter(this.extAreaOffset, this.devDirOffset, this.signature.Clone(),
+                this.reservedChar.Clone(), this.zeroStrTerminator.Clone());
 
         /// <summary>
         /// Make full copy of <see cref="TgaFooter"/>.
         /// </summary>
         /// <returns></returns>
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
         /// <summary>
         /// Gets TGA Footer Section size in bytes.
         /// </summary>
         public const int Size = 26;
 
-        public override bool Equals(object obj)
-        {
-            return ((obj is TgaFooter) ? Equals((TgaFooter)obj) : false);
-        }
+        public override bool Equals(object obj) => ((obj is TgaFooter) ? this.Equals((TgaFooter)obj) : false);
 
-        public bool Equals(TgaFooter item)
-        {
-            return (extAreaOffset == item.extAreaOffset &&
-                devDirOffset == item.devDirOffset &&
-                signature == item.signature &&
-                reservedChar == item.reservedChar &&
-                zeroStrTerminator == item.zeroStrTerminator);
-        }
+        public bool Equals(TgaFooter item) => (this.extAreaOffset == item.extAreaOffset &&
+                this.devDirOffset == item.devDirOffset &&
+                this.signature == item.signature &&
+                this.reservedChar == item.reservedChar &&
+                this.zeroStrTerminator == item.zeroStrTerminator);
 
-        public static bool operator ==(TgaFooter item1, TgaFooter item2)
-        {
-            if (ReferenceEquals(item1, null))
+        public static bool operator ==(TgaFooter item1, TgaFooter item2) {
+            if(ReferenceEquals(item1, null))
                 return ReferenceEquals(item2, null);
 
-            if (ReferenceEquals(item2, null))
+            if(ReferenceEquals(item2, null))
                 return ReferenceEquals(item1, null);
 
             return item1.Equals(item2);
         }
 
-        public static bool operator !=(TgaFooter item1, TgaFooter item2)
-        {
-            return !(item1 == item2);
-        }
+        public static bool operator !=(TgaFooter item1, TgaFooter item2) => !(item1 == item2);
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 17;
-                hash = hash * 23 + extAreaOffset.GetHashCode();
-                hash = hash * 23 + devDirOffset.GetHashCode();
+        public override int GetHashCode() {
+            unchecked {
+                var hash = 17;
+                hash = hash * 23 + this.extAreaOffset.GetHashCode();
+                hash = hash * 23 + this.devDirOffset.GetHashCode();
 
-                if (signature != null)
-                    hash = hash * 23 + signature.GetHashCode();
+                if(this.signature != null)
+                    hash = hash * 23 + this.signature.GetHashCode();
 
-                if (reservedChar != null)
-                    hash = hash * 23 + reservedChar.GetHashCode();
+                if(this.reservedChar != null)
+                    hash = hash * 23 + this.reservedChar.GetHashCode();
 
-                if (zeroStrTerminator != null)
-                    hash = hash * 23 + zeroStrTerminator.GetHashCode();
+                if(this.zeroStrTerminator != null)
+                    hash = hash * 23 + this.zeroStrTerminator.GetHashCode();
 
                 return hash;
             }
         }
 
-        public override string ToString()
-        {
-            return String.Format("{0}={1}, {2}={3}, FullSignature={4}",
-                nameof(ExtensionAreaOffset), extAreaOffset, nameof(DeveloperDirectoryOffset), devDirOffset,
-                (signature + reservedChar + zeroStrTerminator).ToString());
-        }
+        public override string ToString() => string.Format("{0}={1}, {2}={3}, FullSignature={4}",
+                nameof(this.ExtensionAreaOffset), this.extAreaOffset, nameof(this.DeveloperDirectoryOffset), this.devDirOffset,
+                (this.signature + this.reservedChar + this.zeroStrTerminator).ToString());
 
         /// <summary>
         /// Convert <see cref="TgaFooter"/> to byte array.
         /// </summary>
         /// <returns>Byte array with size equal <see cref="Size"/>.</returns>
-        public byte[] ToBytes()
-        {
-            return BitConverterExt.ToBytes(extAreaOffset, devDirOffset,
-                signature.ToBytes(), reservedChar.ToBytes(), zeroStrTerminator.ToBytes());
-        }
+        public byte[] ToBytes() => BitConverterExt.ToBytes(this.extAreaOffset, this.devDirOffset,
+                this.signature.ToBytes(), this.reservedChar.ToBytes(), this.zeroStrTerminator.ToBytes());
 
         /// <summary>
         /// Is footer is real footer of TGA File Format Version 2.0?
         /// Checking by <see cref="TgaString.XFileSignatute"/>.
         /// </summary>
-        public bool IsFooterCorrect
-        {
-            get { return signature == TgaString.XFileSignatute; }
-        }
+        public bool IsFooterCorrect => this.signature == TgaString.XFileSignatute;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -4305,39 +3740,36 @@ namespace TGASharpLib
     /// <summary>
     /// Simplify ByteConversion operations, like concatination of byte arrays, comparing and other.
     /// </summary>
-    public static class BitConverterExt
-    {
+    public static class BitConverterExt {
         /// <summary>
         /// Combine byte, byte[], (u)short, (u)int, (u)long values to byte[] array.
         /// </summary>
         /// <param name="obj">Array of byte, byte[], (u)short, (u)int, (u)long values.</param>
         /// <returns>Array of bytes, null when some object is null.</returns>
-        public static byte[] ToBytes(params object[] obj)
-        {
-            if (obj == null)
+        public static byte[] ToBytes(params object[] obj) {
+            if(obj == null)
                 return null;
 
-            List<byte> BytesList = new List<byte>();
+            var BytesList = new List<byte>();
 
-            for (int i = 0; i < obj.Length; i++)
-            {
-                if (obj[i] == null)
+            for(var i = 0; i < obj.Length; i++) {
+                if(obj[i] == null)
                     continue;
-                else if (obj[i] is byte)
+                else if(obj[i] is byte)
                     BytesList.Add((byte)obj[i]);
-                else if (obj[i] is byte[])
+                else if(obj[i] is byte[])
                     BytesList.AddRange((byte[])obj[i]);
-                else if (obj[i] is short)
+                else if(obj[i] is short)
                     BytesList.AddRange(BitConverter.GetBytes((short)obj[i]));
-                else if (obj[i] is ushort)
+                else if(obj[i] is ushort)
                     BytesList.AddRange(BitConverter.GetBytes((ushort)obj[i]));
-                else if (obj[i] is int)
+                else if(obj[i] is int)
                     BytesList.AddRange(BitConverter.GetBytes((int)obj[i]));
-                else if (obj[i] is uint)
+                else if(obj[i] is uint)
                     BytesList.AddRange(BitConverter.GetBytes((uint)obj[i]));
-                else if (obj[i] is long)
+                else if(obj[i] is long)
                     BytesList.AddRange(BitConverter.GetBytes((long)obj[i]));
-                else if (obj[i] is ulong)
+                else if(obj[i] is ulong)
                     BytesList.AddRange(BitConverter.GetBytes((ulong)obj[i]));
             }
             return BytesList.ToArray();
@@ -4352,18 +3784,17 @@ namespace TGASharpLib
         /// <see cref="SrcArray"/> at which copying begins.</param>
         /// <param name="Count">A 32-bit integer that represents the number of elements to copy.</param>
         /// <returns></returns>
-        public static T[] GetElements<T>(T[] SrcArray, int Offset, int Count)
-        {
-            if (SrcArray == null)
+        public static T[] GetElements<T>(T[] SrcArray, int Offset, int Count) {
+            if(SrcArray == null)
                 throw new ArgumentNullException(nameof(SrcArray) + " is null!");
 
-            if (Offset >= SrcArray.Length || Offset < 0)
+            if(Offset >= SrcArray.Length || Offset < 0)
                 throw new ArgumentOutOfRangeException(nameof(Offset) + " has wrong value!");
 
-            if (Count <= 0 || Offset + Count > SrcArray.Length)
+            if(Count <= 0 || Offset + Count > SrcArray.Length)
                 throw new ArgumentOutOfRangeException(nameof(Count) + " has wrong value!");
 
-            T[] Buff = new T[Count];
+            var Buff = new T[Count];
             Array.Copy(SrcArray, Offset, Buff, 0, Buff.Length);
             return Buff;
         }
@@ -4375,21 +3806,22 @@ namespace TGASharpLib
         /// <param name="item1">First Array.</param>
         /// <param name="item2">Second Array.</param>
         /// <returns>True, if Arrays are equal.</returns>
-        public static bool IsArraysEqual<T>(T[] item1, T[] item2)
-        {
-            if (ReferenceEquals(item1, item2))
+        public static bool IsArraysEqual<T>(T[] item1, T[] item2) {
+            if(ReferenceEquals(item1, item2))
                 return true;
 
-            if (item1 == null || item2 == null)
+            if(item1 == null || item2 == null)
                 return false;
 
-            if (item1.Length != item2.Length)
+            if(item1.Length != item2.Length)
                 return false;
 
-            EqualityComparer<T> comparer = EqualityComparer<T>.Default;
-            for (int i = 0; i < item1.Length; i++)
-                if (!comparer.Equals(item1[i], item2[i]))
+            var comparer = EqualityComparer<T>.Default;
+            for(var i = 0; i < item1.Length; i++) {
+                if(!comparer.Equals(item1[i], item2[i]))
                     return false;
+            }
+
             return true;
         }
 
@@ -4400,20 +3832,21 @@ namespace TGASharpLib
         /// <param name="item1">First List.</param>
         /// <param name="item2">Second List.</param>
         /// <returns>True, if Lists are equal.</returns>
-        public static bool IsListsEqual<T>(List<T> item1, List<T> item2)
-        {
-            if (ReferenceEquals(item1, item2))
+        public static bool IsListsEqual<T>(List<T> item1, List<T> item2) {
+            if(ReferenceEquals(item1, item2))
                 return true;
 
-            if (item1 == null || item2 == null)
+            if(item1 == null || item2 == null)
                 return false;
 
-            if (item1.Count != item2.Count)
+            if(item1.Count != item2.Count)
                 return false;
 
-            for (int i = 0; i < item1.Count; i++)
-                if (!item1[i].Equals(item2[i]))
+            for(var i = 0; i < item1.Count; i++) {
+                if(!item1[i].Equals(item2[i]))
                     return false;
+            }
+
             return true;
         }
 
@@ -4426,34 +3859,33 @@ namespace TGASharpLib
         /// <param name="Offset2">Second offset.</param>
         /// <param name="Count">Elements count which must be compared.</param>
         /// <returns></returns>
-        public static bool IsElementsEqual<T>(T[] Arr, int Offset1, int Offset2, int Count)
-        {
-            if (Arr == null)
+        public static bool IsElementsEqual<T>(T[] Arr, int Offset1, int Offset2, int Count) {
+            if(Arr == null)
                 throw new ArgumentNullException(nameof(Arr) + " is null!");
 
-            if (Offset1 >= Arr.Length || Offset1 < 0)
+            if(Offset1 >= Arr.Length || Offset1 < 0)
                 throw new ArgumentOutOfRangeException(nameof(Offset1) + " has wrong value!");
 
-            if (Offset2 >= Arr.Length || Offset2 < 0)
+            if(Offset2 >= Arr.Length || Offset2 < 0)
                 throw new ArgumentOutOfRangeException(nameof(Offset2) + " has wrong value!");
 
-            if (Count <= 0 || Offset1 + Count > Arr.Length || Offset2 + Count > Arr.Length)
+            if(Count <= 0 || Offset1 + Count > Arr.Length || Offset2 + Count > Arr.Length)
                 throw new ArgumentOutOfRangeException(nameof(Count) + " has wrong value!");
 
-            if (Offset1 == Offset2)
+            if(Offset1 == Offset2)
                 return true;
 
-            for (int i = 0; i < Count; i++)
-                if (!Arr[Offset1 + i].Equals(Arr[Offset2 + i]))
+            for(var i = 0; i < Count; i++) {
+                if(!Arr[Offset1 + i].Equals(Arr[Offset2 + i]))
                     return false;
+            }
 
             return true;
         }
     }
     #endregion
 
-    public class TGA : ICloneable
-    {
+    public class TGA : ICloneable {
         public TgaHeader Header = new TgaHeader();
         public TgaImgOrColMap ImageOrColorMapArea = new TgaImgOrColMap();
         public TgaDevArea DevArea = null;
@@ -4464,8 +3896,7 @@ namespace TGASharpLib
         /// <summary>
         /// Create new empty <see cref="TGA"/> istance.
         /// </summary>
-        public TGA()
-        {
+        public TGA() {
         }
 
         /// <summary>
@@ -4479,40 +3910,35 @@ namespace TGASharpLib
         /// <param name="AttrBits">Set numder of Attrbute bits (Alpha channel bits), default: 0, 1, 8.</param>
         /// <param name="NewFormat">Use new 2.0 TGA XFile format?</param>
         public TGA(ushort Width, ushort Height, TgaPixelDepth PixDepth = TgaPixelDepth.Bpp24,
-            TgaImageType ImgType = TgaImageType.Uncompressed_TrueColor, byte AttrBits = 0, bool NewFormat = true)
-        {
-            if (Width <= 0 || Height <= 0 || PixDepth == TgaPixelDepth.Other)
-            {
+            TgaImageType ImgType = TgaImageType.Uncompressed_TrueColor, byte AttrBits = 0, bool NewFormat = true) {
+            if(Width <= 0 || Height <= 0 || PixDepth == TgaPixelDepth.Other) {
                 Width = Height = 0;
                 PixDepth = TgaPixelDepth.Other;
                 ImgType = TgaImageType.NoImageData;
                 AttrBits = 0;
-            }
-            else
-            {
-                int BytesPerPixel = (int)Math.Ceiling((double)PixDepth / 8.0);
-                ImageOrColorMapArea.ImageData = new byte[Width * Height * BytesPerPixel];
+            } else {
+                var BytesPerPixel = (int)Math.Ceiling((double)PixDepth / 8.0);
+                this.ImageOrColorMapArea.ImageData = new byte[Width * Height * BytesPerPixel];
 
-                if (ImgType == TgaImageType.Uncompressed_ColorMapped || ImgType == TgaImageType.RLE_ColorMapped)
-                {
-                    Header.ColorMapType = TgaColorMapType.ColorMap;
-                    Header.ColorMapSpec.FirstEntryIndex = 0;
-                    Header.ColorMapSpec.ColorMapEntrySize = (TgaColorMapEntrySize)Math.Ceiling((double)PixDepth / 8);
+                if(ImgType == TgaImageType.Uncompressed_ColorMapped || ImgType == TgaImageType.RLE_ColorMapped) {
+                    this.Header.ColorMapType = TgaColorMapType.ColorMap;
+                    this.Header.ColorMapSpec.FirstEntryIndex = 0;
+                    this.Header.ColorMapSpec.ColorMapEntrySize = (TgaColorMapEntrySize)Math.Ceiling((double)PixDepth / 8);
                 }
             }
 
-            Header.ImageType = ImgType;
-            Header.ImageSpec.ImageWidth = Width;
-            Header.ImageSpec.ImageHeight = Height;
-            Header.ImageSpec.PixelDepth = PixDepth;
-            Header.ImageSpec.ImageDescriptor.AlphaChannelBits = AttrBits;
+            this.Header.ImageType = ImgType;
+            this.Header.ImageSpec.ImageWidth = Width;
+            this.Header.ImageSpec.ImageHeight = Height;
+            this.Header.ImageSpec.PixelDepth = PixDepth;
+            this.Header.ImageSpec.ImageDescriptor.AlphaChannelBits = AttrBits;
 
-            if (NewFormat)
-            {
-                Footer = new TgaFooter();
-                ExtArea = new TgaExtArea();
-                ExtArea.DateTimeStamp = new TgaDateTime(DateTime.UtcNow);
-                ExtArea.AttributesType = (AttrBits > 0 ? TgaAttrType.UsefulAlpha : TgaAttrType.NoAlpha);
+            if(NewFormat) {
+                this.Footer = new TgaFooter();
+                this.ExtArea = new TgaExtArea {
+                    DateTimeStamp = new TgaDateTime(DateTime.UtcNow),
+                    AttributesType = (AttrBits > 0 ? TgaAttrType.UsefulAlpha : TgaAttrType.NoAlpha)
+                };
             }
         }
 
@@ -4521,13 +3947,12 @@ namespace TGASharpLib
         /// Equal to <see cref="TGA.Clone()"/> function.
         /// </summary>
         /// <param name="tga">Original <see cref="TGA"/> instance.</param>
-        public TGA(TGA tga)
-        {
-            Header = tga.Header.Clone();
-            ImageOrColorMapArea = tga.ImageOrColorMapArea.Clone();
-            DevArea = tga.DevArea.Clone();
-            ExtArea = tga.ExtArea.Clone();
-            Footer = tga.Footer.Clone();
+        public TGA(TGA tga) {
+            this.Header = tga.Header.Clone();
+            this.ImageOrColorMapArea = tga.ImageOrColorMapArea.Clone();
+            this.DevArea = tga.DevArea.Clone();
+            this.ExtArea = tga.ExtArea.Clone();
+            this.Footer = tga.Footer.Clone();
         }
 
         /// <summary>
@@ -4535,19 +3960,13 @@ namespace TGASharpLib
         /// </summary>
         /// <param name="filename">Full path to TGA file.</param>
         /// <returns>Loaded <see cref="TGA"/> file.</returns>
-        public TGA(string filename)
-        {
-            LoadFunc(filename);
-        }
+        public TGA(string filename) => this.LoadFunc(filename);
 
         /// <summary>
         /// Make <see cref="TGA"/> from bytes array.
         /// </summary>
         /// <param name="bytes">Bytes array (same like TGA File).</param>
-        public TGA(byte[] bytes)
-        {
-            LoadFunc(bytes);
-        }
+        public TGA(byte[] bytes) => this.LoadFunc(bytes);
 
         /// <summary>
         /// Make <see cref="TGA"/> from <see cref="Stream"/>.
@@ -4555,10 +3974,7 @@ namespace TGASharpLib
         /// </summary>
         /// <param name="stream">Some stream. You can use a lot of Stream types, but Stream must support:
         /// <see cref="Stream.CanSeek"/> and <see cref="Stream.CanRead"/>.</param>
-        public TGA(Stream stream)
-        {
-            LoadFunc(stream);
-        }
+        public TGA(Stream stream) => this.LoadFunc(stream);
 
         /// <summary>
         /// Make <see cref="TGA"/> from <see cref="Bitmap"/>.
@@ -4567,29 +3983,20 @@ namespace TGASharpLib
         /// <param name="UseRLE">Use RLE Compression?</param>
         /// <param name="NewFormat">Use new 2.0 TGA XFile format?</param>
         /// <param name="ColorMap2BytesEntry">Is Color Map Entry size equal 15 or 16 Bpp, else - 24 or 32.</param>
-        public TGA(Bitmap bmp, bool UseRLE = false, bool NewFormat = true, bool ColorMap2BytesEntry = false)
-        {
-            LoadFunc(bmp, UseRLE, NewFormat, ColorMap2BytesEntry);
-        }
+        public TGA(Bitmap bmp, bool UseRLE = false, bool NewFormat = true, bool ColorMap2BytesEntry = false) => this.LoadFunc(bmp, UseRLE, NewFormat, ColorMap2BytesEntry);
 
         /// <summary>
         /// Load <see cref="TGA"/> from file.
         /// </summary>
         /// <param name="filename">Full path to TGA file.</param>
         /// <returns>Loaded <see cref="TGA"/> file.</returns>
-        public static TGA FromFile(string filename)
-        {
-            return new TGA(filename);
-        }
+        public static TGA FromFile(string filename) => new TGA(filename);
 
         /// <summary>
         /// Make <see cref="TGA"/> from bytes array.
         /// </summary>
         /// <param name="bytes">Bytes array (same like TGA File).</param>
-        public static TGA FromBytes(byte[] bytes)
-        {
-            return new TGA(bytes);
-        }
+        public static TGA FromBytes(byte[] bytes) => new TGA(bytes);
 
         /// <summary>
         /// Make <see cref="TGA"/> from <see cref="Stream"/>.
@@ -4597,10 +4004,7 @@ namespace TGASharpLib
         /// </summary>
         /// <param name="stream">Some stream. You can use a lot of Stream types, but Stream must support:
         /// <see cref="Stream.CanSeek"/> and <see cref="Stream.CanRead"/>.</param>
-        public static TGA FromStream(Stream stream)
-        {
-            return new TGA(stream);
-        }
+        public static TGA FromStream(Stream stream) => new TGA(stream);
 
         /// <summary>
         /// Make <see cref="TGA"/> from <see cref="Bitmap"/>.
@@ -4610,34 +4014,25 @@ namespace TGASharpLib
         /// <param name="NewFormat">Use new 2.0 TGA XFile format?</param>
         /// <param name="ColorMap2BytesEntry">Is Color Map Entry size equal 15 or 16 Bpp, else - 24 or 32.</param>
         public static TGA FromBitmap(Bitmap bmp, bool UseRLE = false,
-            bool NewFormat = true, bool ColorMap2BytesEntry = false)
-        {
-            return new TGA(bmp, UseRLE, NewFormat, ColorMap2BytesEntry);
-        }
+            bool NewFormat = true, bool ColorMap2BytesEntry = false) => new TGA(bmp, UseRLE, NewFormat, ColorMap2BytesEntry);
 
         /// <summary>
         /// Save <see cref="TGA"/> to file.
         /// </summary>
         /// <param name="filename">Full path to file.</param>
         /// <returns>Return "true", if all done or "false", if failed.</returns>
-        public bool Save(string filename)
-        {
-            try
-            {
-                bool Result = false;
-                using (FileStream Fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    using (MemoryStream Ms = new MemoryStream())
-                    {
-                        Result = SaveFunc(Ms);
+        public bool Save(string filename) {
+            try {
+                var Result = false;
+                using(var Fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None)) {
+                    using(var Ms = new MemoryStream()) {
+                        Result = this.SaveFunc(Ms);
                         Ms.WriteTo(Fs);
                         Fs.Flush();
                     }
                 }
                 return Result;
-            }
-            catch
-            {
+            } catch {
                 return false;
             }
         }
@@ -4647,40 +4042,33 @@ namespace TGASharpLib
         /// </summary>
         /// <param name="stream">Some stream, it must support: <see cref="Stream.CanWrite"/>.</param>
         /// <returns>Return "true", if all done or "false", if failed.</returns>
-        public bool Save(Stream stream)
-        {
-            return SaveFunc(stream);
-        }
+        public bool Save(Stream stream) => this.SaveFunc(stream);
         #endregion
 
         /// <summary>
         /// Gets or Sets Image Width (see <see cref="Header.ImageSpec.ImageWidth"/>).
         /// </summary>
-        public ushort Width
-        {
-            get { return Header.ImageSpec.ImageWidth; }
-            set { Header.ImageSpec.ImageWidth = value; }
+        public ushort Width {
+            get => this.Header.ImageSpec.ImageWidth;
+            set => this.Header.ImageSpec.ImageWidth = value;
         }
 
         /// <summary>
         /// Gets or Sets Image Height (see <see cref="Header.ImageSpec.ImageHeight"/>).
         /// </summary>
-        public ushort Height
-        {
-            get { return Header.ImageSpec.ImageHeight; }
-            set { Header.ImageSpec.ImageHeight = value; }
+        public ushort Height {
+            get => this.Header.ImageSpec.ImageHeight;
+            set => this.Header.ImageSpec.ImageHeight = value;
         }
 
         /// <summary>
         /// Gets or Sets <see cref="TGA"/> image Size.
         /// </summary>
-        public Size Size
-        {
-            get { return new Size(Header.ImageSpec.ImageWidth, Header.ImageSpec.ImageHeight); }
-            set
-            {
-                Header.ImageSpec.ImageWidth = (ushort)value.Width;
-                Header.ImageSpec.ImageHeight = (ushort)value.Height;
+        public Size Size {
+            get => new Size(this.Header.ImageSpec.ImageWidth, this.Header.ImageSpec.ImageHeight);
+            set {
+                this.Header.ImageSpec.ImageWidth = (ushort)value.Width;
+                this.Header.ImageSpec.ImageHeight = (ushort)value.Height;
             }
         }
 
@@ -4688,120 +4076,110 @@ namespace TGASharpLib
         /// Make full independed copy of <see cref="TGA"/>.
         /// </summary>
         /// <returns>Full independed copy of <see cref="TGA"/>.</returns>
-        public TGA Clone()
-        {
-            return new TGA(this);
-        }
+        public TGA Clone() => new TGA(this);
 
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => this.Clone();
 
         /// <summary>
         /// Flip <see cref="TGA"/> directions, for more info see <see cref="TgaImgOrigin"/>.
         /// </summary>
         /// <param name="Horizontal">Flip horizontal.</param>
         /// <param name="Vertical">Flip vertical.</param>
-        public void Flip(bool Horizontal = false, bool Vertical = false)
-        {
-            int NewOrigin = (int)Header.ImageSpec.ImageDescriptor.ImageOrigin;
+        public void Flip(bool Horizontal = false, bool Vertical = false) {
+            var NewOrigin = (int)this.Header.ImageSpec.ImageDescriptor.ImageOrigin;
             NewOrigin = NewOrigin ^ ((Vertical ? 0x20 : 0) | (Horizontal ? 0x10 : 0));
-            Header.ImageSpec.ImageDescriptor.ImageOrigin = (TgaImgOrigin)NewOrigin;
+            this.Header.ImageSpec.ImageDescriptor.ImageOrigin = (TgaImgOrigin)NewOrigin;
         }
 
         /// <summary>
         /// Get information from TGA image.
         /// </summary>
         /// <returns>MultiLine string with info fields (one per line).</returns>
-        public string GetInfo()
-        {
-            StringBuilder SB = new StringBuilder();
+        public string GetInfo() {
+            var SB = new StringBuilder();
 
             SB.AppendLine("Header:");
-            SB.AppendLine("\tID Length = " + Header.IDLength);
-            SB.AppendLine("\tImage Type = " + Header.ImageType);
+            SB.AppendLine("\tID Length = " + this.Header.IDLength);
+            SB.AppendLine("\tImage Type = " + this.Header.ImageType);
             SB.AppendLine("\tHeader -> ImageSpec:");
-            SB.AppendLine("\t\tImage Width = " + Header.ImageSpec.ImageWidth);
-            SB.AppendLine("\t\tImage Height = " + Header.ImageSpec.ImageHeight);
-            SB.AppendLine("\t\tPixel Depth = " + Header.ImageSpec.PixelDepth);
-            SB.AppendLine("\t\tImage Descriptor (AsByte) = " + Header.ImageSpec.ImageDescriptor.ToByte());
-            SB.AppendLine("\t\tImage Descriptor -> AttributeBits = " + Header.ImageSpec.ImageDescriptor.AlphaChannelBits);
-            SB.AppendLine("\t\tImage Descriptor -> ImageOrigin = " + Header.ImageSpec.ImageDescriptor.ImageOrigin);
-            SB.AppendLine("\t\tX_Origin = " + Header.ImageSpec.X_Origin);
-            SB.AppendLine("\t\tY_Origin = " + Header.ImageSpec.Y_Origin);
-            SB.AppendLine("\tColorMap Type = " + Header.ColorMapType);
+            SB.AppendLine("\t\tImage Width = " + this.Header.ImageSpec.ImageWidth);
+            SB.AppendLine("\t\tImage Height = " + this.Header.ImageSpec.ImageHeight);
+            SB.AppendLine("\t\tPixel Depth = " + this.Header.ImageSpec.PixelDepth);
+            SB.AppendLine("\t\tImage Descriptor (AsByte) = " + this.Header.ImageSpec.ImageDescriptor.ToByte());
+            SB.AppendLine("\t\tImage Descriptor -> AttributeBits = " + this.Header.ImageSpec.ImageDescriptor.AlphaChannelBits);
+            SB.AppendLine("\t\tImage Descriptor -> ImageOrigin = " + this.Header.ImageSpec.ImageDescriptor.ImageOrigin);
+            SB.AppendLine("\t\tX_Origin = " + this.Header.ImageSpec.X_Origin);
+            SB.AppendLine("\t\tY_Origin = " + this.Header.ImageSpec.Y_Origin);
+            SB.AppendLine("\tColorMap Type = " + this.Header.ColorMapType);
             SB.AppendLine("\tHeader -> ColorMapSpec:");
-            SB.AppendLine("\t\tColorMap Entry Size = " + Header.ColorMapSpec.ColorMapEntrySize);
-            SB.AppendLine("\t\tColorMap Length = " + Header.ColorMapSpec.ColorMapLength);
-            SB.AppendLine("\t\tFirstEntry Index = " + Header.ColorMapSpec.FirstEntryIndex);
+            SB.AppendLine("\t\tColorMap Entry Size = " + this.Header.ColorMapSpec.ColorMapEntrySize);
+            SB.AppendLine("\t\tColorMap Length = " + this.Header.ColorMapSpec.ColorMapLength);
+            SB.AppendLine("\t\tFirstEntry Index = " + this.Header.ColorMapSpec.FirstEntryIndex);
 
             SB.AppendLine("\nImage / Color Map Area:");
-            if (Header.IDLength > 0 && ImageOrColorMapArea.ImageID != null)
-                SB.AppendLine("\tImage ID = \"" + ImageOrColorMapArea.ImageID.GetString() + "\"");
+            if(this.Header.IDLength > 0 && this.ImageOrColorMapArea.ImageID != null)
+                SB.AppendLine("\tImage ID = \"" + this.ImageOrColorMapArea.ImageID.GetString() + "\"");
             else
                 SB.AppendLine("\tImage ID = null");
 
-            if (ImageOrColorMapArea.ImageData != null)
-                SB.AppendLine("\tImage Data Length = " + ImageOrColorMapArea.ImageData.Length);
+            if(this.ImageOrColorMapArea.ImageData != null)
+                SB.AppendLine("\tImage Data Length = " + this.ImageOrColorMapArea.ImageData.Length);
             else
                 SB.AppendLine("\tImage Data = null");
 
-            if (ImageOrColorMapArea.ColorMapData != null)
-                SB.AppendLine("\tColorMap Data Length = " + ImageOrColorMapArea.ColorMapData.Length);
+            if(this.ImageOrColorMapArea.ColorMapData != null)
+                SB.AppendLine("\tColorMap Data Length = " + this.ImageOrColorMapArea.ColorMapData.Length);
             else
                 SB.AppendLine("\tColorMap Data = null");
 
             SB.AppendLine("\nDevelopers Area:");
-            if (DevArea != null)
-                SB.AppendLine("\tCount = " + DevArea.Count);
+            if(this.DevArea != null)
+                SB.AppendLine("\tCount = " + this.DevArea.Count);
             else
                 SB.AppendLine("\tDevArea = null");
 
             SB.AppendLine("\nExtension Area:");
-            if (ExtArea != null)
-            {
-                SB.AppendLine("\tExtension Size = " + ExtArea.ExtensionSize);
-                SB.AppendLine("\tAuthor Name = \"" + ExtArea.AuthorName.GetString() + "\"");
-                SB.AppendLine("\tAuthor Comments = \"" + ExtArea.AuthorComments.GetString() + "\"");
-                SB.AppendLine("\tDate / Time Stamp = " + ExtArea.DateTimeStamp);
-                SB.AppendLine("\tJob Name / ID = \"" + ExtArea.JobNameOrID.GetString() + "\"");
-                SB.AppendLine("\tJob Time = " + ExtArea.JobTime);
-                SB.AppendLine("\tSoftware ID = \"" + ExtArea.SoftwareID.GetString() + "\"");
-                SB.AppendLine("\tSoftware Version = \"" + ExtArea.SoftVersion + "\"");
-                SB.AppendLine("\tKey Color = " + ExtArea.KeyColor);
-                SB.AppendLine("\tPixel Aspect Ratio = " + ExtArea.PixelAspectRatio);
-                SB.AppendLine("\tGamma Value = " + ExtArea.GammaValue);
-                SB.AppendLine("\tColor Correction Table Offset = " + ExtArea.ColorCorrectionTableOffset);
-                SB.AppendLine("\tPostage Stamp Offset = " + ExtArea.PostageStampOffset);
-                SB.AppendLine("\tScan Line Offset = " + ExtArea.ScanLineOffset);
-                SB.AppendLine("\tAttributes Type = " + ExtArea.AttributesType);
+            if(this.ExtArea != null) {
+                SB.AppendLine("\tExtension Size = " + this.ExtArea.ExtensionSize);
+                SB.AppendLine("\tAuthor Name = \"" + this.ExtArea.AuthorName.GetString() + "\"");
+                SB.AppendLine("\tAuthor Comments = \"" + this.ExtArea.AuthorComments.GetString() + "\"");
+                SB.AppendLine("\tDate / Time Stamp = " + this.ExtArea.DateTimeStamp);
+                SB.AppendLine("\tJob Name / ID = \"" + this.ExtArea.JobNameOrID.GetString() + "\"");
+                SB.AppendLine("\tJob Time = " + this.ExtArea.JobTime);
+                SB.AppendLine("\tSoftware ID = \"" + this.ExtArea.SoftwareID.GetString() + "\"");
+                SB.AppendLine("\tSoftware Version = \"" + this.ExtArea.SoftVersion + "\"");
+                SB.AppendLine("\tKey Color = " + this.ExtArea.KeyColor);
+                SB.AppendLine("\tPixel Aspect Ratio = " + this.ExtArea.PixelAspectRatio);
+                SB.AppendLine("\tGamma Value = " + this.ExtArea.GammaValue);
+                SB.AppendLine("\tColor Correction Table Offset = " + this.ExtArea.ColorCorrectionTableOffset);
+                SB.AppendLine("\tPostage Stamp Offset = " + this.ExtArea.PostageStampOffset);
+                SB.AppendLine("\tScan Line Offset = " + this.ExtArea.ScanLineOffset);
+                SB.AppendLine("\tAttributes Type = " + this.ExtArea.AttributesType);
 
-                if (ExtArea.ScanLineTable != null)
-                    SB.AppendLine("\tScan Line Table = " + ExtArea.ScanLineTable.Length);
+                if(this.ExtArea.ScanLineTable != null)
+                    SB.AppendLine("\tScan Line Table = " + this.ExtArea.ScanLineTable.Length);
                 else
                     SB.AppendLine("\tScan Line Table = null");
 
-                if (ExtArea.PostageStampImage != null)
-                    SB.AppendLine("\tPostage Stamp Image: " + ExtArea.PostageStampImage.ToString());
+                if(this.ExtArea.PostageStampImage != null)
+                    SB.AppendLine("\tPostage Stamp Image: " + this.ExtArea.PostageStampImage.ToString());
                 else
                     SB.AppendLine("\tPostage Stamp Image = null");
 
-                SB.AppendLine("\tColor Correction Table = " + (ExtArea.ColorCorrectionTable != null));
-            }
-            else
+                SB.AppendLine("\tColor Correction Table = " + (this.ExtArea.ColorCorrectionTable != null));
+            } else {
                 SB.AppendLine("\tExtArea = null");
+            }
 
             SB.AppendLine("\nFooter:");
-            if (Footer != null)
-            {
-                SB.AppendLine("\tExtension Area Offset = " + Footer.ExtensionAreaOffset);
-                SB.AppendLine("\tDeveloper Directory Offset = " + Footer.DeveloperDirectoryOffset);
-                SB.AppendLine("\tSignature (Full) = \"" + Footer.Signature.ToString() +
-                    Footer.ReservedCharacter.ToString() + Footer.BinaryZeroStringTerminator.ToString() + "\"");
-            }
-            else
+            if(this.Footer != null) {
+                SB.AppendLine("\tExtension Area Offset = " + this.Footer.ExtensionAreaOffset);
+                SB.AppendLine("\tDeveloper Directory Offset = " + this.Footer.DeveloperDirectoryOffset);
+                SB.AppendLine("\tSignature (Full) = \"" + this.Footer.Signature.ToString() +
+                    this.Footer.ReservedCharacter.ToString() + this.Footer.BinaryZeroStringTerminator.ToString() + "\"");
+            } else {
                 SB.AppendLine("\tFooter = null");
+            }
 
             return SB.ToString();
         }
@@ -4810,18 +4188,15 @@ namespace TGASharpLib
         /// Check and update all fields with data length and offsets.
         /// </summary>
         /// <returns>Return "true", if all OK or "false", if checking failed.</returns>
-        public bool CheckAndUpdateOffsets(out string ErrorStr)
-        {
-            ErrorStr = String.Empty;
+        public bool CheckAndUpdateOffsets(out string ErrorStr) {
+            ErrorStr = string.Empty;
 
-            if (Header == null)
-            {
+            if(this.Header == null) {
                 ErrorStr = "Header = null";
                 return false;
             }
 
-            if (ImageOrColorMapArea == null)
-            {
+            if(this.ImageOrColorMapArea == null) {
                 ErrorStr = "ImageOrColorMapArea = null";
                 return false;
             }
@@ -4829,225 +4204,199 @@ namespace TGASharpLib
             uint Offset = TgaHeader.Size; // Virtual Offset
 
             #region Header
-            if (ImageOrColorMapArea.ImageID != null)
-            {
-                int StrMaxLen = 255;
-                if (ImageOrColorMapArea.ImageID.UseEndingChar)
+            if(this.ImageOrColorMapArea.ImageID != null) {
+                var StrMaxLen = 255;
+                if(this.ImageOrColorMapArea.ImageID.UseEndingChar)
                     StrMaxLen--;
 
-                Header.IDLength = (byte)Math.Min(ImageOrColorMapArea.ImageID.OriginalString.Length, StrMaxLen);
-                ImageOrColorMapArea.ImageID.Length = Header.IDLength;
-                Offset += Header.IDLength;
+                this.Header.IDLength = (byte)Math.Min(this.ImageOrColorMapArea.ImageID.OriginalString.Length, StrMaxLen);
+                this.ImageOrColorMapArea.ImageID.Length = this.Header.IDLength;
+                Offset += this.Header.IDLength;
+            } else {
+                this.Header.IDLength = 0;
             }
-            else
-                Header.IDLength = 0;
             #endregion
 
             #region ColorMap
-            if (Header.ColorMapType != TgaColorMapType.NoColorMap)
-            {
-                if (Header.ColorMapSpec == null)
-                {
+            if(this.Header.ColorMapType != TgaColorMapType.NoColorMap) {
+                if(this.Header.ColorMapSpec == null) {
                     ErrorStr = "Header.ColorMapSpec = null";
                     return false;
                 }
 
-                if (Header.ColorMapSpec.ColorMapLength == 0)
-                {
+                if(this.Header.ColorMapSpec.ColorMapLength == 0) {
                     ErrorStr = "Header.ColorMapSpec.ColorMapLength = 0";
                     return false;
                 }
 
-                if (ImageOrColorMapArea.ColorMapData == null)
-                {
+                if(this.ImageOrColorMapArea.ColorMapData == null) {
                     ErrorStr = "ImageOrColorMapArea.ColorMapData = null";
                     return false;
                 }
 
-                int CmBytesPerPixel = (int)Math.Ceiling((double)Header.ColorMapSpec.ColorMapEntrySize / 8.0);
-                int LenBytes = Header.ColorMapSpec.ColorMapLength * CmBytesPerPixel;
+                var CmBytesPerPixel = (int)Math.Ceiling((double)this.Header.ColorMapSpec.ColorMapEntrySize / 8.0);
+                var LenBytes = this.Header.ColorMapSpec.ColorMapLength * CmBytesPerPixel;
 
-                if (LenBytes != ImageOrColorMapArea.ColorMapData.Length)
-                {
+                if(LenBytes != this.ImageOrColorMapArea.ColorMapData.Length) {
                     ErrorStr = "ImageOrColorMapArea.ColorMapData.Length has wrong size!";
                     return false;
                 }
 
-                Offset += (uint)ImageOrColorMapArea.ColorMapData.Length;
+                Offset += (uint)this.ImageOrColorMapArea.ColorMapData.Length;
             }
             #endregion
 
             #region Image Data
-            int BytesPerPixel = 0;
-            if (Header.ImageType != TgaImageType.NoImageData)
-            {
-                if (Header.ImageSpec == null)
-                {
+            var BytesPerPixel = 0;
+            if(this.Header.ImageType != TgaImageType.NoImageData) {
+                if(this.Header.ImageSpec == null) {
                     ErrorStr = "Header.ImageSpec = null";
                     return false;
                 }
 
-                if (Header.ImageSpec.ImageWidth == 0 || Header.ImageSpec.ImageHeight == 0)
-                {
+                if(this.Header.ImageSpec.ImageWidth == 0 || this.Header.ImageSpec.ImageHeight == 0) {
                     ErrorStr = "Header.ImageSpec.ImageWidth = 0 or Header.ImageSpec.ImageHeight = 0";
                     return false;
                 }
 
-                if (ImageOrColorMapArea.ImageData == null)
-                {
+                if(this.ImageOrColorMapArea.ImageData == null) {
                     ErrorStr = "ImageOrColorMapArea.ImageData = null";
                     return false;
                 }
 
-                BytesPerPixel = (int)Math.Ceiling((double)Header.ImageSpec.PixelDepth / 8.0);
-                if (Width * Height * BytesPerPixel != ImageOrColorMapArea.ImageData.Length)
-                {
+                BytesPerPixel = (int)Math.Ceiling((double)this.Header.ImageSpec.PixelDepth / 8.0);
+                if(this.Width * this.Height * BytesPerPixel != this.ImageOrColorMapArea.ImageData.Length) {
                     ErrorStr = "ImageOrColorMapArea.ImageData.Length has wrong size!";
                     return false;
                 }
 
-                if (Header.ImageType >= TgaImageType.RLE_ColorMapped &&
-                    Header.ImageType <= TgaImageType.RLE_BlackWhite)
-                {
-                    byte[] RLE = RLE_Encode(ImageOrColorMapArea.ImageData, Width, Height);
-                    if (RLE == null)
-                    {
+                if(this.Header.ImageType >= TgaImageType.RLE_ColorMapped &&
+                    this.Header.ImageType <= TgaImageType.RLE_BlackWhite) {
+                    var RLE = this.RLE_Encode(this.ImageOrColorMapArea.ImageData, this.Width, this.Height);
+                    if(RLE == null) {
                         ErrorStr = "RLE Compressing error! Check Image Data size.";
                         return false;
                     }
 
                     Offset += (uint)RLE.Length;
                     RLE = null;
+                } else {
+                    Offset += (uint)this.ImageOrColorMapArea.ImageData.Length;
                 }
-                else
-                    Offset += (uint)ImageOrColorMapArea.ImageData.Length;
             }
             #endregion
 
             #region Footer, DevArea, ExtArea
-            if (Footer != null)
-            {
+            if(this.Footer != null) {
                 #region DevArea
-                if (DevArea != null)
-                {
-                    int DevAreaCount = DevArea.Count;
-                    for (int i = 0; i < DevAreaCount; i++)
-                        if (DevArea[i] == null || DevArea[i].FieldSize <= 0) //Del Empty Entries
+                if(this.DevArea != null) {
+                    var DevAreaCount = this.DevArea.Count;
+                    for(var i = 0; i < DevAreaCount; i++) {
+                        if(this.DevArea[i] == null || this.DevArea[i].FieldSize <= 0) //Del Empty Entries
                         {
-                            DevArea.Entries.RemoveAt(i);
+                            this.DevArea.Entries.RemoveAt(i);
                             DevAreaCount--;
                             i--;
                         }
+                    }
 
-                    if (DevArea.Count <= 0)
-                        Footer.DeveloperDirectoryOffset = 0;
+                    if(this.DevArea.Count <= 0)
+                        this.Footer.DeveloperDirectoryOffset = 0;
 
-                    if (DevArea.Count > 2)
-                    {
-                        DevArea.Entries.Sort((a, b) => { return a.Tag.CompareTo(b.Tag); });
-                        for (int i = 0; i < DevArea.Count - 1; i++)
-                            if (DevArea[i].Tag == DevArea[i + 1].Tag)
-                            {
+                    if(this.DevArea.Count > 2) {
+                        this.DevArea.Entries.Sort((a, b) => { return a.Tag.CompareTo(b.Tag); });
+                        for(var i = 0; i < this.DevArea.Count - 1; i++) {
+                            if(this.DevArea[i].Tag == this.DevArea[i + 1].Tag) {
                                 ErrorStr = "DevArea Enties has same Tags!";
                                 return false;
                             }
+                        }
                     }
 
-                    for (int i = 0; i < DevArea.Count; i++)
-                    {
-                        DevArea[i].Offset = Offset;
-                        Offset += (uint)DevArea[i].FieldSize;
+                    for(var i = 0; i < this.DevArea.Count; i++) {
+                        this.DevArea[i].Offset = Offset;
+                        Offset += (uint)this.DevArea[i].FieldSize;
                     }
 
-                    Footer.DeveloperDirectoryOffset = Offset;
-                    Offset += (uint)(DevArea.Count * 10 + 2);
+                    this.Footer.DeveloperDirectoryOffset = Offset;
+                    Offset += (uint)(this.DevArea.Count * 10 + 2);
+                } else {
+                    this.Footer.DeveloperDirectoryOffset = 0;
                 }
-                else
-                    Footer.DeveloperDirectoryOffset = 0;
                 #endregion
 
                 #region ExtArea
-                if (ExtArea != null)
-                {
-                    ExtArea.ExtensionSize = TgaExtArea.MinSize;
-                    if (ExtArea.OtherDataInExtensionArea != null)
-                        ExtArea.ExtensionSize += (ushort)ExtArea.OtherDataInExtensionArea.Length;
+                if(this.ExtArea != null) {
+                    this.ExtArea.ExtensionSize = TgaExtArea.MinSize;
+                    if(this.ExtArea.OtherDataInExtensionArea != null)
+                        this.ExtArea.ExtensionSize += (ushort)this.ExtArea.OtherDataInExtensionArea.Length;
 
-                    ExtArea.DateTimeStamp = new TgaDateTime(DateTime.UtcNow);
+                    this.ExtArea.DateTimeStamp = new TgaDateTime(DateTime.UtcNow);
 
-                    Footer.ExtensionAreaOffset = Offset;
-                    Offset += ExtArea.ExtensionSize;
+                    this.Footer.ExtensionAreaOffset = Offset;
+                    Offset += this.ExtArea.ExtensionSize;
 
                     #region ScanLineTable
-                    if (ExtArea.ScanLineTable == null)
-                        ExtArea.ScanLineOffset = 0;
-                    else
-                    {
-                        if (ExtArea.ScanLineTable.Length != Height)
-                        {
+                    if(this.ExtArea.ScanLineTable == null) {
+                        this.ExtArea.ScanLineOffset = 0;
+                    } else {
+                        if(this.ExtArea.ScanLineTable.Length != this.Height) {
                             ErrorStr = "ExtArea.ScanLineTable.Length != Height";
                             return false;
                         }
 
-                        ExtArea.ScanLineOffset = Offset;
-                        Offset += (uint)(ExtArea.ScanLineTable.Length * 4);
+                        this.ExtArea.ScanLineOffset = Offset;
+                        Offset += (uint)(this.ExtArea.ScanLineTable.Length * 4);
                     }
                     #endregion
 
                     #region PostageStampImage
-                    if (ExtArea.PostageStampImage == null)
-                        ExtArea.PostageStampOffset = 0;
-                    else
-                    {
-                        if (ExtArea.PostageStampImage.Width == 0 || ExtArea.PostageStampImage.Height == 0)
-                        {
+                    if(this.ExtArea.PostageStampImage == null) {
+                        this.ExtArea.PostageStampOffset = 0;
+                    } else {
+                        if(this.ExtArea.PostageStampImage.Width == 0 || this.ExtArea.PostageStampImage.Height == 0) {
                             ErrorStr = "ExtArea.PostageStampImage Width or Height is equal 0!";
                             return false;
                         }
 
-                        if (ExtArea.PostageStampImage.Data == null)
-                        {
+                        if(this.ExtArea.PostageStampImage.Data == null) {
                             ErrorStr = "ExtArea.PostageStampImage.Data == null";
                             return false;
                         }
 
-                        int PImgSB = ExtArea.PostageStampImage.Width * ExtArea.PostageStampImage.Height * BytesPerPixel;
-                        if (Header.ImageType != TgaImageType.NoImageData &&
-                            ExtArea.PostageStampImage.Data.Length != PImgSB)
-                        {
+                        var PImgSB = this.ExtArea.PostageStampImage.Width * this.ExtArea.PostageStampImage.Height * BytesPerPixel;
+                        if(this.Header.ImageType != TgaImageType.NoImageData &&
+                            this.ExtArea.PostageStampImage.Data.Length != PImgSB) {
                             ErrorStr = "ExtArea.PostageStampImage.Data.Length is wrong!";
                             return false;
                         }
 
 
-                        ExtArea.PostageStampOffset = Offset;
-                        Offset += (uint)(ExtArea.PostageStampImage.Data.Length);
+                        this.ExtArea.PostageStampOffset = Offset;
+                        Offset += (uint)(this.ExtArea.PostageStampImage.Data.Length);
                     }
                     #endregion
 
                     #region ColorCorrectionTable
-                    if (ExtArea.ColorCorrectionTable == null)
-                        ExtArea.ColorCorrectionTableOffset = 0;
-                    else
-                    {
-                        if (ExtArea.ColorCorrectionTable.Length != 1024)
-                        {
+                    if(this.ExtArea.ColorCorrectionTable == null) {
+                        this.ExtArea.ColorCorrectionTableOffset = 0;
+                    } else {
+                        if(this.ExtArea.ColorCorrectionTable.Length != 1024) {
                             ErrorStr = "ExtArea.ColorCorrectionTable.Length != 256 * 4";
                             return false;
                         }
 
-                        ExtArea.ColorCorrectionTableOffset = Offset;
-                        Offset += (uint)(ExtArea.ColorCorrectionTable.Length * 2);
+                        this.ExtArea.ColorCorrectionTableOffset = Offset;
+                        Offset += (uint)(this.ExtArea.ColorCorrectionTable.Length * 2);
                     }
                     #endregion
+                } else {
+                    this.Footer.ExtensionAreaOffset = 0;
                 }
-                else
-                    Footer.ExtensionAreaOffset = 0;
                 #endregion
 
                 #region Footer
-                if (Footer.ToBytes().Length != TgaFooter.Size)
-                {
+                if(this.Footer.ToBytes().Length != TgaFooter.Size) {
                     ErrorStr = "Footer.Length is wrong!";
                     return false;
                 }
@@ -5066,30 +4415,22 @@ namespace TGASharpLib
         /// </summary>
         /// <param name="ForceUseAlpha">Force use alpha channel.</param>
         /// <returns>Bitmap or null, on error.</returns>
-        public Bitmap ToBitmap(bool ForceUseAlpha = false)
-        {
-            return ToBitmapFunc(ForceUseAlpha, false);
-        }
+        public Bitmap ToBitmap(bool ForceUseAlpha = false) => this.ToBitmapFunc(ForceUseAlpha, false);
 
         /// <summary>
         /// Convert <see cref="TGA"/> to bytes array.
         /// </summary>
         /// <returns>Bytes array, (equal to saved file, but in memory) or null (on error).</returns>
-        public byte[] ToBytes()
-        {
-            try
-            {
+        public byte[] ToBytes() {
+            try {
                 byte[] Bytes;
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    Save(ms);
+                using(var ms = new MemoryStream()) {
+                    this.Save(ms);
                     Bytes = ms.ToArray();
                     ms.Flush();
                 }
                 return Bytes;
-            }
-            catch
-            {
+            } catch {
                 return null;
             }
         }
@@ -5097,163 +4438,144 @@ namespace TGASharpLib
         /// <summary>
         /// Convert TGA Image to new XFile format (v2.0).
         /// </summary>
-        public void ToNewFormat()
-        {
-            if (Footer == null)
-                Footer = new TgaFooter();
+        public void ToNewFormat() {
+            if(this.Footer == null)
+                this.Footer = new TgaFooter();
 
-            if (ExtArea == null)
-            {
-                ExtArea = new TgaExtArea();
+            if(this.ExtArea == null) {
+                this.ExtArea = new TgaExtArea {
+                    DateTimeStamp = new TgaDateTime(DateTime.UtcNow)
+                };
 
-                ExtArea.DateTimeStamp = new TgaDateTime(DateTime.UtcNow);
-
-                if (Header.ImageSpec.ImageDescriptor.AlphaChannelBits > 0)
-                    ExtArea.AttributesType = TgaAttrType.UsefulAlpha;
+                if(this.Header.ImageSpec.ImageDescriptor.AlphaChannelBits > 0)
+                    this.ExtArea.AttributesType = TgaAttrType.UsefulAlpha;
                 else
-                    ExtArea.AttributesType = TgaAttrType.NoAlpha;
+                    this.ExtArea.AttributesType = TgaAttrType.NoAlpha;
             }
         }
         #endregion
 
         #region Private functions
-        bool LoadFunc(string filename)
-        {
-            if (!File.Exists(filename))
+        private bool LoadFunc(string filename) {
+            if(!File.Exists(filename))
                 throw new FileNotFoundException("File: \"" + filename + "\" not found!");
 
-            try
-            {
-                using (FileStream FS = new FileStream(filename, FileMode.Open, FileAccess.Read))
-                    return LoadFunc(FS);
-            }
-            catch
-            {
+            try {
+                using(var FS = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                    return this.LoadFunc(FS);
+            } catch {
                 return false;
             }
         }
 
-        bool LoadFunc(byte[] bytes)
-        {
-            if (bytes == null)
+        private bool LoadFunc(byte[] bytes) {
+            if(bytes == null)
                 throw new ArgumentNullException();
 
-            try
-            {
-                using (MemoryStream FS = new MemoryStream(bytes, false))
-                    return LoadFunc(FS);
-            }
-            catch
-            {
+            try {
+                using(var FS = new MemoryStream(bytes, false))
+                    return this.LoadFunc(FS);
+            } catch {
                 return false;
             }
         }
 
-        bool LoadFunc(Stream stream)
-        {
-            if (stream == null)
+        private bool LoadFunc(Stream stream) {
+            if(stream == null)
                 throw new ArgumentNullException();
-            if (!(stream.CanRead && stream.CanSeek))
+            if(!(stream.CanRead && stream.CanSeek))
                 throw new FileLoadException("Stream reading or seeking is not avaiable!");
 
-            try
-            {
+            try {
                 stream.Seek(0, SeekOrigin.Begin);
-                BinaryReader Br = new BinaryReader(stream);
+                var Br = new BinaryReader(stream);
 
-                Header = new TgaHeader(Br.ReadBytes(TgaHeader.Size));
+                this.Header = new TgaHeader(Br.ReadBytes(TgaHeader.Size));
 
-                if (Header.IDLength > 0)
-                    ImageOrColorMapArea.ImageID = new TgaString(Br.ReadBytes(Header.IDLength));
+                if(this.Header.IDLength > 0)
+                    this.ImageOrColorMapArea.ImageID = new TgaString(Br.ReadBytes(this.Header.IDLength));
 
-                if (Header.ColorMapSpec.ColorMapLength > 0)
-                {
-                    int CmBytesPerPixel = (int)Math.Ceiling((double)Header.ColorMapSpec.ColorMapEntrySize / 8.0);
-                    int LenBytes = Header.ColorMapSpec.ColorMapLength * CmBytesPerPixel;
-                    ImageOrColorMapArea.ColorMapData = Br.ReadBytes(LenBytes);
+                if(this.Header.ColorMapSpec.ColorMapLength > 0) {
+                    var CmBytesPerPixel = (int)Math.Ceiling((double)this.Header.ColorMapSpec.ColorMapEntrySize / 8.0);
+                    var LenBytes = this.Header.ColorMapSpec.ColorMapLength * CmBytesPerPixel;
+                    this.ImageOrColorMapArea.ColorMapData = Br.ReadBytes(LenBytes);
                 }
 
                 #region Read Image Data
-                int BytesPerPixel = (int)Math.Ceiling((double)Header.ImageSpec.PixelDepth / 8.0);
-                if (Header.ImageType != TgaImageType.NoImageData)
-                {
-                    int ImageDataSize = Width * Height * BytesPerPixel;
-                    switch (Header.ImageType)
-                    {
-                        case TgaImageType.RLE_ColorMapped:
-                        case TgaImageType.RLE_TrueColor:
-                        case TgaImageType.RLE_BlackWhite:
+                var BytesPerPixel = (int)Math.Ceiling((double)this.Header.ImageSpec.PixelDepth / 8.0);
+                if(this.Header.ImageType != TgaImageType.NoImageData) {
+                    var ImageDataSize = this.Width * this.Height * BytesPerPixel;
+                    switch(this.Header.ImageType) {
+                    case TgaImageType.RLE_ColorMapped:
+                    case TgaImageType.RLE_TrueColor:
+                    case TgaImageType.RLE_BlackWhite:
 
-                            int DataOffset = 0;
-                            byte PacketInfo;
-                            int PacketCount;
-                            byte[] RLE_Bytes, RLE_Part;
-                            ImageOrColorMapArea.ImageData = new byte[ImageDataSize];
+                        var DataOffset = 0;
+                        byte PacketInfo;
+                        int PacketCount;
+                        byte[] RLE_Bytes, RLE_Part;
+                        this.ImageOrColorMapArea.ImageData = new byte[ImageDataSize];
 
-                            do
+                        do {
+                            PacketInfo = Br.ReadByte(); //1 type bit and 7 count bits. Len = Count + 1.
+                            PacketCount = (PacketInfo & 127) + 1;
+
+                            if(PacketInfo >= 128) // bit7 = 1, RLE
                             {
-                                PacketInfo = Br.ReadByte(); //1 type bit and 7 count bits. Len = Count + 1.
-                                PacketCount = (PacketInfo & 127) + 1;
-
-                                if (PacketInfo >= 128) // bit7 = 1, RLE
-                                {
-                                    RLE_Bytes = new byte[PacketCount * BytesPerPixel];
-                                    RLE_Part = Br.ReadBytes(BytesPerPixel);
-                                    for (int i = 0; i < RLE_Bytes.Length; i++)
-                                        RLE_Bytes[i] = RLE_Part[i % BytesPerPixel];
-                                }
-                                else // RAW format
-                                    RLE_Bytes = Br.ReadBytes(PacketCount * BytesPerPixel);
-
-                                Buffer.BlockCopy(RLE_Bytes, 0, ImageOrColorMapArea.ImageData, DataOffset, RLE_Bytes.Length);
-                                DataOffset += RLE_Bytes.Length;
+                                RLE_Bytes = new byte[PacketCount * BytesPerPixel];
+                                RLE_Part = Br.ReadBytes(BytesPerPixel);
+                                for(var i = 0; i < RLE_Bytes.Length; i++)
+                                    RLE_Bytes[i] = RLE_Part[i % BytesPerPixel];
+                            } else // RAW format
+{
+                                RLE_Bytes = Br.ReadBytes(PacketCount * BytesPerPixel);
                             }
-                            while (DataOffset < ImageDataSize);
-                            RLE_Bytes = null;
-                            break;
 
-                        case TgaImageType.Uncompressed_ColorMapped:
-                        case TgaImageType.Uncompressed_TrueColor:
-                        case TgaImageType.Uncompressed_BlackWhite:
-                            ImageOrColorMapArea.ImageData = Br.ReadBytes(ImageDataSize);
-                            break;
+                            Buffer.BlockCopy(RLE_Bytes, 0, this.ImageOrColorMapArea.ImageData, DataOffset, RLE_Bytes.Length);
+                            DataOffset += RLE_Bytes.Length;
+                        }
+                        while(DataOffset < ImageDataSize);
+                        RLE_Bytes = null;
+                        break;
+
+                    case TgaImageType.Uncompressed_ColorMapped:
+                    case TgaImageType.Uncompressed_TrueColor:
+                    case TgaImageType.Uncompressed_BlackWhite:
+                        this.ImageOrColorMapArea.ImageData = Br.ReadBytes(ImageDataSize);
+                        break;
                     }
                 }
                 #endregion
 
                 #region Try parse Footer
                 stream.Seek(-TgaFooter.Size, SeekOrigin.End);
-                uint FooterOffset = (uint)stream.Position;
-                TgaFooter MbFooter = new TgaFooter(Br.ReadBytes(TgaFooter.Size));
-                if (MbFooter.IsFooterCorrect)
-                {
-                    Footer = MbFooter;
-                    uint DevDirOffset = Footer.DeveloperDirectoryOffset;
-                    uint ExtAreaOffset = Footer.ExtensionAreaOffset;
+                var FooterOffset = (uint)stream.Position;
+                var MbFooter = new TgaFooter(Br.ReadBytes(TgaFooter.Size));
+                if(MbFooter.IsFooterCorrect) {
+                    this.Footer = MbFooter;
+                    var DevDirOffset = this.Footer.DeveloperDirectoryOffset;
+                    var ExtAreaOffset = this.Footer.ExtensionAreaOffset;
 
                     #region If Dev Area exist, read it.
-                    if (DevDirOffset != 0)
-                    {
+                    if(DevDirOffset != 0) {
                         stream.Seek(DevDirOffset, SeekOrigin.Begin);
-                        DevArea = new TgaDevArea();
+                        this.DevArea = new TgaDevArea();
                         uint NumberOfTags = Br.ReadUInt16();
 
-                        ushort[] Tags = new ushort[NumberOfTags];
-                        uint[] TagOffsets = new uint[NumberOfTags];
-                        uint[] TagSizes = new uint[NumberOfTags];
+                        var Tags = new ushort[NumberOfTags];
+                        var TagOffsets = new uint[NumberOfTags];
+                        var TagSizes = new uint[NumberOfTags];
 
-                        for (int i = 0; i < NumberOfTags; i++)
-                        {
+                        for(var i = 0; i < NumberOfTags; i++) {
                             Tags[i] = Br.ReadUInt16();
                             TagOffsets[i] = Br.ReadUInt32();
                             TagSizes[i] = Br.ReadUInt32();
                         }
 
-                        for (int i = 0; i < NumberOfTags; i++)
-                        {
+                        for(var i = 0; i < NumberOfTags; i++) {
                             stream.Seek(TagOffsets[i], SeekOrigin.Begin);
                             var Ent = new TgaDevEntry(Tags[i], TagOffsets[i], Br.ReadBytes((int)TagSizes[i]));
-                            DevArea.Entries.Add(Ent);
+                            this.DevArea.Entries.Add(Ent);
                         }
 
                         Tags = null;
@@ -5263,37 +4585,33 @@ namespace TGASharpLib
                     #endregion
 
                     #region If Ext Area exist, read it.
-                    if (ExtAreaOffset != 0)
-                    {
+                    if(ExtAreaOffset != 0) {
                         stream.Seek(ExtAreaOffset, SeekOrigin.Begin);
-                        ushort ExtAreaSize = Math.Max((ushort)TgaExtArea.MinSize, Br.ReadUInt16());
+                        var ExtAreaSize = Math.Max((ushort)TgaExtArea.MinSize, Br.ReadUInt16());
                         stream.Seek(ExtAreaOffset, SeekOrigin.Begin);
-                        ExtArea = new TgaExtArea(Br.ReadBytes(ExtAreaSize));
+                        this.ExtArea = new TgaExtArea(Br.ReadBytes(ExtAreaSize));
 
-                        if (ExtArea.ScanLineOffset > 0)
-                        {
-                            stream.Seek(ExtArea.ScanLineOffset, SeekOrigin.Begin);
-                            ExtArea.ScanLineTable = new uint[Height];
-                            for (int i = 0; i < ExtArea.ScanLineTable.Length; i++)
-                                ExtArea.ScanLineTable[i] = Br.ReadUInt32();
+                        if(this.ExtArea.ScanLineOffset > 0) {
+                            stream.Seek(this.ExtArea.ScanLineOffset, SeekOrigin.Begin);
+                            this.ExtArea.ScanLineTable = new uint[this.Height];
+                            for(var i = 0; i < this.ExtArea.ScanLineTable.Length; i++)
+                                this.ExtArea.ScanLineTable[i] = Br.ReadUInt32();
                         }
 
-                        if (ExtArea.PostageStampOffset > 0)
-                        {
-                            stream.Seek(ExtArea.PostageStampOffset, SeekOrigin.Begin);
-                            byte W = Br.ReadByte();
-                            byte H = Br.ReadByte();
-                            int ImgDataSize = W * H * BytesPerPixel;
-                            if (ImgDataSize > 0)
-                                ExtArea.PostageStampImage = new TgaPostageStampImage(W, H, Br.ReadBytes(ImgDataSize));
+                        if(this.ExtArea.PostageStampOffset > 0) {
+                            stream.Seek(this.ExtArea.PostageStampOffset, SeekOrigin.Begin);
+                            var W = Br.ReadByte();
+                            var H = Br.ReadByte();
+                            var ImgDataSize = W * H * BytesPerPixel;
+                            if(ImgDataSize > 0)
+                                this.ExtArea.PostageStampImage = new TgaPostageStampImage(W, H, Br.ReadBytes(ImgDataSize));
                         }
 
-                        if (ExtArea.ColorCorrectionTableOffset > 0)
-                        {
-                            stream.Seek(ExtArea.ColorCorrectionTableOffset, SeekOrigin.Begin);
-                            ExtArea.ColorCorrectionTable = new ushort[256 * 4];
-                            for (int i = 0; i < ExtArea.ColorCorrectionTable.Length; i++)
-                                ExtArea.ColorCorrectionTable[i] = Br.ReadUInt16();
+                        if(this.ExtArea.ColorCorrectionTableOffset > 0) {
+                            stream.Seek(this.ExtArea.ColorCorrectionTableOffset, SeekOrigin.Begin);
+                            this.ExtArea.ColorCorrectionTable = new ushort[256 * 4];
+                            for(var i = 0; i < this.ExtArea.ColorCorrectionTable.Length; i++)
+                                this.ExtArea.ColorCorrectionTable[i] = Br.ReadUInt16();
                         }
                     }
                     #endregion
@@ -5302,313 +4620,288 @@ namespace TGASharpLib
 
                 Br.Close();
                 return true;
-            }
-            catch
-            {
+            } catch {
                 return false;
             }
         }
 
-        bool LoadFunc(Bitmap bmp, bool UseRLE = false, bool NewFormat = true, bool ColorMap2BytesEntry = false)
-        {
-            if (bmp == null)
+        private bool LoadFunc(Bitmap bmp, bool UseRLE = false, bool NewFormat = true, bool ColorMap2BytesEntry = false) {
+            if(bmp == null)
                 throw new ArgumentNullException();
 
-            try
-            {
-                Header.ImageSpec.ImageWidth = (ushort)bmp.Width;
-                Header.ImageSpec.ImageHeight = (ushort)bmp.Height;
-                Header.ImageSpec.ImageDescriptor.ImageOrigin = TgaImgOrigin.TopLeft;
+            try {
+                this.Header.ImageSpec.ImageWidth = (ushort)bmp.Width;
+                this.Header.ImageSpec.ImageHeight = (ushort)bmp.Height;
+                this.Header.ImageSpec.ImageDescriptor.ImageOrigin = TgaImgOrigin.TopLeft;
 
-                switch (bmp.PixelFormat)
-                {
-                    case PixelFormat.Indexed:
-                    case PixelFormat.Gdi:
-                    case PixelFormat.Alpha:
-                    case PixelFormat.Undefined:
-                    case PixelFormat.PAlpha:
-                    case PixelFormat.Extended:
-                    case PixelFormat.Max:
-                    case PixelFormat.Canonical:
-                    case PixelFormat.Format16bppRgb565:
-                    default:
-                        throw new FormatException(nameof(PixelFormat) + " is not supported!");
+                switch(bmp.PixelFormat) {
+                case PixelFormat.Indexed:
+                case PixelFormat.Gdi:
+                case PixelFormat.Alpha:
+                case PixelFormat.Undefined:
+                case PixelFormat.PAlpha:
+                case PixelFormat.Extended:
+                case PixelFormat.Max:
+                case PixelFormat.Canonical:
+                case PixelFormat.Format16bppRgb565:
+                default:
+                    throw new FormatException(nameof(PixelFormat) + " is not supported!");
 
-                    case PixelFormat.Format1bppIndexed:
-                    case PixelFormat.Format4bppIndexed:
-                    case PixelFormat.Format8bppIndexed:
-                    case PixelFormat.Format16bppGrayScale:
-                    case PixelFormat.Format16bppRgb555:
-                    case PixelFormat.Format16bppArgb1555:
-                    case PixelFormat.Format24bppRgb:
-                    case PixelFormat.Format32bppRgb:
-                    case PixelFormat.Format32bppArgb:
-                    case PixelFormat.Format32bppPArgb:
-                    case PixelFormat.Format48bppRgb:
-                    case PixelFormat.Format64bppArgb:
-                    case PixelFormat.Format64bppPArgb:
+                case PixelFormat.Format1bppIndexed:
+                case PixelFormat.Format4bppIndexed:
+                case PixelFormat.Format8bppIndexed:
+                case PixelFormat.Format16bppGrayScale:
+                case PixelFormat.Format16bppRgb555:
+                case PixelFormat.Format16bppArgb1555:
+                case PixelFormat.Format24bppRgb:
+                case PixelFormat.Format32bppRgb:
+                case PixelFormat.Format32bppArgb:
+                case PixelFormat.Format32bppPArgb:
+                case PixelFormat.Format48bppRgb:
+                case PixelFormat.Format64bppArgb:
+                case PixelFormat.Format64bppPArgb:
 
-                        int bpp = Math.Max(8, Image.GetPixelFormatSize(bmp.PixelFormat));
-                        int BytesPP = bpp / 8;
+                    var bpp = Math.Max(8, Image.GetPixelFormatSize(bmp.PixelFormat));
+                    var BytesPP = bpp / 8;
 
-                        if (bmp.PixelFormat == PixelFormat.Format16bppRgb555)
-                            bpp = 15;
+                    if(bmp.PixelFormat == PixelFormat.Format16bppRgb555)
+                        bpp = 15;
 
-                        bool IsAlpha = Image.IsAlphaPixelFormat(bmp.PixelFormat);
-                        bool IsPreAlpha = IsAlpha && bmp.PixelFormat.ToString().EndsWith("PArgb");
-                        bool IsColorMapped = bmp.PixelFormat.ToString().EndsWith("Indexed");
+                    var IsAlpha = Image.IsAlphaPixelFormat(bmp.PixelFormat);
+                    var IsPreAlpha = IsAlpha && bmp.PixelFormat.ToString().EndsWith("PArgb");
+                    var IsColorMapped = bmp.PixelFormat.ToString().EndsWith("Indexed");
 
-                        Header.ImageSpec.PixelDepth = (TgaPixelDepth)(BytesPP * 8);
+                    this.Header.ImageSpec.PixelDepth = (TgaPixelDepth)(BytesPP * 8);
 
-                        if (IsAlpha)
-                        {
-                            Header.ImageSpec.ImageDescriptor.AlphaChannelBits = (byte)(BytesPP * 2);
+                    if(IsAlpha) {
+                        this.Header.ImageSpec.ImageDescriptor.AlphaChannelBits = (byte)(BytesPP * 2);
 
-                            if (bmp.PixelFormat == PixelFormat.Format16bppArgb1555)
-                                Header.ImageSpec.ImageDescriptor.AlphaChannelBits = 1;
+                        if(bmp.PixelFormat == PixelFormat.Format16bppArgb1555)
+                            this.Header.ImageSpec.ImageDescriptor.AlphaChannelBits = 1;
+                    }
+
+                    #region ColorMap
+                    var IsGrayImage = (bmp.PixelFormat == PixelFormat.Format16bppGrayScale | IsColorMapped);
+
+                    if(IsColorMapped && bmp.Palette != null) {
+                        var Colors = bmp.Palette.Entries;
+
+                        #region Analyze ColorMapType
+                        var AlphaSum = 0;
+                        var ColorMapUseAlpha = false;
+
+                        for(var i = 0; i < Colors.Length; i++) {
+                            IsGrayImage &= (Colors[i].R == Colors[i].G && Colors[i].G == Colors[i].B);
+                            ColorMapUseAlpha |= (Colors[i].A < 248);
+                            AlphaSum |= Colors[i].A;
                         }
+                        ColorMapUseAlpha &= (AlphaSum > 0);
 
-                        #region ColorMap
-                        bool IsGrayImage = (bmp.PixelFormat == PixelFormat.Format16bppGrayScale | IsColorMapped);
-
-                        if (IsColorMapped && bmp.Palette != null)
-                        {
-                            Color[] Colors = bmp.Palette.Entries;
-
-                            #region Analyze ColorMapType
-                            int AlphaSum = 0;
-                            bool ColorMapUseAlpha = false;
-
-                            for (int i = 0; i < Colors.Length; i++)
-                            {
-                                IsGrayImage &= (Colors[i].R == Colors[i].G && Colors[i].G == Colors[i].B);
-                                ColorMapUseAlpha |= (Colors[i].A < 248);
-                                AlphaSum |= Colors[i].A;
-                            }
-                            ColorMapUseAlpha &= (AlphaSum > 0);
-
-                            int CMapBpp = (ColorMap2BytesEntry ? 15 : 24) + (ColorMapUseAlpha ? (ColorMap2BytesEntry ? 1 : 8) : 0);
-                            int CMBytesPP = (int)Math.Ceiling(CMapBpp / 8.0);
-                            #endregion
-
-                            Header.ColorMapSpec.ColorMapLength = Math.Min((ushort)Colors.Length, ushort.MaxValue);
-                            Header.ColorMapSpec.ColorMapEntrySize = (TgaColorMapEntrySize)CMapBpp;
-                            ImageOrColorMapArea.ColorMapData = new byte[Header.ColorMapSpec.ColorMapLength * CMBytesPP];
-
-                            byte[] CMapEntry = new byte[CMBytesPP];
-
-                            const float To5Bit = 32f / 256f; // Scale value from 8 to 5 bits.
-                            for (int i = 0; i < Colors.Length; i++)
-                            {
-                                switch (Header.ColorMapSpec.ColorMapEntrySize)
-                                {
-                                    case TgaColorMapEntrySize.A1R5G5B5:
-                                    case TgaColorMapEntrySize.X1R5G5B5:
-                                        int R = (int)(Colors[i].R * To5Bit);
-                                        int G = (int)(Colors[i].G * To5Bit) << 5;
-                                        int B = (int)(Colors[i].B * To5Bit) << 10;
-                                        int A = 0;
-
-                                        if (Header.ColorMapSpec.ColorMapEntrySize == TgaColorMapEntrySize.A1R5G5B5)
-                                            A = ((Colors[i].A & 0x80) << 15);
-
-                                        CMapEntry = BitConverter.GetBytes(A | R | G | B);
-                                        break;
-
-                                    case TgaColorMapEntrySize.R8G8B8:
-                                        CMapEntry[0] = Colors[i].B;
-                                        CMapEntry[1] = Colors[i].G;
-                                        CMapEntry[2] = Colors[i].R;
-                                        break;
-
-                                    case TgaColorMapEntrySize.A8R8G8B8:
-                                        CMapEntry[0] = Colors[i].B;
-                                        CMapEntry[1] = Colors[i].G;
-                                        CMapEntry[2] = Colors[i].R;
-                                        CMapEntry[3] = Colors[i].A;
-                                        break;
-
-                                    case TgaColorMapEntrySize.Other:
-                                    default:
-                                        break;
-                                }
-
-                                Buffer.BlockCopy(CMapEntry, 0, ImageOrColorMapArea.ColorMapData, i * CMBytesPP, CMBytesPP);
-                            }
-                        }
+                        var CMapBpp = (ColorMap2BytesEntry ? 15 : 24) + (ColorMapUseAlpha ? (ColorMap2BytesEntry ? 1 : 8) : 0);
+                        var CMBytesPP = (int)Math.Ceiling(CMapBpp / 8.0);
                         #endregion
 
-                        #region ImageType
-                        if (UseRLE)
-                        {
-                            if (IsGrayImage)
-                                Header.ImageType = TgaImageType.RLE_BlackWhite;
-                            else if (IsColorMapped)
-                                Header.ImageType = TgaImageType.RLE_ColorMapped;
-                            else
-                                Header.ImageType = TgaImageType.RLE_TrueColor;
+                        this.Header.ColorMapSpec.ColorMapLength = Math.Min((ushort)Colors.Length, ushort.MaxValue);
+                        this.Header.ColorMapSpec.ColorMapEntrySize = (TgaColorMapEntrySize)CMapBpp;
+                        this.ImageOrColorMapArea.ColorMapData = new byte[this.Header.ColorMapSpec.ColorMapLength * CMBytesPP];
+
+                        var CMapEntry = new byte[CMBytesPP];
+
+                        const float To5Bit = 32f / 256f; // Scale value from 8 to 5 bits.
+                        for(var i = 0; i < Colors.Length; i++) {
+                            switch(this.Header.ColorMapSpec.ColorMapEntrySize) {
+                            case TgaColorMapEntrySize.A1R5G5B5:
+                            case TgaColorMapEntrySize.X1R5G5B5:
+                                var R = (int)(Colors[i].R * To5Bit);
+                                var G = (int)(Colors[i].G * To5Bit) << 5;
+                                var B = (int)(Colors[i].B * To5Bit) << 10;
+                                var A = 0;
+
+                                if(this.Header.ColorMapSpec.ColorMapEntrySize == TgaColorMapEntrySize.A1R5G5B5)
+                                    A = ((Colors[i].A & 0x80) << 15);
+
+                                CMapEntry = BitConverter.GetBytes(A | R | G | B);
+                                break;
+
+                            case TgaColorMapEntrySize.R8G8B8:
+                                CMapEntry[0] = Colors[i].B;
+                                CMapEntry[1] = Colors[i].G;
+                                CMapEntry[2] = Colors[i].R;
+                                break;
+
+                            case TgaColorMapEntrySize.A8R8G8B8:
+                                CMapEntry[0] = Colors[i].B;
+                                CMapEntry[1] = Colors[i].G;
+                                CMapEntry[2] = Colors[i].R;
+                                CMapEntry[3] = Colors[i].A;
+                                break;
+
+                            case TgaColorMapEntrySize.Other:
+                            default:
+                                break;
+                            }
+
+                            Buffer.BlockCopy(CMapEntry, 0, this.ImageOrColorMapArea.ColorMapData, i * CMBytesPP, CMBytesPP);
                         }
+                    }
+                    #endregion
+
+                    #region ImageType
+                    if(UseRLE) {
+                        if(IsGrayImage)
+                            this.Header.ImageType = TgaImageType.RLE_BlackWhite;
+                        else if(IsColorMapped)
+                            this.Header.ImageType = TgaImageType.RLE_ColorMapped;
                         else
-                        {
-                            if (IsGrayImage)
-                                Header.ImageType = TgaImageType.Uncompressed_BlackWhite;
-                            else if (IsColorMapped)
-                                Header.ImageType = TgaImageType.Uncompressed_ColorMapped;
-                            else
-                                Header.ImageType = TgaImageType.Uncompressed_TrueColor;
-                        }
-
-                        Header.ColorMapType = (IsColorMapped ? TgaColorMapType.ColorMap : TgaColorMapType.NoColorMap);
-                        #endregion
-
-                        #region NewFormat
-                        if (NewFormat)
-                        {
-                            Footer = new TgaFooter();
-                            ExtArea = new TgaExtArea();
-                            ExtArea.DateTimeStamp = new TgaDateTime(DateTime.UtcNow);
-
-                            if (IsAlpha)
-                            {
-                                ExtArea.AttributesType = TgaAttrType.UsefulAlpha;
-
-                                if (IsPreAlpha)
-                                    ExtArea.AttributesType = TgaAttrType.PreMultipliedAlpha;
-                            }
-                            else
-                            {
-                                ExtArea.AttributesType = TgaAttrType.NoAlpha;
-
-                                if (Header.ImageSpec.ImageDescriptor.AlphaChannelBits > 0)
-                                    ExtArea.AttributesType = TgaAttrType.UndefinedAlphaButShouldBeRetained;
-                            }
-                        }
-                        #endregion
-
-                        #region Bitmap width is aligned by 32 bits = 4 bytes! Delete it.
-                        int StrideBytes = bmp.Width * BytesPP;
-                        int PaddingBytes = (int)Math.Ceiling(StrideBytes / 4.0) * 4 - StrideBytes;
-
-                        byte[] ImageData = new byte[(StrideBytes + PaddingBytes) * bmp.Height];
-
-                        Rectangle Re = new Rectangle(0, 0, bmp.Width, bmp.Height);
-                        BitmapData BmpData = bmp.LockBits(Re, ImageLockMode.ReadOnly, bmp.PixelFormat);
-                        Marshal.Copy(BmpData.Scan0, ImageData, 0, ImageData.Length);
-                        bmp.UnlockBits(BmpData);
-                        BmpData = null;
-
-                        if (PaddingBytes > 0) //Need delete bytes align
-                        {
-                            ImageOrColorMapArea.ImageData = new byte[StrideBytes * bmp.Height];
-                            for (int i = 0; i < bmp.Height; i++)
-                                Buffer.BlockCopy(ImageData, i * (StrideBytes + PaddingBytes),
-                                    ImageOrColorMapArea.ImageData, i * StrideBytes, StrideBytes);
-                        }
+                            this.Header.ImageType = TgaImageType.RLE_TrueColor;
+                    } else {
+                        if(IsGrayImage)
+                            this.Header.ImageType = TgaImageType.Uncompressed_BlackWhite;
+                        else if(IsColorMapped)
+                            this.Header.ImageType = TgaImageType.Uncompressed_ColorMapped;
                         else
-                            ImageOrColorMapArea.ImageData = ImageData;
+                            this.Header.ImageType = TgaImageType.Uncompressed_TrueColor;
+                    }
 
-                        ImageData = null;
+                    this.Header.ColorMapType = (IsColorMapped ? TgaColorMapType.ColorMap : TgaColorMapType.NoColorMap);
+                    #endregion
 
-                        // Not official supported, but works (tested on 16bpp GrayScale test images)!
-                        if (bmp.PixelFormat == PixelFormat.Format16bppGrayScale)
-                        {
-                            for (long i = 0; i < ImageOrColorMapArea.ImageData.Length; i++)
-                                ImageOrColorMapArea.ImageData[i] ^= byte.MaxValue;
+                    #region NewFormat
+                    if(NewFormat) {
+                        this.Footer = new TgaFooter();
+                        this.ExtArea = new TgaExtArea {
+                            DateTimeStamp = new TgaDateTime(DateTime.UtcNow)
+                        };
+
+                        if(IsAlpha) {
+                            this.ExtArea.AttributesType = TgaAttrType.UsefulAlpha;
+
+                            if(IsPreAlpha)
+                                this.ExtArea.AttributesType = TgaAttrType.PreMultipliedAlpha;
+                        } else {
+                            this.ExtArea.AttributesType = TgaAttrType.NoAlpha;
+
+                            if(this.Header.ImageSpec.ImageDescriptor.AlphaChannelBits > 0)
+                                this.ExtArea.AttributesType = TgaAttrType.UndefinedAlphaButShouldBeRetained;
                         }
-                        #endregion
+                    }
+                    #endregion
 
-                        break;
+                    #region Bitmap width is aligned by 32 bits = 4 bytes! Delete it.
+                    var StrideBytes = bmp.Width * BytesPP;
+                    var PaddingBytes = (int)Math.Ceiling(StrideBytes / 4.0) * 4 - StrideBytes;
+
+                    var ImageData = new byte[(StrideBytes + PaddingBytes) * bmp.Height];
+
+                    var Re = new Rectangle(0, 0, bmp.Width, bmp.Height);
+                    var BmpData = bmp.LockBits(Re, ImageLockMode.ReadOnly, bmp.PixelFormat);
+                    Marshal.Copy(BmpData.Scan0, ImageData, 0, ImageData.Length);
+                    bmp.UnlockBits(BmpData);
+                    BmpData = null;
+
+                    if(PaddingBytes > 0) //Need delete bytes align
+                    {
+                        this.ImageOrColorMapArea.ImageData = new byte[StrideBytes * bmp.Height];
+                        for(var i = 0; i < bmp.Height; i++) {
+                            Buffer.BlockCopy(ImageData, i * (StrideBytes + PaddingBytes),
+                                    this.ImageOrColorMapArea.ImageData, i * StrideBytes, StrideBytes);
+                        }
+                    } else {
+                        this.ImageOrColorMapArea.ImageData = ImageData;
+                    }
+
+                    ImageData = null;
+
+                    // Not official supported, but works (tested on 16bpp GrayScale test images)!
+                    if(bmp.PixelFormat == PixelFormat.Format16bppGrayScale) {
+                        for(long i = 0; i < this.ImageOrColorMapArea.ImageData.Length; i++)
+                            this.ImageOrColorMapArea.ImageData[i] ^= byte.MaxValue;
+                    }
+                    #endregion
+
+                    break;
                 }
 
                 return true;
-            }
-            catch
-            {
+            } catch {
                 return false;
             }
         }
 
-        bool SaveFunc(Stream stream)
-        {
-            try
-            {
-                if (stream == null)
+        private bool SaveFunc(Stream stream) {
+            try {
+                if(stream == null)
                     throw new ArgumentNullException();
-                if (!(stream.CanWrite && stream.CanSeek))
+                if(!(stream.CanWrite && stream.CanSeek))
                     throw new FileLoadException("Stream writing or seeking is not avaiable!");
 
-                string CheckResult;
-                if (!CheckAndUpdateOffsets(out CheckResult))
+                if(!this.CheckAndUpdateOffsets(out var CheckResult))
                     return false;
 
-                BinaryWriter Bw = new BinaryWriter(stream);
-                Bw.Write(Header.ToBytes());
+                var Bw = new BinaryWriter(stream);
+                Bw.Write(this.Header.ToBytes());
 
-                if (ImageOrColorMapArea.ImageID != null)
-                    Bw.Write(ImageOrColorMapArea.ImageID.ToBytes());
+                if(this.ImageOrColorMapArea.ImageID != null)
+                    Bw.Write(this.ImageOrColorMapArea.ImageID.ToBytes());
 
-                if (Header.ColorMapType != TgaColorMapType.NoColorMap)
-                    Bw.Write(ImageOrColorMapArea.ColorMapData);
+                if(this.Header.ColorMapType != TgaColorMapType.NoColorMap)
+                    Bw.Write(this.ImageOrColorMapArea.ColorMapData);
 
                 #region ImageData
-                if (Header.ImageType != TgaImageType.NoImageData)
-                {
-                    if (Header.ImageType >= TgaImageType.RLE_ColorMapped &&
-                        Header.ImageType <= TgaImageType.RLE_BlackWhite)
-                        Bw.Write(RLE_Encode(ImageOrColorMapArea.ImageData, Width, Height));
-                    else
-                        Bw.Write(ImageOrColorMapArea.ImageData);
+                if(this.Header.ImageType != TgaImageType.NoImageData) {
+                    if(this.Header.ImageType >= TgaImageType.RLE_ColorMapped &&
+                        this.Header.ImageType <= TgaImageType.RLE_BlackWhite) {
+                        Bw.Write(this.RLE_Encode(this.ImageOrColorMapArea.ImageData, this.Width, this.Height));
+                    } else {
+                        Bw.Write(this.ImageOrColorMapArea.ImageData);
+                    }
                 }
                 #endregion
 
                 #region Footer
-                if (Footer != null)
-                {
+                if(this.Footer != null) {
                     #region DevArea
-                    if (DevArea != null)
-                    {
-                        for (int i = 0; i < DevArea.Count; i++)
-                            Bw.Write(DevArea[i].Data);
+                    if(this.DevArea != null) {
+                        for(var i = 0; i < this.DevArea.Count; i++)
+                            Bw.Write(this.DevArea[i].Data);
 
-                        Bw.Write((ushort)DevArea.Count);
+                        Bw.Write((ushort)this.DevArea.Count);
 
-                        for (int i = 0; i < DevArea.Count; i++)
-                        {
-                            Bw.Write(DevArea[i].Tag);
-                            Bw.Write(DevArea[i].Offset);
-                            Bw.Write(DevArea[i].FieldSize);
+                        for(var i = 0; i < this.DevArea.Count; i++) {
+                            Bw.Write(this.DevArea[i].Tag);
+                            Bw.Write(this.DevArea[i].Offset);
+                            Bw.Write(this.DevArea[i].FieldSize);
                         }
                     }
                     #endregion
 
                     #region ExtArea
-                    if (ExtArea != null)
-                    {
-                        Bw.Write(ExtArea.ToBytes());
+                    if(this.ExtArea != null) {
+                        Bw.Write(this.ExtArea.ToBytes());
 
-                        if (ExtArea.ScanLineTable != null)
-                            for (int i = 0; i < ExtArea.ScanLineTable.Length; i++)
-                                Bw.Write(ExtArea.ScanLineTable[i]);
+                        if(this.ExtArea.ScanLineTable != null) {
+                            for(var i = 0; i < this.ExtArea.ScanLineTable.Length; i++)
+                                Bw.Write(this.ExtArea.ScanLineTable[i]);
+                        }
 
-                        if (ExtArea.PostageStampImage != null)
-                            Bw.Write(ExtArea.PostageStampImage.ToBytes());
+                        if(this.ExtArea.PostageStampImage != null)
+                            Bw.Write(this.ExtArea.PostageStampImage.ToBytes());
 
-                        if (ExtArea.ColorCorrectionTable != null)
-                            for (int i = 0; i < ExtArea.ColorCorrectionTable.Length; i++)
-                                Bw.Write(ExtArea.ColorCorrectionTable[i]);
+                        if(this.ExtArea.ColorCorrectionTable != null) {
+                            for(var i = 0; i < this.ExtArea.ColorCorrectionTable.Length; i++)
+                                Bw.Write(this.ExtArea.ColorCorrectionTable[i]);
+                        }
                     }
                     #endregion
 
-                    Bw.Write(Footer.ToBytes());
+                    Bw.Write(this.Footer.ToBytes());
                 }
                 #endregion
 
                 Bw.Flush();
                 stream.Flush();
                 return true;
-            }
-            catch
-            {
+            } catch {
                 return false;
             }
         }
@@ -5620,37 +4913,32 @@ namespace TGASharpLib
         /// <param name="Width">Image Width, must be > 0.</param>
         /// <param name="Height">Image Height, must be > 0.</param>
         /// <returns>Bytes array with RLE compressed image data.</returns>
-        byte[] RLE_Encode(byte[] ImageData, int Width, int Height)
-        {
-            if (ImageData == null)
+        private byte[] RLE_Encode(byte[] ImageData, int Width, int Height) {
+            if(ImageData == null)
                 throw new ArgumentNullException(nameof(ImageData) + "in null!");
 
-            if (Width <= 0 || Height <= 0)
+            if(Width <= 0 || Height <= 0)
                 throw new ArgumentOutOfRangeException(nameof(Width) + " and " + nameof(Height) + " must be > 0!");
 
-            int Bpp = ImageData.Length / Width / Height; // Bytes per pixel
-            int ScanLineSize = Width * Bpp;
+            var Bpp = ImageData.Length / Width / Height; // Bytes per pixel
+            var ScanLineSize = Width * Bpp;
 
-            if (ScanLineSize * Height != ImageData.Length)
+            if(ScanLineSize * Height != ImageData.Length)
                 throw new ArgumentOutOfRangeException("ImageData has wrong Length!");
 
-            try
-            {
-                int Count = 0;
-                int Pos = 0;
-                bool IsRLE = false;
-                List<byte> Encoded = new List<byte>();
-                byte[] RowData = new byte[ScanLineSize];
+            try {
+                var Count = 0;
+                var Pos = 0;
+                var IsRLE = false;
+                var Encoded = new List<byte>();
+                var RowData = new byte[ScanLineSize];
 
-                for (int y = 0; y < Height; y++)
-                {
+                for(var y = 0; y < Height; y++) {
                     Pos = 0;
                     Buffer.BlockCopy(ImageData, y * ScanLineSize, RowData, 0, ScanLineSize);
 
-                    while (Pos < ScanLineSize)
-                    {
-                        if (Pos >= ScanLineSize - Bpp)
-                        {
+                    while(Pos < ScanLineSize) {
+                        if(Pos >= ScanLineSize - Bpp) {
                             Encoded.Add(0);
                             Encoded.AddRange(BitConverterExt.GetElements(RowData, Pos, Bpp));
                             Pos += Bpp;
@@ -5660,18 +4948,16 @@ namespace TGASharpLib
                         Count = 0; //1
                         IsRLE = BitConverterExt.IsElementsEqual(RowData, Pos, Pos + Bpp, Bpp);
 
-                        for (int i = Pos + Bpp; i < Math.Min(Pos + 128 * Bpp, ScanLineSize) - Bpp; i += Bpp)
-                        {
-                            if (IsRLE ^ BitConverterExt.IsElementsEqual(RowData, (IsRLE ? Pos : i), i + Bpp, Bpp))
-                            {
+                        for(var i = Pos + Bpp; i < Math.Min(Pos + 128 * Bpp, ScanLineSize) - Bpp; i += Bpp) {
+                            if(IsRLE ^ BitConverterExt.IsElementsEqual(RowData, (IsRLE ? Pos : i), i + Bpp, Bpp)) {
                                 //Count--;
                                 break;
-                            }
-                            else
+                            } else {
                                 Count++;
+                            }
                         }
 
-                        int CountBpp = (Count + 1) * Bpp;
+                        var CountBpp = (Count + 1) * Bpp;
                         Encoded.Add((byte)(IsRLE ? Count | 128 : Count));
                         Encoded.AddRange(BitConverterExt.GetElements(RowData, Pos, (IsRLE ? Bpp : CountBpp)));
                         Pos += CountBpp;
@@ -5679,9 +4965,7 @@ namespace TGASharpLib
                 }
 
                 return Encoded.ToArray();
-            }
-            catch
-            {
+            } catch {
                 return null;
             }
         }
@@ -5692,136 +4976,125 @@ namespace TGASharpLib
         /// <param name="ForceUseAlpha">Force use alpha channel.</param>
         /// <param name="PostageStampImage">Get Postage Stamp Image (Thumb) or get main image?</param>
         /// <returns>Bitmap or null, on error.</returns>
-        Bitmap ToBitmapFunc(bool ForceUseAlpha = false, bool PostageStampImage = false)
-        {
-            try
-            {
+        private Bitmap ToBitmapFunc(bool ForceUseAlpha = false, bool PostageStampImage = false) {
+            try {
                 #region UseAlpha?
-                bool UseAlpha = true;
-                if (ExtArea != null)
-                {
-                    switch (ExtArea.AttributesType)
-                    {
-                        case TgaAttrType.NoAlpha:
-                        case TgaAttrType.UndefinedAlphaCanBeIgnored:
-                        case TgaAttrType.UndefinedAlphaButShouldBeRetained:
-                            UseAlpha = false;
-                            break;
-                        case TgaAttrType.UsefulAlpha:
-                        case TgaAttrType.PreMultipliedAlpha:
-                        default:
-                            break;
+                var UseAlpha = true;
+                if(this.ExtArea != null) {
+                    switch(this.ExtArea.AttributesType) {
+                    case TgaAttrType.NoAlpha:
+                    case TgaAttrType.UndefinedAlphaCanBeIgnored:
+                    case TgaAttrType.UndefinedAlphaButShouldBeRetained:
+                        UseAlpha = false;
+                        break;
+                    case TgaAttrType.UsefulAlpha:
+                    case TgaAttrType.PreMultipliedAlpha:
+                    default:
+                        break;
                     }
                 }
-                UseAlpha = (Header.ImageSpec.ImageDescriptor.AlphaChannelBits > 0 && UseAlpha) | ForceUseAlpha;
+                UseAlpha = (this.Header.ImageSpec.ImageDescriptor.AlphaChannelBits > 0 && UseAlpha) | ForceUseAlpha;
                 #endregion
 
                 #region IsGrayImage
-                bool IsGrayImage = Header.ImageType == TgaImageType.RLE_BlackWhite ||
-                    Header.ImageType == TgaImageType.Uncompressed_BlackWhite;
+                var IsGrayImage = this.Header.ImageType == TgaImageType.RLE_BlackWhite ||
+                    this.Header.ImageType == TgaImageType.Uncompressed_BlackWhite;
                 #endregion
 
                 #region Get PixelFormat
-                PixelFormat PixFormat = PixelFormat.Format24bppRgb;
+                var PixFormat = PixelFormat.Format24bppRgb;
 
-                switch (Header.ImageSpec.PixelDepth)
-                {
-                    case TgaPixelDepth.Bpp8:
-                        PixFormat = PixelFormat.Format8bppIndexed;
-                        break;
+                switch(this.Header.ImageSpec.PixelDepth) {
+                case TgaPixelDepth.Bpp8:
+                    PixFormat = PixelFormat.Format8bppIndexed;
+                    break;
 
-                    case TgaPixelDepth.Bpp16:
-                        if (IsGrayImage)
-                            PixFormat = PixelFormat.Format16bppGrayScale;
+                case TgaPixelDepth.Bpp16:
+                    if(IsGrayImage)
+                        PixFormat = PixelFormat.Format16bppGrayScale;
+                    else
+                        PixFormat = (UseAlpha ? PixelFormat.Format16bppArgb1555 : PixelFormat.Format16bppRgb555);
+                    break;
+
+                case TgaPixelDepth.Bpp24:
+                    PixFormat = PixelFormat.Format24bppRgb;
+                    break;
+
+                case TgaPixelDepth.Bpp32:
+                    if(UseAlpha) {
+                        var f = this.Footer;
+                        if(this.ExtArea?.AttributesType == TgaAttrType.PreMultipliedAlpha)
+                            PixFormat = PixelFormat.Format32bppPArgb;
                         else
-                            PixFormat = (UseAlpha ? PixelFormat.Format16bppArgb1555 : PixelFormat.Format16bppRgb555);
-                        break;
+                            PixFormat = PixelFormat.Format32bppArgb;
+                    } else {
+                        PixFormat = PixelFormat.Format32bppRgb;
+                    }
 
-                    case TgaPixelDepth.Bpp24:
-                        PixFormat = PixelFormat.Format24bppRgb;
-                        break;
+                    break;
 
-                    case TgaPixelDepth.Bpp32:
-                        if (UseAlpha)
-                        {
-                            var f = Footer;
-                            if (ExtArea?.AttributesType == TgaAttrType.PreMultipliedAlpha)
-                                PixFormat = PixelFormat.Format32bppPArgb;
-                            else
-                                PixFormat = PixelFormat.Format32bppArgb;
-                        }
-                        else
-                            PixFormat = PixelFormat.Format32bppRgb;
-                        break;
-
-                    default:
-                        PixFormat = PixelFormat.Undefined;
-                        break;
+                default:
+                    PixFormat = PixelFormat.Undefined;
+                    break;
                 }
                 #endregion
 
-                ushort BMP_Width = (PostageStampImage ? ExtArea.PostageStampImage.Width : Width);
-                ushort BMP_Height = (PostageStampImage ? ExtArea.PostageStampImage.Height : Height);
-                Bitmap BMP = new Bitmap(BMP_Width, BMP_Height, PixFormat);
+                var BMP_Width = (PostageStampImage ? this.ExtArea.PostageStampImage.Width : this.Width);
+                var BMP_Height = (PostageStampImage ? this.ExtArea.PostageStampImage.Height : this.Height);
+                var BMP = new Bitmap(BMP_Width, BMP_Height, PixFormat);
 
                 #region ColorMap and GrayPalette
-                if (Header.ColorMapType == TgaColorMapType.ColorMap &&
-                   (Header.ImageType == TgaImageType.RLE_ColorMapped ||
-                    Header.ImageType == TgaImageType.Uncompressed_ColorMapped))
-                {
+                if(this.Header.ColorMapType == TgaColorMapType.ColorMap &&
+                   (this.Header.ImageType == TgaImageType.RLE_ColorMapped ||
+                    this.Header.ImageType == TgaImageType.Uncompressed_ColorMapped)) {
 
-                    ColorPalette ColorMap = BMP.Palette;
-                    Color[] CMapColors = ColorMap.Entries;
+                    var ColorMap = BMP.Palette;
+                    var CMapColors = ColorMap.Entries;
 
-                    switch (Header.ColorMapSpec.ColorMapEntrySize)
-                    {
-                        case TgaColorMapEntrySize.X1R5G5B5:
-                        case TgaColorMapEntrySize.A1R5G5B5:
-                            const float To8Bit = 255f / 31f; // Scale value from 5 to 8 bits.
-                            for (int i = 0; i < Math.Min(CMapColors.Length, Header.ColorMapSpec.ColorMapLength); i++)
-                            {
-                                ushort A1R5G5B5 = BitConverter.ToUInt16(ImageOrColorMapArea.ColorMapData, i * 2);
-                                int A = (UseAlpha ? (A1R5G5B5 & 0x8000) >> 15 : 1) * 255; // (0 or 1) * 255
-                                int R = (int)(((A1R5G5B5 & 0x7C00) >> 10) * To8Bit);
-                                int G = (int)(((A1R5G5B5 & 0x3E0) >> 5) * To8Bit);
-                                int B = (int)((A1R5G5B5 & 0x1F) * To8Bit);
-                                CMapColors[i] = Color.FromArgb(A, R, G, B);
-                            }
-                            break;
+                    switch(this.Header.ColorMapSpec.ColorMapEntrySize) {
+                    case TgaColorMapEntrySize.X1R5G5B5:
+                    case TgaColorMapEntrySize.A1R5G5B5:
+                        const float To8Bit = 255f / 31f; // Scale value from 5 to 8 bits.
+                        for(var i = 0; i < Math.Min(CMapColors.Length, this.Header.ColorMapSpec.ColorMapLength); i++) {
+                            var A1R5G5B5 = BitConverter.ToUInt16(this.ImageOrColorMapArea.ColorMapData, i * 2);
+                            var A = (UseAlpha ? (A1R5G5B5 & 0x8000) >> 15 : 1) * 255; // (0 or 1) * 255
+                            var R = (int)(((A1R5G5B5 & 0x7C00) >> 10) * To8Bit);
+                            var G = (int)(((A1R5G5B5 & 0x3E0) >> 5) * To8Bit);
+                            var B = (int)((A1R5G5B5 & 0x1F) * To8Bit);
+                            CMapColors[i] = Color.FromArgb(A, R, G, B);
+                        }
+                        break;
 
-                        case TgaColorMapEntrySize.R8G8B8:
-                            for (int i = 0; i < Math.Min(CMapColors.Length, Header.ColorMapSpec.ColorMapLength); i++)
-                            {
-                                int Index = i * 3; //RGB = 3 bytes
-                                int R = ImageOrColorMapArea.ColorMapData[Index + 2];
-                                int G = ImageOrColorMapArea.ColorMapData[Index + 1];
-                                int B = ImageOrColorMapArea.ColorMapData[Index];
-                                CMapColors[i] = Color.FromArgb(R, G, B);
-                            }
-                            break;
+                    case TgaColorMapEntrySize.R8G8B8:
+                        for(var i = 0; i < Math.Min(CMapColors.Length, this.Header.ColorMapSpec.ColorMapLength); i++) {
+                            var Index = i * 3; //RGB = 3 bytes
+                            int R = this.ImageOrColorMapArea.ColorMapData[Index + 2];
+                            int G = this.ImageOrColorMapArea.ColorMapData[Index + 1];
+                            int B = this.ImageOrColorMapArea.ColorMapData[Index];
+                            CMapColors[i] = Color.FromArgb(R, G, B);
+                        }
+                        break;
 
-                        case TgaColorMapEntrySize.A8R8G8B8:
-                            for (int i = 0; i < Math.Min(CMapColors.Length, Header.ColorMapSpec.ColorMapLength); i++)
-                            {
-                                int ARGB = BitConverter.ToInt32(ImageOrColorMapArea.ColorMapData, i * 4);
-                                CMapColors[i] = Color.FromArgb(UseAlpha ? ARGB | (0xFF << 24) : ARGB);
-                            }
-                            break;
+                    case TgaColorMapEntrySize.A8R8G8B8:
+                        for(var i = 0; i < Math.Min(CMapColors.Length, this.Header.ColorMapSpec.ColorMapLength); i++) {
+                            var ARGB = BitConverter.ToInt32(this.ImageOrColorMapArea.ColorMapData, i * 4);
+                            CMapColors[i] = Color.FromArgb(UseAlpha ? ARGB | (0xFF << 24) : ARGB);
+                        }
+                        break;
 
-                        default:
-                            ColorMap = null;
-                            break;
+                    default:
+                        ColorMap = null;
+                        break;
                     }
 
-                    if (ColorMap != null)
+                    if(ColorMap != null)
                         BMP.Palette = ColorMap;
                 }
 
-                if (PixFormat == PixelFormat.Format8bppIndexed && IsGrayImage)
-                {
-                    ColorPalette GrayPalette = BMP.Palette;
-                    Color[] GrayColors = GrayPalette.Entries;
-                    for (int i = 0; i < GrayColors.Length; i++)
+                if(PixFormat == PixelFormat.Format8bppIndexed && IsGrayImage) {
+                    var GrayPalette = BMP.Palette;
+                    var GrayColors = GrayPalette.Entries;
+                    for(var i = 0; i < GrayColors.Length; i++)
                         GrayColors[i] = Color.FromArgb(i, i, i);
                     BMP.Palette = GrayPalette;
                 }
@@ -5829,77 +5102,68 @@ namespace TGASharpLib
 
                 #region Bitmap width must by aligned (align value = 32 bits = 4 bytes)!
                 byte[] ImageData;
-                int BytesPerPixel = (int)Math.Ceiling((double)Header.ImageSpec.PixelDepth / 8.0);
-                int StrideBytes = BMP.Width * BytesPerPixel;
-                int PaddingBytes = (int)Math.Ceiling(StrideBytes / 4.0) * 4 - StrideBytes;
+                var BytesPerPixel = (int)Math.Ceiling((double)this.Header.ImageSpec.PixelDepth / 8.0);
+                var StrideBytes = BMP.Width * BytesPerPixel;
+                var PaddingBytes = (int)Math.Ceiling(StrideBytes / 4.0) * 4 - StrideBytes;
 
-                if (PaddingBytes > 0) //Need bytes align
+                if(PaddingBytes > 0) //Need bytes align
                 {
                     ImageData = new byte[(StrideBytes + PaddingBytes) * BMP.Height];
-                    for (int i = 0; i < BMP.Height; i++)
-                        Buffer.BlockCopy(PostageStampImage ? ExtArea.PostageStampImage.Data :
-                            ImageOrColorMapArea.ImageData, i * StrideBytes, ImageData,
+                    for(var i = 0; i < BMP.Height; i++) {
+                        Buffer.BlockCopy(PostageStampImage ? this.ExtArea.PostageStampImage.Data :
+                            this.ImageOrColorMapArea.ImageData, i * StrideBytes, ImageData,
                             i * (StrideBytes + PaddingBytes), StrideBytes);
+                    }
+                } else {
+                    ImageData = BitConverterExt.ToBytes(PostageStampImage ? this.ExtArea.PostageStampImage.Data :
+                        this.ImageOrColorMapArea.ImageData);
                 }
-                else
-                    ImageData = BitConverterExt.ToBytes(PostageStampImage ? ExtArea.PostageStampImage.Data :
-                        ImageOrColorMapArea.ImageData);
 
                 // Not official supported, but works (tested on 2 test images)!
-                if (PixFormat == PixelFormat.Format16bppGrayScale)
-                {
-                    for (long i = 0; i < ImageData.Length; i++)
+                if(PixFormat == PixelFormat.Format16bppGrayScale) {
+                    for(long i = 0; i < ImageData.Length; i++)
                         ImageData[i] ^= byte.MaxValue;
                 }
                 #endregion
 
-                Rectangle Re = new Rectangle(0, 0, BMP.Width, BMP.Height);
-                BitmapData BmpData = BMP.LockBits(Re, ImageLockMode.WriteOnly, BMP.PixelFormat);
+                var Re = new Rectangle(0, 0, BMP.Width, BMP.Height);
+                var BmpData = BMP.LockBits(Re, ImageLockMode.WriteOnly, BMP.PixelFormat);
                 Marshal.Copy(ImageData, 0, BmpData.Scan0, ImageData.Length);
                 BMP.UnlockBits(BmpData);
                 ImageData = null;
                 BmpData = null;
 
-                if (ExtArea != null && ExtArea.KeyColor.ToInt() != 0)
-                    BMP.MakeTransparent(ExtArea.KeyColor.ToColor());
+                if(this.ExtArea != null && this.ExtArea.KeyColor.ToInt() != 0)
+                    BMP.MakeTransparent(this.ExtArea.KeyColor.ToColor());
 
                 #region Flip Image
-                switch (Header.ImageSpec.ImageDescriptor.ImageOrigin)
-                {
-                    case TgaImgOrigin.BottomLeft:
-                        BMP.RotateFlip(RotateFlipType.RotateNoneFlipY);
-                        break;
-                    case TgaImgOrigin.BottomRight:
-                        BMP.RotateFlip(RotateFlipType.RotateNoneFlipXY);
-                        break;
-                    case TgaImgOrigin.TopLeft:
-                    default:
-                        break;
-                    case TgaImgOrigin.TopRight:
-                        BMP.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                        break;
+                switch(this.Header.ImageSpec.ImageDescriptor.ImageOrigin) {
+                case TgaImgOrigin.BottomLeft:
+                    BMP.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                    break;
+                case TgaImgOrigin.BottomRight:
+                    BMP.RotateFlip(RotateFlipType.RotateNoneFlipXY);
+                    break;
+                case TgaImgOrigin.TopLeft:
+                default:
+                    break;
+                case TgaImgOrigin.TopRight:
+                    BMP.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                    break;
                 }
                 #endregion
 
                 return BMP;
-            }
-            catch
-            {
+            } catch {
                 return null;
             }
         }
         #endregion
 
         #region Explicit
-        public static explicit operator Bitmap(TGA tga)
-        {
-            return tga.ToBitmap();
-        }
+        public static explicit operator Bitmap(TGA tga) => tga.ToBitmap();
 
-        public static explicit operator TGA(Bitmap bmp)
-        {
-            return FromBitmap(bmp);
-        }
+        public static explicit operator TGA(Bitmap bmp) => FromBitmap(bmp);
         #endregion
 
         #region PostageStamp Image
@@ -5908,69 +5172,63 @@ namespace TGASharpLib
         /// </summary>
         /// <param name="ForceUseAlpha">Force use alpha channel.</param>
         /// <returns>Bitmap or null.</returns>
-        public Bitmap GetPostageStampImage(bool ForceUseAlpha = false)
-        {
-            if (ExtArea == null || ExtArea.PostageStampImage == null || ExtArea.PostageStampImage.Data == null ||
-                ExtArea.PostageStampImage.Width <= 0 || ExtArea.PostageStampImage.Height <= 0)
+        public Bitmap GetPostageStampImage(bool ForceUseAlpha = false) {
+            if(this.ExtArea == null || this.ExtArea.PostageStampImage == null || this.ExtArea.PostageStampImage.Data == null ||
+                this.ExtArea.PostageStampImage.Width <= 0 || this.ExtArea.PostageStampImage.Height <= 0) {
                 return null;
+            }
 
-            return ToBitmapFunc(ForceUseAlpha, true);
+            return this.ToBitmapFunc(ForceUseAlpha, true);
         }
 
         /// <summary>
         /// Update Postage Stamp Image or set it.
         /// </summary>
-        public void UpdatePostageStampImage()
-        {
-            if (Header.ImageType == TgaImageType.NoImageData)
-            {
-                if (ExtArea != null)
-                    ExtArea.PostageStampImage = null;
+        public void UpdatePostageStampImage() {
+            if(this.Header.ImageType == TgaImageType.NoImageData) {
+                if(this.ExtArea != null)
+                    this.ExtArea.PostageStampImage = null;
                 return;
             }
 
-            ToNewFormat();
-            if (ExtArea.PostageStampImage == null)
-                ExtArea.PostageStampImage = new TgaPostageStampImage();
+            this.ToNewFormat();
+            if(this.ExtArea.PostageStampImage == null)
+                this.ExtArea.PostageStampImage = new TgaPostageStampImage();
 
-            int PS_Width = Header.ImageSpec.ImageWidth;
-            int PS_Height = Header.ImageSpec.ImageHeight;
+            int PS_Width = this.Header.ImageSpec.ImageWidth;
+            int PS_Height = this.Header.ImageSpec.ImageHeight;
 
-            if (Width > 64 || Height > 64)
-            {
-                float AspectRatio = Width / (float)Height;
+            if(this.Width > 64 || this.Height > 64) {
+                var AspectRatio = this.Width / (float)this.Height;
                 PS_Width = (byte)(64f * (AspectRatio < 1f ? AspectRatio : 1f));
                 PS_Height = (byte)(64f / (AspectRatio > 1f ? AspectRatio : 1f));
             }
             PS_Width = Math.Max(PS_Width, 4);
             PS_Height = Math.Max(PS_Height, 4);
 
-            ExtArea.PostageStampImage.Width = (byte)PS_Width;
-            ExtArea.PostageStampImage.Height = (byte)PS_Height;
+            this.ExtArea.PostageStampImage.Width = (byte)PS_Width;
+            this.ExtArea.PostageStampImage.Height = (byte)PS_Height;
 
-            int BytesPerPixel = (int)Math.Ceiling((double)Header.ImageSpec.PixelDepth / 8.0);
-            ExtArea.PostageStampImage.Data = new byte[PS_Width * PS_Height * BytesPerPixel];
+            var BytesPerPixel = (int)Math.Ceiling((double)this.Header.ImageSpec.PixelDepth / 8.0);
+            this.ExtArea.PostageStampImage.Data = new byte[PS_Width * PS_Height * BytesPerPixel];
 
-            float WidthCoef = Width / (float)PS_Width;
-            float HeightCoef = Height / (float)PS_Height;
+            var WidthCoef = this.Width / (float)PS_Width;
+            var HeightCoef = this.Height / (float)PS_Height;
 
-            for (int y = 0; y < PS_Height; y++)
-            {
-                int Y_Offset = (int)(y * HeightCoef) * Width * BytesPerPixel;
-                int y_Offset = y * PS_Width * BytesPerPixel;
+            for(var y = 0; y < PS_Height; y++) {
+                var Y_Offset = (int)(y * HeightCoef) * this.Width * BytesPerPixel;
+                var y_Offset = y * PS_Width * BytesPerPixel;
 
-                for (int x = 0; x < PS_Width; x++)
-                {
-                    Buffer.BlockCopy(ImageOrColorMapArea.ImageData, Y_Offset + (int)(x * WidthCoef) * BytesPerPixel,
-                        ExtArea.PostageStampImage.Data, y_Offset + x * BytesPerPixel, BytesPerPixel);
+                for(var x = 0; x < PS_Width; x++) {
+                    Buffer.BlockCopy(this.ImageOrColorMapArea.ImageData, Y_Offset + (int)(x * WidthCoef) * BytesPerPixel,
+                        this.ExtArea.PostageStampImage.Data, y_Offset + x * BytesPerPixel, BytesPerPixel);
                 }
             }
         }
 
-        public void DeletePostageStampImage()
-        {
-            if (ExtArea != null)
-                ExtArea.PostageStampImage = null;
+        public void DeletePostageStampImage() {
+            if(this.ExtArea != null)
+                this.ExtArea.PostageStampImage = null;
         }
         #endregion
     }

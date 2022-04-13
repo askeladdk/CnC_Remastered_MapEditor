@@ -12,18 +12,21 @@
 // distributed with this program. You should have received a copy of the 
 // GNU General Public License along with permitted additional restrictions 
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
-using MobiusEditor.Interface;
 using System.Drawing;
 
-namespace MobiusEditor.Model
-{
-    public class Smudge
-    {
-        public SmudgeType Type { get; set; }
+namespace MobiusEditor.Model {
+    public class Smudge {
+        public SmudgeType Type {
+            get; set;
+        }
 
-        public int Icon { get; set; }
+        public int Icon {
+            get; set;
+        }
 
-        public int Data { get; set; }
+        public int Data {
+            get; set;
+        }
 
         public Color Tint { get; set; } = Color.White;
     }

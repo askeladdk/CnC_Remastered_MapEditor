@@ -14,28 +14,35 @@
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using System.ComponentModel;
 
-namespace MobiusEditor.RedAlert
-{
-    public class House : Model.House
-    {
+namespace MobiusEditor.RedAlert {
+    public class House : Model.House {
         public House(Model.HouseType type)
-            : base(type)
-        {
+            : base(type) {
         }
 
         [DefaultValue(150)]
-        public int MaxInfantry { get; set; }
+        public int MaxInfantry {
+            get; set;
+        }
 
         [DefaultValue(150)]
-        public int MaxVessel { get; set; }
+        public int MaxVessel {
+            get; set;
+        }
 
         [DefaultValue(99)]
-        public int TechLevel { get; set; }
+        public int TechLevel {
+            get; set;
+        }
 
         [DefaultValue(5)]
-        public int IQ { get; set; }
+        public int IQ {
+            get; set;
+        }
 
         [DefaultValue(false)]
-        public bool PlayerControl { get; set; }
+        public bool PlayerControl {
+            get; set;
+        }
     }
 }

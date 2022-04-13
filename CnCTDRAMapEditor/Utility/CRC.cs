@@ -14,23 +14,15 @@
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using System;
 
-namespace MobiusEditor.Utility
-{
-    public class CRC
-    {
-        static CRC()
-        {
-            for (var i = 0U; i < 256U; ++i)
-            {
-                uint crc = i;
-                for (var j = 0U; j < 8U; ++j)
-                {
-                    if ((crc & 1U) != 0U)
-                    {
+namespace MobiusEditor.Utility {
+    public class CRC {
+        static CRC() {
+            for(var i = 0U; i < 256U; ++i) {
+                var crc = i;
+                for(var j = 0U; j < 8U; ++j) {
+                    if((crc & 1U) != 0U) {
                         crc = (crc >> 1) ^ polynomial;
-                    }
-                    else
-                    {
+                    } else {
                         crc >>= 1;
                     }
                 }
@@ -38,17 +30,14 @@ namespace MobiusEditor.Utility
             }
         }
 
-        public static uint Calculate(byte[] bytes)
-        {
-            if (bytes == null)
-            {
+        public static uint Calculate(byte[] bytes) {
+            if(bytes == null) {
                 throw new ArgumentNullException("bytes");
             }
 
-            uint remainder = 0xFFFFFFFFU;
-            for (var i = 0; i < bytes.Length; ++i)
-            {
-                uint index = (remainder & 0xFF) ^ bytes[i];
+            var remainder = 0xFFFFFFFFU;
+            for(var i = 0; i < bytes.Length; ++i) {
+                var index = (remainder & 0xFF) ^ bytes[i];
                 remainder = (remainder >> 8) ^ crcTable[index];
             }
             return ~remainder;

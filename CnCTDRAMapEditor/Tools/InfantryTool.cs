@@ -25,16 +25,14 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MobiusEditor.Tools
-{
-    public class InfantryTool : ViewTool
-    {
+namespace MobiusEditor.Tools {
+    public class InfantryTool : ViewTool {
         private readonly TypeComboBox infantryTypeComboBox;
         private readonly MapPanel infantryTypeMapPanel;
         private readonly ObjectProperties objectProperties;
 
         private Map previewMap;
-        protected override Map RenderMap => previewMap;
+        protected override Map RenderMap => this.previewMap;
 
         private bool placementMode;
 
@@ -44,194 +42,152 @@ namespace MobiusEditor.Tools
         private ObjectPropertiesPopup selectedObjectProperties;
 
         private InfantryType selectedInfantryType;
-        private InfantryType SelectedInfantryType
-        {
-            get => selectedInfantryType;
-            set
-            {
-                if (selectedInfantryType != value)
-                {
-                    if (placementMode && (selectedInfantryType != null))
-                    {
-                        mapPanel.Invalidate(map, navigationWidget.MouseCell);
+        private InfantryType SelectedInfantryType {
+            get => this.selectedInfantryType;
+            set {
+                if(this.selectedInfantryType != value) {
+                    if(this.placementMode && (this.selectedInfantryType != null)) {
+                        this.mapPanel.Invalidate(this.map, this.navigationWidget.MouseCell);
                     }
 
-                    selectedInfantryType = value;
-                    infantryTypeComboBox.SelectedValue = selectedInfantryType;
+                    this.selectedInfantryType = value;
+                    this.infantryTypeComboBox.SelectedValue = this.selectedInfantryType;
 
-                    if (placementMode && (selectedInfantryType != null))
-                    {
-                        mapPanel.Invalidate(map, navigationWidget.MouseCell);
+                    if(this.placementMode && (this.selectedInfantryType != null)) {
+                        this.mapPanel.Invalidate(this.map, this.navigationWidget.MouseCell);
                     }
 
-                    mockInfantry.Type = selectedInfantryType;
+                    this.mockInfantry.Type = this.selectedInfantryType;
 
-                    RefreshMapPanel();
+                    this.RefreshMapPanel();
                 }
             }
         }
 
         public InfantryTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, TypeComboBox infantryTypeComboBox, MapPanel infantryTypeMapPanel, ObjectProperties objectProperties, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
-            : base(mapPanel, layers, statusLbl, plugin, url)
-        {
-            previewMap = map;
+            : base(mapPanel, layers, statusLbl, plugin, url) {
+            this.previewMap = this.map;
 
-            mockInfantry = new Infantry(null)
-            {
+            this.mockInfantry = new Infantry(null) {
                 Type = infantryTypeComboBox.Types.First() as InfantryType,
-                House = map.Houses.First().Type,
+                House = this.map.Houses.First().Type,
                 Strength = 256,
-                Direction = map.DirectionTypes.Where(d => d.Equals(FacingType.South)).First(),
-                Mission = map.MissionTypes.Where(m => m.Equals("Guard")).FirstOrDefault() ?? map.MissionTypes.First()
+                Direction = this.map.DirectionTypes.Where(d => d.Equals(FacingType.South)).First(),
+                Mission = this.map.MissionTypes.Where(m => m.Equals("Guard")).FirstOrDefault() ?? this.map.MissionTypes.First()
             };
-            mockInfantry.PropertyChanged += MockInfantry_PropertyChanged;
+            this.mockInfantry.PropertyChanged += this.MockInfantry_PropertyChanged;
 
-            this.mapPanel.MouseDown += MapPanel_MouseDown;
-            this.mapPanel.MouseUp += MapPanel_MouseUp;
-            this.mapPanel.MouseDoubleClick += MapPanel_MouseDoubleClick;
-            this.mapPanel.MouseMove += MapPanel_MouseMove;
-            (this.mapPanel as Control).KeyDown += InfantryTool_KeyDown;
-            (this.mapPanel as Control).KeyUp += InfantryTool_KeyUp;
+            this.mapPanel.MouseDown += this.MapPanel_MouseDown;
+            this.mapPanel.MouseUp += this.MapPanel_MouseUp;
+            this.mapPanel.MouseDoubleClick += this.MapPanel_MouseDoubleClick;
+            this.mapPanel.MouseMove += this.MapPanel_MouseMove;
+            (this.mapPanel as Control).KeyDown += this.InfantryTool_KeyDown;
+            (this.mapPanel as Control).KeyUp += this.InfantryTool_KeyUp;
 
             this.infantryTypeComboBox = infantryTypeComboBox;
-            this.infantryTypeComboBox.SelectedIndexChanged += InfantryTypeComboBox_SelectedIndexChanged;
+            this.infantryTypeComboBox.SelectedIndexChanged += this.InfantryTypeComboBox_SelectedIndexChanged;
 
             this.infantryTypeMapPanel = infantryTypeMapPanel;
             this.infantryTypeMapPanel.BackColor = Color.White;
             this.infantryTypeMapPanel.MaxZoom = 1;
 
             this.objectProperties = objectProperties;
-            this.objectProperties.Object = mockInfantry;
+            this.objectProperties.Object = this.mockInfantry;
 
-            navigationWidget.MouseCellChanged += MouseoverWidget_MouseCellChanged;
+            this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
 
-            SelectedInfantryType = this.infantryTypeComboBox.Types.First() as InfantryType;
+            this.SelectedInfantryType = this.infantryTypeComboBox.Types.First() as InfantryType;
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void MapPanel_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (Control.ModifierKeys != Keys.None)
-            {
+        private void MapPanel_MouseDoubleClick(object sender, MouseEventArgs e) {
+            if(Control.ModifierKeys != Keys.None) {
                 return;
             }
 
-            if (map.Metrics.GetCell(navigationWidget.MouseCell, out int cell))
-            {
-                if (map.Technos[cell] is InfantryGroup infantryGroup)
-                {
-                    var i = InfantryGroup.ClosestStoppingTypes(navigationWidget.MouseSubPixel).Cast<int>().First();
-                    if (infantryGroup.Infantry[i] is Infantry infantry)
-                    {
-                        selectedInfantry = null;
+            if(this.map.Metrics.GetCell(this.navigationWidget.MouseCell, out var cell)) {
+                if(this.map.Technos[cell] is InfantryGroup infantryGroup) {
+                    var i = InfantryGroup.ClosestStoppingTypes(this.navigationWidget.MouseSubPixel).Cast<int>().First();
+                    if(infantryGroup.Infantry[i] is Infantry infantry) {
+                        this.selectedInfantry = null;
 
-                        selectedObjectProperties?.Close();
-                        selectedObjectProperties = new ObjectPropertiesPopup(objectProperties.Plugin, infantry);
-                        selectedObjectProperties.Closed += (cs, ce) =>
-                        {
-                            navigationWidget.Refresh();
+                        this.selectedObjectProperties?.Close();
+                        this.selectedObjectProperties = new ObjectPropertiesPopup(this.objectProperties.Plugin, infantry);
+                        this.selectedObjectProperties.Closed += (cs, ce) => {
+                            this.navigationWidget.Refresh();
                         };
 
-                        infantry.PropertyChanged += SelectedInfantry_PropertyChanged;
+                        infantry.PropertyChanged += this.SelectedInfantry_PropertyChanged;
 
-                        selectedObjectProperties.Show(mapPanel, mapPanel.PointToClient(Control.MousePosition));
+                        this.selectedObjectProperties.Show(this.mapPanel, this.mapPanel.PointToClient(Control.MousePosition));
 
-                        UpdateStatus();
+                        this.UpdateStatus();
                     }
                 }
             }
         }
 
-        private void MockInfantry_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            RefreshMapPanel();
-        }
+        private void MockInfantry_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.RefreshMapPanel();
 
-        private void SelectedInfantry_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            mapPanel.Invalidate(map, (sender as Infantry).InfantryGroup);
-        }
+        private void SelectedInfantry_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.mapPanel.Invalidate(this.map, (sender as Infantry).InfantryGroup);
 
-        private void InfantryTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SelectedInfantryType = infantryTypeComboBox.SelectedValue as InfantryType;
-        }
+        private void InfantryTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) => this.SelectedInfantryType = this.infantryTypeComboBox.SelectedValue as InfantryType;
 
-        private void InfantryTool_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ShiftKey)
-            {
-                EnterPlacementMode();
+        private void InfantryTool_KeyDown(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.ShiftKey) {
+                this.EnterPlacementMode();
             }
         }
 
-        private void InfantryTool_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.ShiftKey)
-            {
-                ExitPlacementMode();
+        private void InfantryTool_KeyUp(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.ShiftKey) {
+                this.ExitPlacementMode();
             }
         }
 
-        private void MapPanel_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (!placementMode && (Control.ModifierKeys == Keys.Shift))
-            {
-                EnterPlacementMode();
-            }
-            else if (placementMode && (Control.ModifierKeys == Keys.None))
-            {
-                ExitPlacementMode();
+        private void MapPanel_MouseMove(object sender, MouseEventArgs e) {
+            if(!this.placementMode && (Control.ModifierKeys == Keys.Shift)) {
+                this.EnterPlacementMode();
+            } else if(this.placementMode && (Control.ModifierKeys == Keys.None)) {
+                this.ExitPlacementMode();
             }
 
-            if (placementMode)
-            {
-                mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
-            }
-            else if (selectedInfantry != null)
-            {
-                var oldLocation = map.Technos[selectedInfantry.InfantryGroup].Value;
-                var oldStop = Array.IndexOf(selectedInfantry.InfantryGroup.Infantry, selectedInfantry);
+            if(this.placementMode) {
+                this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(this.navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
+            } else if(this.selectedInfantry != null) {
+                var oldLocation = this.map.Technos[this.selectedInfantry.InfantryGroup].Value;
+                var oldStop = Array.IndexOf(this.selectedInfantry.InfantryGroup.Infantry, this.selectedInfantry);
 
                 InfantryGroup infantryGroup = null;
-                var techno = map.Technos[navigationWidget.MouseCell];
-                if (techno == null)
-                {
+                var techno = this.map.Technos[this.navigationWidget.MouseCell];
+                if(techno == null) {
                     infantryGroup = new InfantryGroup();
-                    map.Technos.Add(navigationWidget.MouseCell, infantryGroup);
-                }
-                else if (techno is InfantryGroup)
-                {
+                    this.map.Technos.Add(this.navigationWidget.MouseCell, infantryGroup);
+                } else if(techno is InfantryGroup) {
                     infantryGroup = techno as InfantryGroup;
                 }
 
-                if (infantryGroup != null)
-                {
-                    foreach (var i in InfantryGroup.ClosestStoppingTypes(navigationWidget.MouseSubPixel).Cast<int>())
-                    {
-                        if (infantryGroup.Infantry[i] == null)
-                        {
-                            selectedInfantry.InfantryGroup.Infantry[oldStop] = null;
-                            infantryGroup.Infantry[i] = selectedInfantry;
-                            
-                            if (infantryGroup != selectedInfantry.InfantryGroup)
-                            {
-                                mapPanel.Invalidate(map, selectedInfantry.InfantryGroup);
-                                if (selectedInfantry.InfantryGroup.Infantry.All(x => x == null))
-                                {
-                                    map.Technos.Remove(selectedInfantry.InfantryGroup);
+                if(infantryGroup != null) {
+                    foreach(var i in InfantryGroup.ClosestStoppingTypes(this.navigationWidget.MouseSubPixel).Cast<int>()) {
+                        if(infantryGroup.Infantry[i] == null) {
+                            this.selectedInfantry.InfantryGroup.Infantry[oldStop] = null;
+                            infantryGroup.Infantry[i] = this.selectedInfantry;
+
+                            if(infantryGroup != this.selectedInfantry.InfantryGroup) {
+                                this.mapPanel.Invalidate(this.map, this.selectedInfantry.InfantryGroup);
+                                if(this.selectedInfantry.InfantryGroup.Infantry.All(x => x == null)) {
+                                    this.map.Technos.Remove(this.selectedInfantry.InfantryGroup);
                                 }
                             }
-                            selectedInfantry.InfantryGroup = infantryGroup;
+                            this.selectedInfantry.InfantryGroup = infantryGroup;
 
-                            mapPanel.Invalidate(map, infantryGroup);
+                            this.mapPanel.Invalidate(this.map, infantryGroup);
 
-                            plugin.Dirty = true;
+                            this.plugin.Dirty = true;
                         }
 
-                        if (infantryGroup == selectedInfantry.InfantryGroup)
-                        {
+                        if(infantryGroup == this.selectedInfantry.InfantryGroup) {
                             break;
                         }
                     }
@@ -239,80 +195,57 @@ namespace MobiusEditor.Tools
             }
         }
 
-        private void MapPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (placementMode)
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    AddInfantry(navigationWidget.MouseCell);
+        private void MapPanel_MouseDown(object sender, MouseEventArgs e) {
+            if(this.placementMode) {
+                if(e.Button == MouseButtons.Left) {
+                    this.AddInfantry(this.navigationWidget.MouseCell);
+                } else if(e.Button == MouseButtons.Right) {
+                    this.RemoveInfantry(this.navigationWidget.MouseCell);
                 }
-                else if (e.Button == MouseButtons.Right)
-                {
-                    RemoveInfantry(navigationWidget.MouseCell);
-                }
-            }
-            else if (e.Button == MouseButtons.Left)
-            {
-                SelectInfantry(navigationWidget.MouseCell);
-            }
-            else if (e.Button == MouseButtons.Right)
-            {
-                PickInfantry(navigationWidget.MouseCell);
+            } else if(e.Button == MouseButtons.Left) {
+                this.SelectInfantry(this.navigationWidget.MouseCell);
+            } else if(e.Button == MouseButtons.Right) {
+                this.PickInfantry(this.navigationWidget.MouseCell);
             }
         }
 
-        private void MapPanel_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (selectedInfantry != null)
-            {
-                selectedInfantry = null;
-                UpdateStatus();
+        private void MapPanel_MouseUp(object sender, MouseEventArgs e) {
+            if(this.selectedInfantry != null) {
+                this.selectedInfantry = null;
+                this.UpdateStatus();
             }
         }
 
-        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e)
-        {
-            if (placementMode)
-            {
-                if (SelectedInfantryType != null)
-                {
-                    mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(e.OldCell, new Size(1, 1)), 1, 1));
-                    mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(e.NewCell, new Size(1, 1)), 1, 1));
+        private void MouseoverWidget_MouseCellChanged(object sender, MouseCellChangedEventArgs e) {
+            if(this.placementMode) {
+                if(this.SelectedInfantryType != null) {
+                    this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(e.OldCell, new Size(1, 1)), 1, 1));
+                    this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(e.NewCell, new Size(1, 1)), 1, 1));
                 }
             }
         }
 
-        private void AddInfantry(Point location)
-        {
-            if (SelectedInfantryType != null)
-            {
-                if (map.Metrics.GetCell(location, out int cell))
-                {
+        private void AddInfantry(Point location) {
+            if(this.SelectedInfantryType != null) {
+                if(this.map.Metrics.GetCell(location, out var cell)) {
                     InfantryGroup infantryGroup = null;
 
-                    var techno = map.Technos[cell];
-                    if (techno == null)
-                    {
+                    var techno = this.map.Technos[cell];
+                    if(techno == null) {
                         infantryGroup = new InfantryGroup();
-                        map.Technos.Add(cell, infantryGroup);
-                    }
-                    else if (techno is InfantryGroup)
-                    {
+                        this.map.Technos.Add(cell, infantryGroup);
+                    } else if(techno is InfantryGroup) {
                         infantryGroup = techno as InfantryGroup;
                     }
 
-                    if (infantryGroup != null)
-                    {
-                        foreach (var i in InfantryGroup.ClosestStoppingTypes(navigationWidget.MouseSubPixel).Cast<int>())
-                        {
-                            if (infantryGroup.Infantry[i] == null)
-                            {
-                                var infantry = mockInfantry.Clone();
+                    if(infantryGroup != null) {
+                        foreach(var i in InfantryGroup.ClosestStoppingTypes(this.navigationWidget.MouseSubPixel).Cast<int>()) {
+                            if(infantryGroup.Infantry[i] == null) {
+                                var infantry = this.mockInfantry.Clone();
                                 infantryGroup.Infantry[i] = infantry;
                                 infantry.InfantryGroup = infantryGroup;
-                                mapPanel.Invalidate(map, infantryGroup);
-                                plugin.Dirty = true;
+                                this.mapPanel.Invalidate(this.map, infantryGroup);
+                                this.plugin.Dirty = true;
                                 break;
                             }
                         }
@@ -321,171 +254,130 @@ namespace MobiusEditor.Tools
             }
         }
 
-        private void RemoveInfantry(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                if (map.Technos[cell] is InfantryGroup infantryGroup)
-                {
-                    foreach (var i in InfantryGroup.ClosestStoppingTypes(navigationWidget.MouseSubPixel).Cast<int>())
-                    {
-                        if (infantryGroup.Infantry[i] != null)
-                        {
+        private void RemoveInfantry(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                if(this.map.Technos[cell] is InfantryGroup infantryGroup) {
+                    foreach(var i in InfantryGroup.ClosestStoppingTypes(this.navigationWidget.MouseSubPixel).Cast<int>()) {
+                        if(infantryGroup.Infantry[i] != null) {
                             infantryGroup.Infantry[i] = null;
-                            mapPanel.Invalidate(map, infantryGroup);
-                            plugin.Dirty = true;
+                            this.mapPanel.Invalidate(this.map, infantryGroup);
+                            this.plugin.Dirty = true;
                             break;
                         }
                     }
-                    if (infantryGroup.Infantry.All(i => i == null))
-                    {
-                        map.Technos.Remove(infantryGroup);
+                    if(infantryGroup.Infantry.All(i => i == null)) {
+                        this.map.Technos.Remove(infantryGroup);
                     }
                 }
             }
         }
 
-        private void EnterPlacementMode()
-        {
-            if (placementMode)
-            {
+        private void EnterPlacementMode() {
+            if(this.placementMode) {
                 return;
             }
 
-            placementMode = true;
+            this.placementMode = true;
 
-            navigationWidget.MouseoverSize = Size.Empty;
+            this.navigationWidget.MouseoverSize = Size.Empty;
 
-            if (SelectedInfantryType != null)
-            {
-                mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
+            if(this.SelectedInfantryType != null) {
+                this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(this.navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
             }
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void ExitPlacementMode()
-        {
-            if (!placementMode)
-            {
+        private void ExitPlacementMode() {
+            if(!this.placementMode) {
                 return;
             }
 
-            placementMode = false;
+            this.placementMode = false;
 
-            navigationWidget.MouseoverSize = new Size(1, 1);
+            this.navigationWidget.MouseoverSize = new Size(1, 1);
 
-            if (SelectedInfantryType != null)
-            {
-                mapPanel.Invalidate(map, Rectangle.Inflate(new Rectangle(navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
+            if(this.SelectedInfantryType != null) {
+                this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(this.navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
             }
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void PickInfantry(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                if (map.Technos[cell] is InfantryGroup infantryGroup)
-                {
-                    var i = InfantryGroup.ClosestStoppingTypes(navigationWidget.MouseSubPixel).Cast<int>().First();
-                    if (infantryGroup.Infantry[i] is Infantry infantry)
-                    {
-                        SelectedInfantryType = infantry.Type;
-                        mockInfantry.House = infantry.House;
-                        mockInfantry.Strength = infantry.Strength;
-                        mockInfantry.Direction = infantry.Direction;
-                        mockInfantry.Mission = infantry.Mission;
-                        mockInfantry.Trigger = infantry.Trigger;
+        private void PickInfantry(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                if(this.map.Technos[cell] is InfantryGroup infantryGroup) {
+                    var i = InfantryGroup.ClosestStoppingTypes(this.navigationWidget.MouseSubPixel).Cast<int>().First();
+                    if(infantryGroup.Infantry[i] is Infantry infantry) {
+                        this.SelectedInfantryType = infantry.Type;
+                        this.mockInfantry.House = infantry.House;
+                        this.mockInfantry.Strength = infantry.Strength;
+                        this.mockInfantry.Direction = infantry.Direction;
+                        this.mockInfantry.Mission = infantry.Mission;
+                        this.mockInfantry.Trigger = infantry.Trigger;
                     }
                 }
             }
         }
 
-        private void SelectInfantry(Point location)
-        {
-            if (map.Metrics.GetCell(location, out int cell))
-            {
-                selectedInfantry = null;
-                if (map.Technos[cell] is InfantryGroup infantryGroup)
-                {
-                    var i = InfantryGroup.ClosestStoppingTypes(navigationWidget.MouseSubPixel).Cast<int>().First();
-                    if (infantryGroup.Infantry[i] is Infantry infantry)
-                    {
-                        selectedInfantry = infantry;
+        private void SelectInfantry(Point location) {
+            if(this.map.Metrics.GetCell(location, out var cell)) {
+                this.selectedInfantry = null;
+                if(this.map.Technos[cell] is InfantryGroup infantryGroup) {
+                    var i = InfantryGroup.ClosestStoppingTypes(this.navigationWidget.MouseSubPixel).Cast<int>().First();
+                    if(infantryGroup.Infantry[i] is Infantry infantry) {
+                        this.selectedInfantry = infantry;
                     }
                 }
             }
 
-            UpdateStatus();
+            this.UpdateStatus();
         }
 
-        private void RefreshMapPanel()
-        {
-            if (mockInfantry.Type != null)
-            {
+        private void RefreshMapPanel() {
+            if(this.mockInfantry.Type != null) {
                 var infantryPreview = new Bitmap(Globals.TileWidth, Globals.TileHeight);
-                using (var g = Graphics.FromImage(infantryPreview))
-                {
-                    MapRenderer.Render(map.Theater, Point.Empty, Globals.TileSize, mockInfantry, InfantryStoppingType.Center).Item2(g);
+                using(var g = Graphics.FromImage(infantryPreview)) {
+                    MapRenderer.Render(this.map.Theater, Point.Empty, Globals.TileSize, this.mockInfantry, InfantryStoppingType.Center).Item2(g);
                 }
-                infantryTypeMapPanel.MapImage = infantryPreview;
-            }
-            else
-            {
-                infantryTypeMapPanel.MapImage = null;
+                this.infantryTypeMapPanel.MapImage = infantryPreview;
+            } else {
+                this.infantryTypeMapPanel.MapImage = null;
             }
         }
 
-        private void UpdateStatus()
-        {
-            if (placementMode)
-            {
-                statusLbl.Text = "Left-Click to place infantry, Right-Click to remove infantry";
-            }
-            else if (selectedInfantry != null)
-            {
-                statusLbl.Text = "Drag mouse to move infantry";
-            }
-            else
-            {
-                statusLbl.Text = "Shift to enter placement mode, Left-Click drag to move infantry, Double-Click update infantry properties, Right-Click to pick infantry";
+        private void UpdateStatus() {
+            if(this.placementMode) {
+                this.statusLbl.Text = "Left-Click to place infantry, Right-Click to remove infantry";
+            } else if(this.selectedInfantry != null) {
+                this.statusLbl.Text = "Drag mouse to move infantry";
+            } else {
+                this.statusLbl.Text = "Shift to enter placement mode, Left-Click drag to move infantry, Double-Click update infantry properties, Right-Click to pick infantry";
             }
         }
 
-        protected override void PreRenderMap()
-        {
+        protected override void PreRenderMap() {
             base.PreRenderMap();
 
-            previewMap = map.Clone();
-            if (placementMode)
-            {
-                var location = navigationWidget.MouseCell;
-                if (SelectedInfantryType != null)
-                {
-                    if (previewMap.Metrics.GetCell(location, out int cell))
-                    {
+            this.previewMap = this.map.Clone();
+            if(this.placementMode) {
+                var location = this.navigationWidget.MouseCell;
+                if(this.SelectedInfantryType != null) {
+                    if(this.previewMap.Metrics.GetCell(location, out var cell)) {
                         InfantryGroup infantryGroup = null;
 
-                        var techno = previewMap.Technos[cell];
-                        if (techno == null)
-                        {
+                        var techno = this.previewMap.Technos[cell];
+                        if(techno == null) {
                             infantryGroup = new InfantryGroup();
-                            previewMap.Technos.Add(cell, infantryGroup);
-                        }
-                        else if (techno is InfantryGroup)
-                        {
+                            this.previewMap.Technos.Add(cell, infantryGroup);
+                        } else if(techno is InfantryGroup) {
                             infantryGroup = techno as InfantryGroup;
                         }
 
-                        if (infantryGroup != null)
-                        {
-                            foreach (var i in InfantryGroup.ClosestStoppingTypes(navigationWidget.MouseSubPixel).Cast<int>())
-                            {
-                                if (infantryGroup.Infantry[i] == null)
-                                {
-                                    var infantry = mockInfantry.Clone();
+                        if(infantryGroup != null) {
+                            foreach(var i in InfantryGroup.ClosestStoppingTypes(this.navigationWidget.MouseSubPixel).Cast<int>()) {
+                                if(infantryGroup.Infantry[i] == null) {
+                                    var infantry = this.mockInfantry.Clone();
                                     infantry.Tint = Color.FromArgb(128, Color.White);
                                     infantryGroup.Infantry[i] = infantry;
                                     break;
@@ -497,13 +389,11 @@ namespace MobiusEditor.Tools
             }
         }
 
-        protected override void PostRenderMap(Graphics graphics)
-        {
+        protected override void PostRenderMap(Graphics graphics) {
             base.PostRenderMap(graphics);
 
             var infantryPen = new Pen(Color.Green, 4.0f);
-            foreach (var (topLeft, _) in map.Technos.OfType<InfantryGroup>())
-            {
+            foreach(var (topLeft, _) in this.map.Technos.OfType<InfantryGroup>()) {
                 var bounds = new Rectangle(new Point(topLeft.X * Globals.TileWidth, topLeft.Y * Globals.TileHeight), Globals.TileSize);
                 graphics.DrawRectangle(infantryPen, bounds);
             }
@@ -512,24 +402,21 @@ namespace MobiusEditor.Tools
         #region IDisposable Support
         private bool disposedValue = false;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    mapPanel.MouseDown -= MapPanel_MouseDown;
-                    mapPanel.MouseUp -= MapPanel_MouseUp;
-                    mapPanel.MouseDoubleClick -= MapPanel_MouseDoubleClick;
-                    mapPanel.MouseMove -= MapPanel_MouseMove;
-                    (mapPanel as Control).KeyDown -= InfantryTool_KeyDown;
-                    (mapPanel as Control).KeyUp -= InfantryTool_KeyUp;
+        protected override void Dispose(bool disposing) {
+            if(!this.disposedValue) {
+                if(disposing) {
+                    this.mapPanel.MouseDown -= this.MapPanel_MouseDown;
+                    this.mapPanel.MouseUp -= this.MapPanel_MouseUp;
+                    this.mapPanel.MouseDoubleClick -= this.MapPanel_MouseDoubleClick;
+                    this.mapPanel.MouseMove -= this.MapPanel_MouseMove;
+                    (this.mapPanel as Control).KeyDown -= this.InfantryTool_KeyDown;
+                    (this.mapPanel as Control).KeyUp -= this.InfantryTool_KeyUp;
 
-                    infantryTypeComboBox.SelectedIndexChanged -= InfantryTypeComboBox_SelectedIndexChanged;
+                    this.infantryTypeComboBox.SelectedIndexChanged -= this.InfantryTypeComboBox_SelectedIndexChanged;
 
-                    navigationWidget.MouseCellChanged -= MouseoverWidget_MouseCellChanged;
+                    this.navigationWidget.MouseCellChanged -= this.MouseoverWidget_MouseCellChanged;
                 }
-                disposedValue = true;
+                this.disposedValue = true;
             }
 
             base.Dispose(disposing);

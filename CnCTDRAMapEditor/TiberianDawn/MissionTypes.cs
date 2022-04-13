@@ -14,10 +14,8 @@
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 using System.Collections.Generic;
 
-namespace MobiusEditor.TiberianDawn
-{
-    public static class MissionTypes
-    {
+namespace MobiusEditor.TiberianDawn {
+    public static class MissionTypes {
         private static readonly string[] Types = new string[]
         {
             "Sleep",
@@ -44,9 +42,6 @@ namespace MobiusEditor.TiberianDawn
             "Missile"
         };
 
-        public static IEnumerable<string> GetTypes()
-        {
-            return Types;
-        }
+        public static IEnumerable<string> GetTypes() => Types;
     }
 }
