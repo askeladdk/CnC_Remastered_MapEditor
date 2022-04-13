@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -215,7 +216,7 @@ namespace MobiusEditor.Utility {
             }
         }
 
-        public static bool IsSteamBuild => File.Exists("steam_appid.txt");
+        public static bool IsSteamBuild => !Environment.GetCommandLineArgs().Any(x => x == "-nosteam") && File.Exists("steam_appid.txt");
 
         private static Callback<GameLobbyJoinRequested_t> GameLobbyJoinRequested;
 
