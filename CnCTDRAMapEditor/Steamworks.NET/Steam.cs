@@ -76,7 +76,6 @@ namespace Steamworks {
             NativeMethods.SteamAPI_ReleaseCurrentThreadMemory();
         }
 
-
         //----------------------------------------------------------------------------------------------------------------------------------------------------------//
         //	steam callback and call-result helpers
         //

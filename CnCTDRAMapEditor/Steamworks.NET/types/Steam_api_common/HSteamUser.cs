@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     [System.Serializable]
     public struct HSteamUser : System.IEquatable<HSteamUser>, System.IComparable<HSteamUser> {

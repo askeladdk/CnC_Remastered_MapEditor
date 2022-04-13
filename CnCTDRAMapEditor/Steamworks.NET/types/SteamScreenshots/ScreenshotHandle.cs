@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     [System.Serializable]
     public struct ScreenshotHandle : System.IEquatable<ScreenshotHandle>, System.IComparable<ScreenshotHandle> {

@@ -1,16 +1,16 @@
 ﻿//
 // Copyright 2020 Electronic Arts Inc.
 //
-// The Command & Conquer Map Editor and corresponding source code is free 
-// software: you can redistribute it and/or modify it under the terms of 
-// the GNU General Public License as published by the Free Software Foundation, 
+// The Command & Conquer Map Editor and corresponding source code is free
+// software: you can redistribute it and/or modify it under the terms of
+// the GNU General Public License as published by the Free Software Foundation,
 // either version 3 of the License, or (at your option) any later version.
 
-// The Command & Conquer Map Editor and corresponding source code is distributed 
-// in the hope that it will be useful, but with permitted additional restrictions 
-// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT 
-// distributed with this program. You should have received a copy of the 
-// GNU General Public License along with permitted additional restrictions 
+// The Command & Conquer Map Editor and corresponding source code is distributed
+// in the hope that it will be useful, but with permitted additional restrictions
+// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT
+// distributed with this program. You should have received a copy of the
+// GNU General Public License along with permitted additional restrictions
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 namespace MobiusEditor.Dialogs
 {
@@ -64,9 +64,9 @@ namespace MobiusEditor.Dialogs
             this.groupBox2.SuspendLayout();
             this.flowLayoutPanel4.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // tableLayoutPanel1
-            // 
+            //
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 1);
@@ -81,9 +81,9 @@ namespace MobiusEditor.Dialogs
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 13F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(356, 324);
             this.tableLayoutPanel1.TabIndex = 0;
-            // 
+            //
             // flowLayoutPanel1
-            // 
+            //
             this.flowLayoutPanel1.AutoSize = true;
             this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanel1.Controls.Add(this.btnCancel);
@@ -95,9 +95,9 @@ namespace MobiusEditor.Dialogs
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(352, 27);
             this.flowLayoutPanel1.TabIndex = 0;
-            // 
+            //
             // btnCancel
-            // 
+            //
             this.btnCancel.AutoSize = true;
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Location = new System.Drawing.Point(300, 2);
@@ -107,9 +107,9 @@ namespace MobiusEditor.Dialogs
             this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            // 
+            //
             // btnOK
-            // 
+            //
             this.btnOK.AutoSize = true;
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOK.Location = new System.Drawing.Point(246, 2);
@@ -119,9 +119,9 @@ namespace MobiusEditor.Dialogs
             this.btnOK.TabIndex = 0;
             this.btnOK.Text = "&OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            // 
+            //
             // flowLayoutPanel2
-            // 
+            //
             this.flowLayoutPanel2.Controls.Add(this.groupBox1);
             this.flowLayoutPanel2.Controls.Add(this.groupBox2);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -131,9 +131,9 @@ namespace MobiusEditor.Dialogs
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(352, 289);
             this.flowLayoutPanel2.TabIndex = 1;
-            // 
+            //
             // groupBox1
-            // 
+            //
             this.groupBox1.Controls.Add(this.flowLayoutPanel3);
             this.groupBox1.Location = new System.Drawing.Point(2, 2);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
@@ -143,9 +143,9 @@ namespace MobiusEditor.Dialogs
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Game Type";
-            // 
+            //
             // flowLayoutPanel3
-            // 
+            //
             this.flowLayoutPanel3.AutoSize = true;
             this.flowLayoutPanel3.Controls.Add(this.radioTD);
             this.flowLayoutPanel3.Controls.Add(this.radioRA);
@@ -156,9 +156,9 @@ namespace MobiusEditor.Dialogs
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
             this.flowLayoutPanel3.Size = new System.Drawing.Size(335, 53);
             this.flowLayoutPanel3.TabIndex = 0;
-            // 
+            //
             // radioTD
-            // 
+            //
             this.radioTD.AutoSize = true;
             this.radioTD.Checked = true;
             this.radioTD.Location = new System.Drawing.Point(2, 2);
@@ -170,9 +170,9 @@ namespace MobiusEditor.Dialogs
             this.radioTD.Text = "Tiberian Dawn";
             this.radioTD.UseVisualStyleBackColor = true;
             this.radioTD.CheckedChanged += new System.EventHandler(this.radioGameType_CheckedChanged);
-            // 
+            //
             // radioRA
-            // 
+            //
             this.radioRA.AutoSize = true;
             this.radioRA.Location = new System.Drawing.Point(2, 23);
             this.radioRA.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
@@ -182,9 +182,9 @@ namespace MobiusEditor.Dialogs
             this.radioRA.Text = "Red Alert";
             this.radioRA.UseVisualStyleBackColor = true;
             this.radioRA.CheckedChanged += new System.EventHandler(this.radioGameType_CheckedChanged);
-            // 
+            //
             // groupBox2
-            // 
+            //
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.flowLayoutPanel4);
             this.groupBox2.Location = new System.Drawing.Point(2, 76);
@@ -195,9 +195,9 @@ namespace MobiusEditor.Dialogs
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Theater";
-            // 
+            //
             // flowLayoutPanel4
-            // 
+            //
             this.flowLayoutPanel4.AutoSize = true;
             this.flowLayoutPanel4.Controls.Add(this.radioTheater1);
             this.flowLayoutPanel4.Controls.Add(this.radioTheater2);
@@ -209,9 +209,9 @@ namespace MobiusEditor.Dialogs
             this.flowLayoutPanel4.Name = "flowLayoutPanel4";
             this.flowLayoutPanel4.Size = new System.Drawing.Size(335, 72);
             this.flowLayoutPanel4.TabIndex = 0;
-            // 
+            //
             // radioTheater1
-            // 
+            //
             this.radioTheater1.AutoSize = true;
             this.radioTheater1.Checked = true;
             this.radioTheater1.Location = new System.Drawing.Point(2, 2);
@@ -222,9 +222,9 @@ namespace MobiusEditor.Dialogs
             this.radioTheater1.TabStop = true;
             this.radioTheater1.Text = "Desert";
             this.radioTheater1.UseVisualStyleBackColor = true;
-            // 
+            //
             // radioTheater2
-            // 
+            //
             this.radioTheater2.AutoSize = true;
             this.radioTheater2.Location = new System.Drawing.Point(2, 23);
             this.radioTheater2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
@@ -233,9 +233,9 @@ namespace MobiusEditor.Dialogs
             this.radioTheater2.TabIndex = 1;
             this.radioTheater2.Text = "Temperate";
             this.radioTheater2.UseVisualStyleBackColor = true;
-            // 
+            //
             // radioTheater3
-            // 
+            //
             this.radioTheater3.AutoSize = true;
             this.radioTheater3.Location = new System.Drawing.Point(2, 44);
             this.radioTheater3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
@@ -245,9 +245,9 @@ namespace MobiusEditor.Dialogs
             this.radioTheater3.TabStop = true;
             this.radioTheater3.Text = "Winter";
             this.radioTheater3.UseVisualStyleBackColor = true;
-            // 
+            //
             // NewMapDialog
-            // 
+            //
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

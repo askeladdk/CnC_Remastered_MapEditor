@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     [System.Serializable]
     public struct FriendsGroupID_t : System.IEquatable<FriendsGroupID_t>, System.IComparable<FriendsGroupID_t> {

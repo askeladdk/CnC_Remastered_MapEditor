@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     [System.Serializable]
     public struct PartyBeaconID_t : System.IEquatable<PartyBeaconID_t>, System.IComparable<PartyBeaconID_t> {

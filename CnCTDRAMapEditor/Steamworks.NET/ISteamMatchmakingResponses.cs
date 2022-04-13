@@ -121,11 +121,11 @@ namespace Steamworks {
     };
 
     //-----------------------------------------------------------------------------
-    // Purpose: Callback interface for receiving responses after pinging an individual server 
+    // Purpose: Callback interface for receiving responses after pinging an individual server
     //
     // These callbacks all occur in response to querying an individual server
-    // via the ISteamMatchmakingServers()->PingServer() call below.  If you are 
-    // destructing an object that implements this interface then you should call 
+    // via the ISteamMatchmakingServers()->PingServer() call below.  If you are
+    // destructing an object that implements this interface then you should call
     // ISteamMatchmakingServers()->CancelServerQuery() passing in the handle to the query
     // which is in progress.  Failure to cancel in progress queries when destructing
     // a callback handler may result in a crash when a callback later occurs.
@@ -209,8 +209,8 @@ namespace Steamworks {
     // who is playing on a particular server.
     //
     // These callbacks all occur in response to querying an individual server
-    // via the ISteamMatchmakingServers()->PlayerDetails() call below.  If you are 
-    // destructing an object that implements this interface then you should call 
+    // via the ISteamMatchmakingServers()->PlayerDetails() call below.  If you are
+    // destructing an object that implements this interface then you should call
     // ISteamMatchmakingServers()->CancelServerQuery() passing in the handle to the query
     // which is in progress.  Failure to cancel in progress queries when destructing
     // a callback handler may result in a crash when a callback later occurs.
@@ -223,7 +223,7 @@ namespace Steamworks {
         // The server failed to respond to the request for player details
         public delegate void PlayersFailedToRespond();
 
-        // The server has finished responding to the player details request 
+        // The server has finished responding to the player details request
         // (ie, you won't get anymore AddPlayerToList callbacks)
         public delegate void PlayersRefreshComplete();
 
@@ -314,8 +314,8 @@ namespace Steamworks {
     // details on a particular server.
     //
     // These callbacks all occur in response to querying an individual server
-    // via the ISteamMatchmakingServers()->ServerRules() call below.  If you are 
-    // destructing an object that implements this interface then you should call 
+    // via the ISteamMatchmakingServers()->ServerRules() call below.  If you are
+    // destructing an object that implements this interface then you should call
     // ISteamMatchmakingServers()->CancelServerQuery() passing in the handle to the query
     // which is in progress.  Failure to cancel in progress queries when destructing
     // a callback handler may result in a crash when a callback later occurs.
@@ -328,7 +328,7 @@ namespace Steamworks {
         // The server failed to respond to the request for rule details
         public delegate void RulesFailedToRespond();
 
-        // The server has finished responding to the rule details request 
+        // The server has finished responding to the rule details request
         // (ie, you won't get anymore RulesResponded callbacks)
         public delegate void RulesRefreshComplete();
 

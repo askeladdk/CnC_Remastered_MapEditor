@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     [System.Serializable]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 4)]
@@ -99,12 +98,10 @@ namespace Steamworks {
         //-----------------------------------------------------------------------------
         public bool BContentServerAccount() => this.GetEAccountType() == EAccountType.k_EAccountTypeContentServer;
 
-
         //-----------------------------------------------------------------------------
         // Purpose: Is this a clan account id?
         //-----------------------------------------------------------------------------
         public bool BClanAccount() => this.GetEAccountType() == EAccountType.k_EAccountTypeClan;
-
 
         //-----------------------------------------------------------------------------
         // Purpose: Is this a chat account id?
@@ -117,12 +114,10 @@ namespace Steamworks {
         public bool IsLobby() => (this.GetEAccountType() == EAccountType.k_EAccountTypeChat)
                 && (this.GetUnAccountInstance() & (int)EChatSteamIDInstanceFlags.k_EChatInstanceFlagLobby) != 0;
 
-
         //-----------------------------------------------------------------------------
         // Purpose: Is this an individual user account id?
         //-----------------------------------------------------------------------------
         public bool BIndividualAccount() => this.GetEAccountType() == EAccountType.k_EAccountTypeIndividual || this.GetEAccountType() == EAccountType.k_EAccountTypeConsoleUser;
-
 
         //-----------------------------------------------------------------------------
         // Purpose: Is this an anonymous account?
@@ -205,7 +200,7 @@ namespace Steamworks {
         public bool Equals(CSteamID other) => this.m_SteamID == other.m_SteamID;
 
         public int CompareTo(CSteamID other) => this.m_SteamID.CompareTo(other.m_SteamID);
-        #endregion
+        #endregion Overrides
     }
 }
 

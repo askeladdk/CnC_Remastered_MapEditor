@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     [System.Serializable]
     public struct UGCHandle_t : System.IEquatable<UGCHandle_t>, System.IComparable<UGCHandle_t> {

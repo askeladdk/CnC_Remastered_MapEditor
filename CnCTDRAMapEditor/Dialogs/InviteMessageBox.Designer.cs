@@ -1,16 +1,16 @@
 ﻿//
 // Copyright 2020 Electronic Arts Inc.
 //
-// The Command & Conquer Map Editor and corresponding source code is free 
-// software: you can redistribute it and/or modify it under the terms of 
-// the GNU General Public License as published by the Free Software Foundation, 
+// The Command & Conquer Map Editor and corresponding source code is free
+// software: you can redistribute it and/or modify it under the terms of
+// the GNU General Public License as published by the Free Software Foundation,
 // either version 3 of the License, or (at your option) any later version.
 
-// The Command & Conquer Map Editor and corresponding source code is distributed 
-// in the hope that it will be useful, but with permitted additional restrictions 
-// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT 
-// distributed with this program. You should have received a copy of the 
-// GNU General Public License along with permitted additional restrictions 
+// The Command & Conquer Map Editor and corresponding source code is distributed
+// in the hope that it will be useful, but with permitted additional restrictions
+// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT
+// distributed with this program. You should have received a copy of the
+// GNU General Public License along with permitted additional restrictions
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 namespace MobiusEditor.Dialogs
 {
@@ -52,9 +52,9 @@ namespace MobiusEditor.Dialogs
             this.flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxIcon)).BeginInit();
             this.SuspendLayout();
-            // 
+            //
             // flowLayoutPanel1
-            // 
+            //
             this.flowLayoutPanel1.Controls.Add(this.flowLayoutPanel2);
             this.flowLayoutPanel1.Controls.Add(this.btnOK);
             this.flowLayoutPanel1.Controls.Add(this.checkBoxDontShowThisAgain);
@@ -64,9 +64,9 @@ namespace MobiusEditor.Dialogs
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(425, 97);
             this.flowLayoutPanel1.TabIndex = 0;
-            // 
+            //
             // flowLayoutPanel2
-            // 
+            //
             this.flowLayoutPanel2.AutoSize = true;
             this.flowLayoutPanel2.Controls.Add(this.pictureBoxIcon);
             this.flowLayoutPanel2.Controls.Add(this.label1);
@@ -74,9 +74,9 @@ namespace MobiusEditor.Dialogs
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(419, 38);
             this.flowLayoutPanel2.TabIndex = 0;
-            // 
+            //
             // btnOK
-            // 
+            //
             this.btnOK.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOK.Location = new System.Drawing.Point(175, 47);
@@ -85,9 +85,9 @@ namespace MobiusEditor.Dialogs
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "&OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            // 
+            //
             // checkBoxDontShowThisAgain
-            // 
+            //
             this.checkBoxDontShowThisAgain.AutoSize = true;
             this.flowLayoutPanel1.SetFlowBreak(this.checkBoxDontShowThisAgain, true);
             this.checkBoxDontShowThisAgain.Location = new System.Drawing.Point(3, 76);
@@ -96,17 +96,17 @@ namespace MobiusEditor.Dialogs
             this.checkBoxDontShowThisAgain.TabIndex = 2;
             this.checkBoxDontShowThisAgain.Text = "Don\'t show this again";
             this.checkBoxDontShowThisAgain.UseVisualStyleBackColor = true;
-            // 
+            //
             // pictureBoxIcon
-            // 
+            //
             this.pictureBoxIcon.Location = new System.Drawing.Point(3, 3);
             this.pictureBoxIcon.Name = "pictureBoxIcon";
             this.pictureBoxIcon.Size = new System.Drawing.Size(32, 32);
             this.pictureBoxIcon.TabIndex = 0;
             this.pictureBoxIcon.TabStop = false;
-            // 
+            //
             // label1
-            // 
+            //
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(41, 12);
@@ -114,9 +114,9 @@ namespace MobiusEditor.Dialogs
             this.label1.Size = new System.Drawing.Size(375, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "To join a game session or accept game invites, please first exit the Map Editor.";
-            // 
+            //
             // CheckMessageBox
-            // 
+            //
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

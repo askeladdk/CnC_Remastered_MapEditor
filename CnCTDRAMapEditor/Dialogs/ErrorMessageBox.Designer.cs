@@ -1,16 +1,16 @@
 ﻿//
 // Copyright 2020 Electronic Arts Inc.
 //
-// The Command & Conquer Map Editor and corresponding source code is free 
-// software: you can redistribute it and/or modify it under the terms of 
-// the GNU General Public License as published by the Free Software Foundation, 
+// The Command & Conquer Map Editor and corresponding source code is free
+// software: you can redistribute it and/or modify it under the terms of
+// the GNU General Public License as published by the Free Software Foundation,
 // either version 3 of the License, or (at your option) any later version.
 
-// The Command & Conquer Map Editor and corresponding source code is distributed 
-// in the hope that it will be useful, but with permitted additional restrictions 
-// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT 
-// distributed with this program. You should have received a copy of the 
-// GNU General Public License along with permitted additional restrictions 
+// The Command & Conquer Map Editor and corresponding source code is distributed
+// in the hope that it will be useful, but with permitted additional restrictions
+// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT
+// distributed with this program. You should have received a copy of the
+// GNU General Public License along with permitted additional restrictions
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 namespace MobiusEditor.Dialogs
 {
@@ -51,9 +51,9 @@ namespace MobiusEditor.Dialogs
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // tableLayoutPanel1
-            // 
+            //
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.lblMessage, 0, 0);
@@ -68,18 +68,18 @@ namespace MobiusEditor.Dialogs
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(447, 285);
             this.tableLayoutPanel1.TabIndex = 0;
-            // 
+            //
             // lblMessage
-            // 
+            //
             this.lblMessage.AutoSize = true;
             this.lblMessage.Location = new System.Drawing.Point(3, 0);
             this.lblMessage.Name = "lblMessage";
             this.lblMessage.Size = new System.Drawing.Size(191, 13);
             this.lblMessage.TabIndex = 1;
             this.lblMessage.Text = "The following errors were encountered:";
-            // 
+            //
             // txtErrors
-            // 
+            //
             this.txtErrors.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtErrors.Location = new System.Drawing.Point(3, 16);
             this.txtErrors.Multiline = true;
@@ -89,9 +89,9 @@ namespace MobiusEditor.Dialogs
             this.txtErrors.Size = new System.Drawing.Size(441, 231);
             this.txtErrors.TabIndex = 0;
             this.txtErrors.WordWrap = false;
-            // 
+            //
             // flowLayoutPanel1
-            // 
+            //
             this.flowLayoutPanel1.AutoSize = true;
             this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanel1.Controls.Add(this.btnOK);
@@ -102,9 +102,9 @@ namespace MobiusEditor.Dialogs
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(441, 29);
             this.flowLayoutPanel1.TabIndex = 1;
-            // 
+            //
             // btnOK
-            // 
+            //
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnOK.Location = new System.Drawing.Point(363, 3);
             this.btnOK.Name = "btnOK";
@@ -112,9 +112,9 @@ namespace MobiusEditor.Dialogs
             this.btnOK.TabIndex = 0;
             this.btnOK.Text = "&OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            // 
+            //
             // btnCopy
-            // 
+            //
             this.btnCopy.Location = new System.Drawing.Point(246, 3);
             this.btnCopy.Name = "btnCopy";
             this.btnCopy.Size = new System.Drawing.Size(111, 23);
@@ -122,9 +122,9 @@ namespace MobiusEditor.Dialogs
             this.btnCopy.Text = "&Copy to Clipboard";
             this.btnCopy.UseVisualStyleBackColor = true;
             this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
-            // 
+            //
             // ErrorMessageBox
-            // 
+            //
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

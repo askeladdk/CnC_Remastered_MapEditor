@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     [System.Serializable]
     public struct SNetListenSocket_t : System.IEquatable<SNetListenSocket_t>, System.IComparable<SNetListenSocket_t> {

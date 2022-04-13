@@ -1,16 +1,16 @@
 ﻿//
 // Copyright 2020 Electronic Arts Inc.
 //
-// The Command & Conquer Map Editor and corresponding source code is free 
-// software: you can redistribute it and/or modify it under the terms of 
-// the GNU General Public License as published by the Free Software Foundation, 
+// The Command & Conquer Map Editor and corresponding source code is free
+// software: you can redistribute it and/or modify it under the terms of
+// the GNU General Public License as published by the Free Software Foundation,
 // either version 3 of the License, or (at your option) any later version.
 
-// The Command & Conquer Map Editor and corresponding source code is distributed 
-// in the hope that it will be useful, but with permitted additional restrictions 
-// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT 
-// distributed with this program. You should have received a copy of the 
-// GNU General Public License along with permitted additional restrictions 
+// The Command & Conquer Map Editor and corresponding source code is distributed
+// in the hope that it will be useful, but with permitted additional restrictions
+// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT
+// distributed with this program. You should have received a copy of the
+// GNU General Public License along with permitted additional restrictions
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 /*                         MIT License
                  Copyright (c) 2017 TGASharpLib
@@ -326,7 +326,7 @@ namespace TGASharpLib {
     /// When working with a TrueVista card(ATVista or NuVista) you would select 24-bit(8 bits per
     /// primary) or 32-bit(8 bits per primary including Alpha channel) depending on your
     /// application’s use of look-up tables. It is suggested that when working with 16-bit and
-    /// 32-bit color images, you store them as True-Color images and do not use the color map 
+    /// 32-bit color images, you store them as True-Color images and do not use the color map
     /// field to store look-up tables. Please refer to the TGA Extensions for fields better suited
     /// to storing look-up table information.
     /// </summary>
@@ -912,7 +912,7 @@ namespace TGASharpLib {
         _UnAssigned_254,
         _UnAssigned_255
     }
-    #endregion
+    #endregion Enums
 
     #region Classes
     public class TgaColorKey : ICloneable {
@@ -1136,7 +1136,7 @@ namespace TGASharpLib {
         /// When working with a TrueVista card(ATVista or NuVista) you would select 24-bit(8 bits per
         /// primary) or 32-bit(8 bits per primary including Alpha channel) depending on your
         /// application’s use of look-up tables. It is suggested that when working with 16-bit and
-        /// 32-bit color images, you store them as True-Color images and do not use the color map 
+        /// 32-bit color images, you store them as True-Color images and do not use the color map
         /// field to store look-up tables. Please refer to the TGA Extensions for fields better suited
         /// to storing look-up table information.
         /// </summary>
@@ -3142,7 +3142,7 @@ namespace TGASharpLib {
 
         /// <summary>
         /// Job Name/ID - Field 14 (41 Bytes):
-        /// Bytes 379-419 - This field is an ASCII field of 41 bytes where the last byte must be 
+        /// Bytes 379-419 - This field is an ASCII field of 41 bytes where the last byte must be
         /// a binary zero. This gives a total of 40 ASCII characters for the job name or the ID.
         /// If the field is used, it should contain a name or id tag which refers to the job with
         /// which the image was associated.This allows production companies (and others) to tie
@@ -3374,7 +3374,7 @@ namespace TGASharpLib {
             get => this.otherDataInExtensionArea;
             set => this.otherDataInExtensionArea = value;
         }
-        #endregion
+        #endregion Properties
 
         /// <summary>
         /// Make full copy of <see cref="TgaExtArea"/>.
@@ -3532,7 +3532,7 @@ namespace TGASharpLib {
 
             if(this.gammaValue == null)
                 this.gammaValue = new TgaFraction();
-            #endregion
+            #endregion Exceptions check
 
             return BitConverterExt.ToBytes(
                 this.extensionSize,
@@ -3883,7 +3883,7 @@ namespace TGASharpLib {
             return true;
         }
     }
-    #endregion
+    #endregion Classes
 
     public class TGA : ICloneable {
         public TgaHeader Header = new TgaHeader();
@@ -4043,7 +4043,7 @@ namespace TGASharpLib {
         /// <param name="stream">Some stream, it must support: <see cref="Stream.CanWrite"/>.</param>
         /// <returns>Return "true", if all done or "false", if failed.</returns>
         public bool Save(Stream stream) => this.SaveFunc(stream);
-        #endregion
+        #endregion TGA Creation, Loading, Saving (all are public, have reference to private metods).
 
         /// <summary>
         /// Gets or Sets Image Width (see <see cref="Header.ImageSpec.ImageWidth"/>).
@@ -4215,7 +4215,7 @@ namespace TGASharpLib {
             } else {
                 this.Header.IDLength = 0;
             }
-            #endregion
+            #endregion Header
 
             #region ColorMap
             if(this.Header.ColorMapType != TgaColorMapType.NoColorMap) {
@@ -4244,7 +4244,7 @@ namespace TGASharpLib {
 
                 Offset += (uint)this.ImageOrColorMapArea.ColorMapData.Length;
             }
-            #endregion
+            #endregion ColorMap
 
             #region Image Data
             var BytesPerPixel = 0;
@@ -4284,7 +4284,7 @@ namespace TGASharpLib {
                     Offset += (uint)this.ImageOrColorMapArea.ImageData.Length;
                 }
             }
-            #endregion
+            #endregion Image Data
 
             #region Footer, DevArea, ExtArea
             if(this.Footer != null) {
@@ -4323,7 +4323,7 @@ namespace TGASharpLib {
                 } else {
                     this.Footer.DeveloperDirectoryOffset = 0;
                 }
-                #endregion
+                #endregion DevArea
 
                 #region ExtArea
                 if(this.ExtArea != null) {
@@ -4348,7 +4348,7 @@ namespace TGASharpLib {
                         this.ExtArea.ScanLineOffset = Offset;
                         Offset += (uint)(this.ExtArea.ScanLineTable.Length * 4);
                     }
-                    #endregion
+                    #endregion ScanLineTable
 
                     #region PostageStampImage
                     if(this.ExtArea.PostageStampImage == null) {
@@ -4371,11 +4371,10 @@ namespace TGASharpLib {
                             return false;
                         }
 
-
                         this.ExtArea.PostageStampOffset = Offset;
                         Offset += (uint)(this.ExtArea.PostageStampImage.Data.Length);
                     }
-                    #endregion
+                    #endregion PostageStampImage
 
                     #region ColorCorrectionTable
                     if(this.ExtArea.ColorCorrectionTable == null) {
@@ -4389,11 +4388,11 @@ namespace TGASharpLib {
                         this.ExtArea.ColorCorrectionTableOffset = Offset;
                         Offset += (uint)(this.ExtArea.ColorCorrectionTable.Length * 2);
                     }
-                    #endregion
+                    #endregion ColorCorrectionTable
                 } else {
                     this.Footer.ExtensionAreaOffset = 0;
                 }
-                #endregion
+                #endregion ExtArea
 
                 #region Footer
                 if(this.Footer.ToBytes().Length != TgaFooter.Size) {
@@ -4402,9 +4401,9 @@ namespace TGASharpLib {
                 }
 
                 Offset += TgaFooter.Size;
-                #endregion
+                #endregion Footer
             }
-            #endregion
+            #endregion Footer, DevArea, ExtArea
 
             return true;
         }
@@ -4453,7 +4452,7 @@ namespace TGASharpLib {
                     this.ExtArea.AttributesType = TgaAttrType.NoAlpha;
             }
         }
-        #endregion
+        #endregion Convert
 
         #region Private functions
         private bool LoadFunc(string filename) {
@@ -4545,7 +4544,7 @@ namespace TGASharpLib {
                         break;
                     }
                 }
-                #endregion
+                #endregion Read Image Data
 
                 #region Try parse Footer
                 stream.Seek(-TgaFooter.Size, SeekOrigin.End);
@@ -4582,7 +4581,7 @@ namespace TGASharpLib {
                         TagOffsets = null;
                         TagSizes = null;
                     }
-                    #endregion
+                    #endregion If Dev Area exist, read it.
 
                     #region If Ext Area exist, read it.
                     if(ExtAreaOffset != 0) {
@@ -4614,9 +4613,9 @@ namespace TGASharpLib {
                                 this.ExtArea.ColorCorrectionTable[i] = Br.ReadUInt16();
                         }
                     }
-                    #endregion
+                    #endregion If Ext Area exist, read it.
                 }
-                #endregion
+                #endregion Try parse Footer
 
                 Br.Close();
                 return true;
@@ -4699,7 +4698,7 @@ namespace TGASharpLib {
 
                         var CMapBpp = (ColorMap2BytesEntry ? 15 : 24) + (ColorMapUseAlpha ? (ColorMap2BytesEntry ? 1 : 8) : 0);
                         var CMBytesPP = (int)Math.Ceiling(CMapBpp / 8.0);
-                        #endregion
+                        #endregion Analyze ColorMapType
 
                         this.Header.ColorMapSpec.ColorMapLength = Math.Min((ushort)Colors.Length, ushort.MaxValue);
                         this.Header.ColorMapSpec.ColorMapEntrySize = (TgaColorMapEntrySize)CMapBpp;
@@ -4744,7 +4743,7 @@ namespace TGASharpLib {
                             Buffer.BlockCopy(CMapEntry, 0, this.ImageOrColorMapArea.ColorMapData, i * CMBytesPP, CMBytesPP);
                         }
                     }
-                    #endregion
+                    #endregion ColorMap
 
                     #region ImageType
                     if(UseRLE) {
@@ -4764,7 +4763,7 @@ namespace TGASharpLib {
                     }
 
                     this.Header.ColorMapType = (IsColorMapped ? TgaColorMapType.ColorMap : TgaColorMapType.NoColorMap);
-                    #endregion
+                    #endregion ImageType
 
                     #region NewFormat
                     if(NewFormat) {
@@ -4785,7 +4784,7 @@ namespace TGASharpLib {
                                 this.ExtArea.AttributesType = TgaAttrType.UndefinedAlphaButShouldBeRetained;
                         }
                     }
-                    #endregion
+                    #endregion NewFormat
 
                     #region Bitmap width is aligned by 32 bits = 4 bytes! Delete it.
                     var StrideBytes = bmp.Width * BytesPP;
@@ -4817,7 +4816,7 @@ namespace TGASharpLib {
                         for(long i = 0; i < this.ImageOrColorMapArea.ImageData.Length; i++)
                             this.ImageOrColorMapArea.ImageData[i] ^= byte.MaxValue;
                     }
-                    #endregion
+                    #endregion Bitmap width is aligned by 32 bits = 4 bytes! Delete it.
 
                     break;
                 }
@@ -4856,7 +4855,7 @@ namespace TGASharpLib {
                         Bw.Write(this.ImageOrColorMapArea.ImageData);
                     }
                 }
-                #endregion
+                #endregion ImageData
 
                 #region Footer
                 if(this.Footer != null) {
@@ -4873,7 +4872,7 @@ namespace TGASharpLib {
                             Bw.Write(this.DevArea[i].FieldSize);
                         }
                     }
-                    #endregion
+                    #endregion DevArea
 
                     #region ExtArea
                     if(this.ExtArea != null) {
@@ -4892,11 +4891,11 @@ namespace TGASharpLib {
                                 Bw.Write(this.ExtArea.ColorCorrectionTable[i]);
                         }
                     }
-                    #endregion
+                    #endregion ExtArea
 
                     Bw.Write(this.Footer.ToBytes());
                 }
-                #endregion
+                #endregion Footer
 
                 Bw.Flush();
                 stream.Flush();
@@ -4994,12 +4993,12 @@ namespace TGASharpLib {
                     }
                 }
                 UseAlpha = (this.Header.ImageSpec.ImageDescriptor.AlphaChannelBits > 0 && UseAlpha) | ForceUseAlpha;
-                #endregion
+                #endregion UseAlpha?
 
                 #region IsGrayImage
                 var IsGrayImage = this.Header.ImageType == TgaImageType.RLE_BlackWhite ||
                     this.Header.ImageType == TgaImageType.Uncompressed_BlackWhite;
-                #endregion
+                #endregion IsGrayImage
 
                 #region Get PixelFormat
                 var PixFormat = PixelFormat.Format24bppRgb;
@@ -5037,7 +5036,7 @@ namespace TGASharpLib {
                     PixFormat = PixelFormat.Undefined;
                     break;
                 }
-                #endregion
+                #endregion Get PixelFormat
 
                 var BMP_Width = (PostageStampImage ? this.ExtArea.PostageStampImage.Width : this.Width);
                 var BMP_Height = (PostageStampImage ? this.ExtArea.PostageStampImage.Height : this.Height);
@@ -5098,7 +5097,7 @@ namespace TGASharpLib {
                         GrayColors[i] = Color.FromArgb(i, i, i);
                     BMP.Palette = GrayPalette;
                 }
-                #endregion
+                #endregion ColorMap and GrayPalette
 
                 #region Bitmap width must by aligned (align value = 32 bits = 4 bytes)!
                 byte[] ImageData;
@@ -5124,7 +5123,7 @@ namespace TGASharpLib {
                     for(long i = 0; i < ImageData.Length; i++)
                         ImageData[i] ^= byte.MaxValue;
                 }
-                #endregion
+                #endregion Bitmap width must by aligned (align value = 32 bits = 4 bytes)!
 
                 var Re = new Rectangle(0, 0, BMP.Width, BMP.Height);
                 var BmpData = BMP.LockBits(Re, ImageLockMode.WriteOnly, BMP.PixelFormat);
@@ -5151,20 +5150,20 @@ namespace TGASharpLib {
                     BMP.RotateFlip(RotateFlipType.RotateNoneFlipX);
                     break;
                 }
-                #endregion
+                #endregion Flip Image
 
                 return BMP;
             } catch {
                 return null;
             }
         }
-        #endregion
+        #endregion Private functions
 
         #region Explicit
         public static explicit operator Bitmap(TGA tga) => tga.ToBitmap();
 
         public static explicit operator TGA(Bitmap bmp) => FromBitmap(bmp);
-        #endregion
+        #endregion Explicit
 
         #region PostageStamp Image
         /// <summary>
@@ -5230,6 +5229,6 @@ namespace TGASharpLib {
             if(this.ExtArea != null)
                 this.ExtArea.PostageStampImage = null;
         }
-        #endregion
+        #endregion PostageStamp Image
     }
 }

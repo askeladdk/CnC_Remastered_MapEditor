@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     public static class SteamRemoteStorage {
         /// <summary>

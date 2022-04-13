@@ -1,16 +1,16 @@
 ﻿//
 // Copyright 2020 Electronic Arts Inc.
 //
-// The Command & Conquer Map Editor and corresponding source code is free 
-// software: you can redistribute it and/or modify it under the terms of 
-// the GNU General Public License as published by the Free Software Foundation, 
+// The Command & Conquer Map Editor and corresponding source code is free
+// software: you can redistribute it and/or modify it under the terms of
+// the GNU General Public License as published by the Free Software Foundation,
 // either version 3 of the License, or (at your option) any later version.
 
-// The Command & Conquer Map Editor and corresponding source code is distributed 
-// in the hope that it will be useful, but with permitted additional restrictions 
-// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT 
-// distributed with this program. You should have received a copy of the 
-// GNU General Public License along with permitted additional restrictions 
+// The Command & Conquer Map Editor and corresponding source code is distributed
+// in the hope that it will be useful, but with permitted additional restrictions
+// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT
+// distributed with this program. You should have received a copy of the
+// GNU General Public License along with permitted additional restrictions
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 namespace MobiusEditor.Tools.Dialogs
 {
@@ -49,9 +49,9 @@ namespace MobiusEditor.Tools.Dialogs
             this.terrainProperties = new MobiusEditor.Controls.TerrainProperties();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // tableLayoutPanel1
-            // 
+            //
             this.tableLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.ColumnCount = 1;
@@ -71,9 +71,9 @@ namespace MobiusEditor.Tools.Dialogs
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(411, 466);
             this.tableLayoutPanel1.TabIndex = 0;
-            // 
+            //
             // terrainTypeMapPanel
-            // 
+            //
             this.terrainTypeMapPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.terrainTypeMapPanel.Location = new System.Drawing.Point(4, 42);
             this.terrainTypeMapPanel.MapImage = null;
@@ -86,9 +86,9 @@ namespace MobiusEditor.Tools.Dialogs
             this.terrainTypeMapPanel.TabIndex = 3;
             this.terrainTypeMapPanel.Zoom = 1;
             this.terrainTypeMapPanel.ZoomStep = 1;
-            // 
+            //
             // terrainTypeComboBox
-            // 
+            //
             this.terrainTypeComboBox.DisplayMember = "Name";
             this.terrainTypeComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.terrainTypeComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
@@ -101,9 +101,9 @@ namespace MobiusEditor.Tools.Dialogs
             this.terrainTypeComboBox.Size = new System.Drawing.Size(403, 27);
             this.terrainTypeComboBox.TabIndex = 2;
             this.terrainTypeComboBox.ValueMember = "Type";
-            // 
+            //
             // terrainProperties
-            // 
+            //
             this.terrainProperties.Dock = System.Windows.Forms.DockStyle.Top;
             this.terrainProperties.Location = new System.Drawing.Point(4, 422);
             this.terrainProperties.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -111,9 +111,9 @@ namespace MobiusEditor.Tools.Dialogs
             this.terrainProperties.Size = new System.Drawing.Size(403, 38);
             this.terrainProperties.TabIndex = 4;
             this.terrainProperties.Terrain = null;
-            // 
+            //
             // TerrainToolDialog
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;

@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     [System.Serializable]
     public struct HServerQuery : System.IEquatable<HServerQuery>, System.IComparable<HServerQuery> {

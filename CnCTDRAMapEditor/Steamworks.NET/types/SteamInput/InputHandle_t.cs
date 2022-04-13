@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     [System.Serializable]
     public struct InputHandle_t : System.IEquatable<InputHandle_t>, System.IComparable<InputHandle_t> {

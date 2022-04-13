@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     [System.Serializable]
     public struct SteamInventoryUpdateHandle_t : System.IEquatable<SteamInventoryUpdateHandle_t>, System.IComparable<SteamInventoryUpdateHandle_t> {

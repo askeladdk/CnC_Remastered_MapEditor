@@ -1,16 +1,16 @@
 ﻿//
 // Copyright 2020 Electronic Arts Inc.
 //
-// The Command & Conquer Map Editor and corresponding source code is free 
-// software: you can redistribute it and/or modify it under the terms of 
-// the GNU General Public License as published by the Free Software Foundation, 
+// The Command & Conquer Map Editor and corresponding source code is free
+// software: you can redistribute it and/or modify it under the terms of
+// the GNU General Public License as published by the Free Software Foundation,
 // either version 3 of the License, or (at your option) any later version.
 
-// The Command & Conquer Map Editor and corresponding source code is distributed 
-// in the hope that it will be useful, but with permitted additional restrictions 
-// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT 
-// distributed with this program. You should have received a copy of the 
-// GNU General Public License along with permitted additional restrictions 
+// The Command & Conquer Map Editor and corresponding source code is distributed
+// in the hope that it will be useful, but with permitted additional restrictions
+// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT
+// distributed with this program. You should have received a copy of the
+// GNU General Public License along with permitted additional restrictions
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 namespace MobiusEditor.Tools.Dialogs
 {
@@ -50,27 +50,27 @@ namespace MobiusEditor.Tools.Dialogs
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // splitContainer1
-            // 
+            //
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(2, 2);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
+            //
             // splitContainer1.Panel1
-            // 
+            //
             this.splitContainer1.Panel1.Controls.Add(this.templateTypeListView);
-            // 
+            //
             // splitContainer1.Panel2
-            // 
+            //
             this.splitContainer1.Panel2.Controls.Add(this.templateTypeMapPanel);
             this.splitContainer1.Size = new System.Drawing.Size(270, 545);
             this.splitContainer1.SplitterDistance = 275;
             this.splitContainer1.TabIndex = 7;
-            // 
+            //
             // templateTypeListView
-            // 
+            //
             this.templateTypeListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.templateTypeListView.HideSelection = false;
             this.templateTypeListView.Location = new System.Drawing.Point(0, 0);
@@ -80,9 +80,9 @@ namespace MobiusEditor.Tools.Dialogs
             this.templateTypeListView.Size = new System.Drawing.Size(270, 275);
             this.templateTypeListView.TabIndex = 7;
             this.templateTypeListView.UseCompatibleStateImageBehavior = false;
-            // 
+            //
             // templateTypeMapPanel
-            // 
+            //
             this.templateTypeMapPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.templateTypeMapPanel.Location = new System.Drawing.Point(0, 0);
             this.templateTypeMapPanel.MapImage = null;
@@ -95,9 +95,9 @@ namespace MobiusEditor.Tools.Dialogs
             this.templateTypeMapPanel.TabIndex = 6;
             this.templateTypeMapPanel.Zoom = 1;
             this.templateTypeMapPanel.ZoomStep = 1;
-            // 
+            //
             // TemplateToolDialog
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(274, 549);

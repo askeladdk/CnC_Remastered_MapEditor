@@ -861,7 +861,6 @@ namespace Steamworks {
         // no context value was set.
         public ulong m_ulContextValue;
 
-
         // Offset to provide to GetHTTPStreamingResponseBodyData to get this chunk of data
         public uint m_cOffset;
 

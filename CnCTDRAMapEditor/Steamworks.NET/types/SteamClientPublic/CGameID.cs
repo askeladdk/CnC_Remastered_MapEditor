@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     [System.Serializable]
     public struct CGameID : System.IEquatable<CGameID>, System.IComparable<CGameID> {
@@ -82,7 +81,7 @@ namespace Steamworks {
         private void SetType(EGameIDType other) => this.m_GameID = (this.m_GameID & ~(0xFFul << 24)) | (((ulong)(other) & 0xFFul) << 24);
 
         private void SetModID(uint other) => this.m_GameID = (this.m_GameID & ~(0xFFFFFFFFul << 32)) | ((other & 0xFFFFFFFFul) << 32);
-        #endregion
+        #endregion Private Setters for internal use
 
         #region Overrides
         public override string ToString() => this.m_GameID.ToString();
@@ -101,7 +100,7 @@ namespace Steamworks {
         public bool Equals(CGameID other) => this.m_GameID == other.m_GameID;
 
         public int CompareTo(CGameID other) => this.m_GameID.CompareTo(other.m_GameID);
-        #endregion
+        #endregion Overrides
     }
 }
 

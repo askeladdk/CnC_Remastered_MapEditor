@@ -1,16 +1,16 @@
 ﻿//
 // Copyright 2020 Electronic Arts Inc.
 //
-// The Command & Conquer Map Editor and corresponding source code is free 
-// software: you can redistribute it and/or modify it under the terms of 
-// the GNU General Public License as published by the Free Software Foundation, 
+// The Command & Conquer Map Editor and corresponding source code is free
+// software: you can redistribute it and/or modify it under the terms of
+// the GNU General Public License as published by the Free Software Foundation,
 // either version 3 of the License, or (at your option) any later version.
 
-// The Command & Conquer Map Editor and corresponding source code is distributed 
-// in the hope that it will be useful, but with permitted additional restrictions 
-// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT 
-// distributed with this program. You should have received a copy of the 
-// GNU General Public License along with permitted additional restrictions 
+// The Command & Conquer Map Editor and corresponding source code is distributed
+// in the hope that it will be useful, but with permitted additional restrictions
+// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT
+// distributed with this program. You should have received a copy of the
+// GNU General Public License along with permitted additional restrictions
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 namespace MobiusEditor.Tools.Dialogs
 {
@@ -49,9 +49,9 @@ namespace MobiusEditor.Tools.Dialogs
             this.objectProperties = new MobiusEditor.Controls.ObjectProperties();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // tableLayoutPanel1
-            // 
+            //
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.objectTypeMapPanel, 0, 1);
@@ -67,11 +67,11 @@ namespace MobiusEditor.Tools.Dialogs
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(365, 582);
             this.tableLayoutPanel1.TabIndex = 0;
-            // 
+            //
             // objectTypeMapPanel
-            // 
-            this.objectTypeMapPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.objectTypeMapPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.objectTypeMapPanel.Location = new System.Drawing.Point(4, 35);
             this.objectTypeMapPanel.MapImage = null;
@@ -84,9 +84,9 @@ namespace MobiusEditor.Tools.Dialogs
             this.objectTypeMapPanel.TabIndex = 3;
             this.objectTypeMapPanel.Zoom = 1;
             this.objectTypeMapPanel.ZoomStep = 1;
-            // 
+            //
             // objectTypeComboBox
-            // 
+            //
             this.objectTypeComboBox.DisplayMember = "Name";
             this.objectTypeComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.objectTypeComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
@@ -99,11 +99,11 @@ namespace MobiusEditor.Tools.Dialogs
             this.objectTypeComboBox.Size = new System.Drawing.Size(357, 23);
             this.objectTypeComboBox.TabIndex = 2;
             this.objectTypeComboBox.ValueMember = "Type";
-            // 
+            //
             // objectProperties
-            // 
-            this.objectProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.objectProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.objectProperties.Location = new System.Drawing.Point(5, 316);
             this.objectProperties.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
@@ -111,9 +111,9 @@ namespace MobiusEditor.Tools.Dialogs
             this.objectProperties.Object = null;
             this.objectProperties.Size = new System.Drawing.Size(355, 261);
             this.objectProperties.TabIndex = 4;
-            // 
+            //
             // ObjectToolDialog
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(365, 582);

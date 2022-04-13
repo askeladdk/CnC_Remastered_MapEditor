@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     [System.Serializable]
     public struct InputAnalogActionHandle_t : System.IEquatable<InputAnalogActionHandle_t>, System.IComparable<InputAnalogActionHandle_t> {

@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     // servernetadr_t is all the addressing info the serverbrowser needs to know about a game server,
     // namely: its IP, its connection port, and its query port.
@@ -59,7 +58,6 @@ namespace Steamworks {
 #else
         string.Format("{0}.{1}.{2}.{3}:{4}", (unIP >> 24) & 0xFFul, (unIP >> 16) & 0xFFul, (unIP >> 8) & 0xFFul, unIP & 0xFFul, usPort);
 #endif
-
 
         public static bool operator <(servernetadr_t x, servernetadr_t y) => (x.m_unIP < y.m_unIP) || (x.m_unIP == y.m_unIP && x.m_usQueryPort < y.m_usQueryPort);
 

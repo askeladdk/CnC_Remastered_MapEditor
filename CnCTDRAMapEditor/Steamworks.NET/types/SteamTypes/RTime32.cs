@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     [System.Serializable]
     public struct RTime32 : System.IEquatable<RTime32>, System.IComparable<RTime32> {

@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     [System.Serializable]
     public struct SiteId_t : System.IEquatable<SiteId_t>, System.IComparable<SiteId_t> {

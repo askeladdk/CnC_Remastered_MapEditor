@@ -764,7 +764,6 @@ namespace Steamworks {
         k_EInputActionOrigin_XBox360_Reserved9,
         k_EInputActionOrigin_XBox360_Reserved10,
 
-
         // Switch - Pro or Joycons used as a single input device.
         // This does not apply to a single joycon
         k_EInputActionOrigin_Switch_A,
@@ -1809,7 +1808,6 @@ namespace Steamworks {
         k_ELaunchOptionType_OculusVR = 13,  // runs game in VR mode using the Oculus SDK
         k_ELaunchOptionType_OpenVROverlay = 14, // runs an OpenVR dashboard overlay
         k_ELaunchOptionType_OSVR = 15,  // runs game in VR mode using the OSVR SDK
-
 
         k_ELaunchOptionType_Dialog = 1000, // show launch options dialog
     }

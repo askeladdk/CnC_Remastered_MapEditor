@@ -1,16 +1,16 @@
 ﻿//
 // Copyright 2020 Electronic Arts Inc.
 //
-// The Command & Conquer Map Editor and corresponding source code is free 
-// software: you can redistribute it and/or modify it under the terms of 
-// the GNU General Public License as published by the Free Software Foundation, 
+// The Command & Conquer Map Editor and corresponding source code is free
+// software: you can redistribute it and/or modify it under the terms of
+// the GNU General Public License as published by the Free Software Foundation,
 // either version 3 of the License, or (at your option) any later version.
 
-// The Command & Conquer Map Editor and corresponding source code is distributed 
-// in the hope that it will be useful, but with permitted additional restrictions 
-// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT 
-// distributed with this program. You should have received a copy of the 
-// GNU General Public License along with permitted additional restrictions 
+// The Command & Conquer Map Editor and corresponding source code is distributed
+// in the hope that it will be useful, but with permitted additional restrictions
+// under Section 7 of the GPL. See the GNU General Public License in LICENSE.TXT
+// distributed with this program. You should have received a copy of the
+// GNU General Public License along with permitted additional restrictions
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 namespace MobiusEditor.Dialogs
 {
@@ -71,9 +71,9 @@ namespace MobiusEditor.Dialogs
             this.panel2.SuspendLayout();
             this.publicMapContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // tableLayoutPanel1
-            // 
+            //
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 0);
@@ -88,9 +88,9 @@ namespace MobiusEditor.Dialogs
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(500, 385);
             this.tableLayoutPanel1.TabIndex = 1;
-            // 
+            //
             // tableLayoutPanel2
-            // 
+            //
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -115,9 +115,9 @@ namespace MobiusEditor.Dialogs
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 13F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(496, 233);
             this.tableLayoutPanel2.TabIndex = 2;
-            // 
+            //
             // label1
-            // 
+            //
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label1.Location = new System.Drawing.Point(2, 0);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -126,9 +126,9 @@ namespace MobiusEditor.Dialogs
             this.label1.TabIndex = 0;
             this.label1.Text = "Title";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
+            //
             // label2
-            // 
+            //
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label2.Location = new System.Drawing.Point(2, 24);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -137,9 +137,9 @@ namespace MobiusEditor.Dialogs
             this.label2.TabIndex = 1;
             this.label2.Text = "Visibility";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
+            //
             // label3
-            // 
+            //
             this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label3.Location = new System.Drawing.Point(2, 49);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -148,9 +148,9 @@ namespace MobiusEditor.Dialogs
             this.label3.TabIndex = 2;
             this.label3.Text = "Preview";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
+            //
             // label4
-            // 
+            //
             this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label4.Location = new System.Drawing.Point(2, 76);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -159,9 +159,9 @@ namespace MobiusEditor.Dialogs
             this.label4.TabIndex = 3;
             this.label4.Text = "Description";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
+            //
             // descriptionTxt
-            // 
+            //
             this.tableLayoutPanel2.SetColumnSpan(this.descriptionTxt, 2);
             this.descriptionTxt.Dock = System.Windows.Forms.DockStyle.Fill;
             this.descriptionTxt.Location = new System.Drawing.Point(2, 91);
@@ -171,18 +171,18 @@ namespace MobiusEditor.Dialogs
             this.descriptionTxt.Size = new System.Drawing.Size(492, 202);
             this.descriptionTxt.TabIndex = 4;
             this.descriptionTxt.TextChanged += new System.EventHandler(this.descriptionTxt_TextChanged);
-            // 
+            //
             // titleTxt
-            // 
+            //
             this.titleTxt.Dock = System.Windows.Forms.DockStyle.Fill;
             this.titleTxt.Location = new System.Drawing.Point(75, 2);
             this.titleTxt.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.titleTxt.Name = "titleTxt";
             this.titleTxt.Size = new System.Drawing.Size(419, 20);
             this.titleTxt.TabIndex = 5;
-            // 
+            //
             // visibilityComboBox
-            // 
+            //
             this.visibilityComboBox.DisplayMember = "Name";
             this.visibilityComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.visibilityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -193,9 +193,9 @@ namespace MobiusEditor.Dialogs
             this.visibilityComboBox.Size = new System.Drawing.Size(419, 21);
             this.visibilityComboBox.TabIndex = 6;
             this.visibilityComboBox.ValueMember = "Value";
-            // 
+            //
             // panel1
-            // 
+            //
             this.panel1.Controls.Add(this.previewTxt);
             this.panel1.Controls.Add(this.previewBtn);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -204,11 +204,11 @@ namespace MobiusEditor.Dialogs
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(419, 23);
             this.panel1.TabIndex = 7;
-            // 
+            //
             // previewTxt
-            // 
-            this.previewTxt.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.previewTxt.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.previewTxt.Location = new System.Drawing.Point(2, 2);
             this.previewTxt.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
@@ -216,10 +216,10 @@ namespace MobiusEditor.Dialogs
             this.previewTxt.Size = new System.Drawing.Size(392, 20);
             this.previewTxt.TabIndex = 2;
             this.previewTxt.TextChanged += new System.EventHandler(this.previewTxt_TextChanged);
-            // 
+            //
             // previewBtn
-            // 
-            this.previewBtn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            //
+            this.previewBtn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.previewBtn.AutoSize = true;
             this.previewBtn.Location = new System.Drawing.Point(392, 2);
@@ -230,9 +230,9 @@ namespace MobiusEditor.Dialogs
             this.previewBtn.Text = "...";
             this.previewBtn.UseVisualStyleBackColor = true;
             this.previewBtn.Click += new System.EventHandler(this.previewBtn_Click);
-            // 
+            //
             // panel2
-            // 
+            //
             this.panel2.Controls.Add(this.btnClose);
             this.panel2.Controls.Add(this.btnGoToSteam);
             this.panel2.Controls.Add(this.btnPublishMap);
@@ -243,10 +243,10 @@ namespace MobiusEditor.Dialogs
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(496, 34);
             this.panel2.TabIndex = 3;
-            // 
+            //
             // btnClose
-            // 
-            this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            //
+            this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClose.AutoSize = true;
             this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
@@ -257,10 +257,10 @@ namespace MobiusEditor.Dialogs
             this.btnClose.TabIndex = 6;
             this.btnClose.Text = "&Close";
             this.btnClose.UseVisualStyleBackColor = true;
-            // 
+            //
             // btnGoToSteam
-            // 
-            this.btnGoToSteam.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            //
+            this.btnGoToSteam.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnGoToSteam.AutoSize = true;
             this.btnGoToSteam.Location = new System.Drawing.Point(346, 2);
@@ -271,26 +271,26 @@ namespace MobiusEditor.Dialogs
             this.btnGoToSteam.Text = "Go to &Steam";
             this.btnGoToSteam.UseVisualStyleBackColor = true;
             this.btnGoToSteam.Click += new System.EventHandler(this.btnGoToSteam_Click);
-            // 
+            //
             // publicMapContextMenuStrip
-            // 
+            //
             this.publicMapContextMenuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.publicMapContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.publishAsNewToolStripMenuItem});
             this.publicMapContextMenuStrip.Name = "publicMapContextMenuStrip";
             this.publicMapContextMenuStrip.Size = new System.Drawing.Size(157, 26);
-            // 
+            //
             // publishAsNewToolStripMenuItem
-            // 
+            //
             this.publishAsNewToolStripMenuItem.Name = "publishAsNewToolStripMenuItem";
             this.publishAsNewToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             this.publishAsNewToolStripMenuItem.Text = "Publish As New";
             this.publishAsNewToolStripMenuItem.Click += new System.EventHandler(this.publishAsNewToolStripMenuItem_Click);
-            // 
+            //
             // statusLbl
-            // 
-            this.statusLbl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.statusLbl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.statusLbl.Location = new System.Drawing.Point(7, 1);
             this.statusLbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -298,19 +298,19 @@ namespace MobiusEditor.Dialogs
             this.statusLbl.Size = new System.Drawing.Size(264, 31);
             this.statusLbl.TabIndex = 9;
             this.statusLbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
+            //
             // label5
-            // 
+            //
             this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label5.Location = new System.Drawing.Point(3, 275);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(494, 110);
             this.label5.TabIndex = 4;
             this.label5.Text = resources.GetString("label5.Text");
-            // 
+            //
             // btnPublishMap
-            // 
-            this.btnPublishMap.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            //
+            this.btnPublishMap.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnPublishMap.AutoSize = true;
             this.btnPublishMap.Location = new System.Drawing.Point(234, 2);
@@ -322,15 +322,15 @@ namespace MobiusEditor.Dialogs
             this.btnPublishMap.Text = "&Publish Map";
             this.btnPublishMap.UseVisualStyleBackColor = true;
             this.btnPublishMap.Click += new System.EventHandler(this.btnPublishMap_Click);
-            // 
+            //
             // imageTooltip
-            // 
+            //
             this.imageTooltip.MaxSize = new System.Drawing.Size(0, 0);
             this.imageTooltip.OwnerDraw = true;
             this.imageTooltip.ShowAlways = true;
-            // 
+            //
             // SteamDialog
-            // 
+            //
             this.AcceptButton = this.btnPublishMap;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

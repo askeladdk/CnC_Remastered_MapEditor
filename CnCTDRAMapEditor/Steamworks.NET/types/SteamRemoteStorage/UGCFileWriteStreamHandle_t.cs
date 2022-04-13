@@ -11,7 +11,6 @@
 
 #if !DISABLESTEAMWORKS
 
-
 namespace Steamworks {
     [System.Serializable]
     public struct UGCFileWriteStreamHandle_t : System.IEquatable<UGCFileWriteStreamHandle_t>, System.IComparable<UGCFileWriteStreamHandle_t> {
