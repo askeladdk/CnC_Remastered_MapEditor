@@ -85,10 +85,10 @@
     <Compile Include="Controls\BriefingSettings.Designer.cs">
       <DependentUpon>BriefingSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\GenericToolControl.cs">
+    <Compile Include="Tools\Controls\GenericToolControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\GenericToolControl.Designer.cs">
+    <Compile Include="Tools\Controls\GenericToolControl.Designer.cs">
       <DependentUpon>GenericToolControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\ImageTooltip.cs">
@@ -139,10 +139,10 @@
     <Compile Include="Controls\TypeComboBox.Designer.cs">
       <DependentUpon>TypeComboBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\TemplateToolControl.cs">
+    <Compile Include="Tools\Controls\TemplateToolControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\TemplateToolControl.Designer.cs">
+    <Compile Include="Tools\Controls\TemplateToolControl.Designer.cs">
       <DependentUpon>TemplateToolControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\ErrorMessageBox.cs">
@@ -446,13 +446,13 @@
     <EmbeddedResource Include="Controls\BriefingSettings.resx">
       <DependentUpon>BriefingSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\GenericToolControl.resx">
+    <EmbeddedResource Include="Tools\Controls\GenericToolControl.resx">
       <DependentUpon>GenericToolControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MapPanel.resx">
       <DependentUpon>MapPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\TemplateToolControl.resx">
+    <EmbeddedResource Include="Tools\Controls\TemplateToolControl.resx">
       <DependentUpon>TemplateToolControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\TerrainProperties.resx">
