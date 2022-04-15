@@ -210,7 +210,7 @@ namespace MobiusEditor.Dialogs {
                 MessageBox.Show(string.Format("Trigger name is longer than {0} characters.", maxLength), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else if(this.triggers.Where(t => (t != this.SelectedTrigger) && t.Equals(e.Label)).Any()) {
                 e.CancelEdit = true;
-                MessageBox.Show(string.Format("Trigger with name '{0]' already exists", e.Label), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format("Trigger with name '{0}' already exists", e.Label), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else {
                 this.SelectedTrigger.Name = e.Label;
                 this.triggersListView.Items[e.Item].ToolTipText = this.SelectedTrigger.Name;

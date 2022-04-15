@@ -203,7 +203,7 @@ namespace MobiusEditor.Dialogs {
                 MessageBox.Show(string.Format("Team name is longer than {0} characters.", maxLength), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else if(this.teamTypes.Where(t => (t != this.SelectedTeamType) && t.Equals(e.Label)).Any()) {
                 e.CancelEdit = true;
-                MessageBox.Show(string.Format("Team with name '{0]' already exists", e.Label), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format("Team with name '{0}' already exists", e.Label), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else {
                 this.SelectedTeamType.Name = e.Label;
                 this.teamTypesListView.Items[e.Item].ToolTipText = this.SelectedTeamType.Name;
