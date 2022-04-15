@@ -25,7 +25,7 @@ using System.Windows.Forms;
 
 namespace MobiusEditor.Tools {
     public class OverlaysTool : ViewTool {
-        private readonly TypeComboBox overlayTypeComboBox;
+        private readonly ListView overlayTypeListView;
         private readonly MapPanel overlayTypeMapPanel;
 
         private Map previewMap;
@@ -43,14 +43,24 @@ namespace MobiusEditor.Tools {
                     }
 
                     this.selectedOverlayType = value;
-                    this.overlayTypeComboBox.SelectedValue = this.selectedOverlayType;
+
+                    this.overlayTypeListView.BeginUpdate();
+                    this.overlayTypeListView.SelectedIndexChanged -= this.OverlayTypeComboBox_SelectedIndexChanged;
+                    foreach(ListViewItem item in this.overlayTypeListView.Items) {
+                        item.Selected = item.Tag == this.selectedOverlayType;
+                    }
+                    if(this.overlayTypeListView.SelectedIndices.Count > 0) {
+                        this.overlayTypeListView.EnsureVisible(this.overlayTypeListView.SelectedIndices[0]);
+                    }
+                    this.overlayTypeListView.SelectedIndexChanged += this.OverlayTypeComboBox_SelectedIndexChanged;
+                    this.overlayTypeListView.EndUpdate();
 
                     this.RefreshMapPanel();
                 }
             }
         }
 
-        public OverlaysTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, TypeComboBox overlayTypeComboBox, MapPanel overlayTypeMapPanel, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
+        public OverlaysTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView overlayTypeListView, MapPanel overlayTypeMapPanel, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
             : base(mapPanel, layers, statusLbl, plugin, url) {
             this.previewMap = this.map;
 
@@ -59,8 +69,32 @@ namespace MobiusEditor.Tools {
             (this.mapPanel as Control).KeyDown += this.OverlaysTool_KeyDown;
             (this.mapPanel as Control).KeyUp += this.OverlaysTool_KeyUp;
 
-            this.overlayTypeComboBox = overlayTypeComboBox;
-            this.overlayTypeComboBox.SelectedIndexChanged += this.OverlayTypeComboBox_SelectedIndexChanged;
+            this.overlayTypeListView = overlayTypeListView;
+            this.overlayTypeListView.SelectedIndexChanged += this.OverlayTypeComboBox_SelectedIndexChanged;
+
+            var overlayTypes = plugin.Map.OverlayTypes.Where(t => t.IsPlaceable && ((t.Theaters == null) || t.Theaters.Contains(plugin.Map.Theater))).OrderBy(t => t.Name);
+            var overlayTypeImages = overlayTypes.Select(t => t.Thumbnail);
+
+            var maxWidth = overlayTypeImages.Max(t => t.Width);
+            var maxHeight = overlayTypeImages.Max(t => t.Height);
+
+            var imageList = new ImageList();
+            imageList.Images.AddRange(overlayTypeImages.ToArray());
+            imageList.ImageSize = new Size(maxWidth / 2, maxHeight / 2);
+            imageList.ColorDepth = ColorDepth.Depth24Bit;
+
+            this.overlayTypeListView.BeginUpdate();
+            this.overlayTypeListView.Items.Clear();
+            this.overlayTypeListView.SmallImageList = imageList;
+
+            var imageIndex = 0;
+            foreach(var templateType in overlayTypes) {
+                var item = new ListViewItem(templateType.DisplayName, imageIndex++) {
+                    Tag = templateType
+                };
+                this.overlayTypeListView.Items.Add(item);
+            }
+            this.overlayTypeListView.EndUpdate();
 
             this.overlayTypeMapPanel = overlayTypeMapPanel;
             this.overlayTypeMapPanel.BackColor = Color.White;
@@ -68,12 +102,14 @@ namespace MobiusEditor.Tools {
 
             this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
 
-            this.SelectedOverlayType = this.overlayTypeComboBox.Types.First() as OverlayType;
+            this.SelectedOverlayType = overlayTypes.First();
 
             this.UpdateStatus();
         }
 
-        private void OverlayTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) => this.SelectedOverlayType = this.overlayTypeComboBox.SelectedValue as OverlayType;
+        private void OverlayTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.SelectedOverlayType = (this.overlayTypeListView.SelectedItems.Count > 0) ? (this.overlayTypeListView.SelectedItems[0].Tag as OverlayType) : null;
+        }
 
         private void OverlaysTool_KeyDown(object sender, KeyEventArgs e) {
             if(e.KeyCode == Keys.ShiftKey) {
@@ -209,7 +245,9 @@ namespace MobiusEditor.Tools {
             }
         }
 
-        private void RefreshMapPanel() => this.overlayTypeMapPanel.MapImage = this.SelectedOverlayType?.Thumbnail;
+        private void RefreshMapPanel() {
+            this.overlayTypeMapPanel.MapImage = this.SelectedOverlayType?.Thumbnail;
+        }
 
         private void UpdateStatus() {
             if(this.placementMode) {
@@ -256,7 +294,7 @@ namespace MobiusEditor.Tools {
         protected override void Dispose(bool disposing) {
             if(!this.disposedValue) {
                 if(disposing) {
-                    this.overlayTypeComboBox.SelectedIndexChanged -= this.OverlayTypeComboBox_SelectedIndexChanged;
+                    this.overlayTypeListView.SelectedIndexChanged -= this.OverlayTypeComboBox_SelectedIndexChanged;
 
                     this.mapPanel.MouseDown -= this.MapPanel_MouseDown;
                     this.mapPanel.MouseMove -= this.MapPanel_MouseMove;

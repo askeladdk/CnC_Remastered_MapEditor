@@ -104,6 +104,8 @@ namespace MobiusEditor
             this.templateToolControl = new MobiusEditor.Controls.TemplateToolControl();
             this.smudgeToolTabPage = new System.Windows.Forms.TabPage();
             this.smudgeToolControl = new MobiusEditor.Controls.GenericToolControl();
+            this.overlayToolTabPage = new System.Windows.Forms.TabPage();
+            this.overlayToolControl = new MobiusEditor.Controls.GenericToolControl();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -114,6 +116,7 @@ namespace MobiusEditor
             this.toolTabControl.SuspendLayout();
             this.mapToolTabPage.SuspendLayout();
             this.smudgeToolTabPage.SuspendLayout();
+            this.overlayToolTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenuStrip
@@ -604,6 +607,7 @@ namespace MobiusEditor
             // 
             this.toolTabControl.Controls.Add(this.mapToolTabPage);
             this.toolTabControl.Controls.Add(this.smudgeToolTabPage);
+            this.toolTabControl.Controls.Add(this.overlayToolTabPage);
             this.toolTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolTabControl.Location = new System.Drawing.Point(0, 0);
             this.toolTabControl.Name = "toolTabControl";
@@ -648,6 +652,24 @@ namespace MobiusEditor
             this.smudgeToolControl.Size = new System.Drawing.Size(229, 446);
             this.smudgeToolControl.TabIndex = 0;
             // 
+            // overlayToolTabPage
+            // 
+            this.overlayToolTabPage.Controls.Add(this.overlayToolControl);
+            this.overlayToolTabPage.Location = new System.Drawing.Point(4, 22);
+            this.overlayToolTabPage.Name = "overlayToolTabPage";
+            this.overlayToolTabPage.Size = new System.Drawing.Size(229, 446);
+            this.overlayToolTabPage.TabIndex = 2;
+            this.overlayToolTabPage.Text = "Overlay";
+            this.overlayToolTabPage.UseVisualStyleBackColor = true;
+            // 
+            // overlayToolControl
+            // 
+            this.overlayToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.overlayToolControl.Location = new System.Drawing.Point(0, 0);
+            this.overlayToolControl.Name = "overlayToolControl";
+            this.overlayToolControl.Size = new System.Drawing.Size(229, 446);
+            this.overlayToolControl.TabIndex = 0;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -677,6 +699,7 @@ namespace MobiusEditor
             this.toolTabControl.ResumeLayout(false);
             this.mapToolTabPage.ResumeLayout(false);
             this.smudgeToolTabPage.ResumeLayout(false);
+            this.overlayToolTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -742,6 +765,8 @@ namespace MobiusEditor
         private Controls.TemplateToolControl templateToolControl;
         private System.Windows.Forms.TabPage smudgeToolTabPage;
         private Controls.GenericToolControl smudgeToolControl;
+        private System.Windows.Forms.TabPage overlayToolTabPage;
+        private Controls.GenericToolControl overlayToolControl;
     }
 }
 

@@ -789,15 +789,10 @@ namespace MobiusEditor {
             }
             break;
             case ToolType.Overlay: {
-                var toolDialog = new GenericToolDialog {
-                    Text = "Overlay"
-                };
+                var toolDialog = this.overlayToolControl;
 
-                toolDialog.GenericTypeComboBox.Types = this.plugin.Map.OverlayTypes.Where(t => t.IsPlaceable && ((t.Theaters == null) || t.Theaters.Contains(this.plugin.Map.Theater))).OrderBy(t => t.Name);
-
-                this.activeTool = new OverlaysTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.GenericTypeComboBox, toolDialog.GenericTypeMapPanel, this.plugin, this.url);
-                this.activeToolForm = toolDialog;
-                this.activeToolForm.Show(this);
+                this.activeTool = new OverlaysTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.GenericTypeListView, toolDialog.GenericTypeMapPanel, this.plugin, this.url);
+                this.toolTabControl.SelectedTab = this.overlayToolTabPage;
             }
             break;
             case ToolType.Resources: {
