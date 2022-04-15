@@ -99,12 +99,18 @@ namespace MobiusEditor
             this.cellTriggersToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.mapPanel = new MobiusEditor.Controls.MapPanel();
+            this.toolTabControl = new System.Windows.Forms.TabControl();
+            this.mapToolTabPage = new System.Windows.Forms.TabPage();
+            this.templateToolControl = new MobiusEditor.Controls.TemplateToolControl();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.toolTabControl.SuspendLayout();
+            this.mapToolTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenuStrip
@@ -567,8 +573,12 @@ namespace MobiusEditor
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.mapPanel);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.toolTabControl);
             this.splitContainer1.Size = new System.Drawing.Size(1027, 472);
-            this.splitContainer1.SplitterDistance = 854;
+            this.splitContainer1.SplitterDistance = 786;
             this.splitContainer1.TabIndex = 5;
             // 
             // mapPanel
@@ -582,10 +592,39 @@ namespace MobiusEditor
             this.mapPanel.MinZoom = 1;
             this.mapPanel.Name = "mapPanel";
             this.mapPanel.Quality = 2;
-            this.mapPanel.Size = new System.Drawing.Size(854, 472);
+            this.mapPanel.Size = new System.Drawing.Size(786, 472);
             this.mapPanel.TabIndex = 5;
             this.mapPanel.Zoom = 1;
             this.mapPanel.ZoomStep = 1;
+            // 
+            // toolTabControl
+            // 
+            this.toolTabControl.Controls.Add(this.mapToolTabPage);
+            this.toolTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.toolTabControl.Location = new System.Drawing.Point(0, 0);
+            this.toolTabControl.Name = "toolTabControl";
+            this.toolTabControl.SelectedIndex = 0;
+            this.toolTabControl.Size = new System.Drawing.Size(237, 472);
+            this.toolTabControl.TabIndex = 0;
+            // 
+            // mapToolTabPage
+            // 
+            this.mapToolTabPage.Controls.Add(this.templateToolControl);
+            this.mapToolTabPage.Location = new System.Drawing.Point(4, 22);
+            this.mapToolTabPage.Name = "mapToolTabPage";
+            this.mapToolTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.mapToolTabPage.Size = new System.Drawing.Size(229, 446);
+            this.mapToolTabPage.TabIndex = 0;
+            this.mapToolTabPage.Text = "Map";
+            this.mapToolTabPage.UseVisualStyleBackColor = true;
+            // 
+            // templateToolControl
+            // 
+            this.templateToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.templateToolControl.Location = new System.Drawing.Point(3, 3);
+            this.templateToolControl.Name = "templateToolControl";
+            this.templateToolControl.Size = new System.Drawing.Size(223, 440);
+            this.templateToolControl.TabIndex = 1;
             // 
             // MainForm
             // 
@@ -610,8 +649,11 @@ namespace MobiusEditor
             this.mainToolStrip.ResumeLayout(false);
             this.mainToolStrip.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.toolTabControl.ResumeLayout(false);
+            this.mapToolTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -672,6 +714,9 @@ namespace MobiusEditor
         private System.Windows.Forms.ToolStripStatusLabel copyrightStatusLabel;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private Controls.MapPanel mapPanel;
+        private System.Windows.Forms.TabControl toolTabControl;
+        private System.Windows.Forms.TabPage mapToolTabPage;
+        private Controls.TemplateToolControl templateToolControl;
     }
 }
 

@@ -769,11 +769,10 @@ namespace MobiusEditor {
 
             switch(this.ActiveToolType) {
             case ToolType.Map: {
-                var toolDialog = new TemplateToolDialog();
+                var toolDialog = this.templateToolControl;
 
                 this.activeTool = new TemplateTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.TemplateTypeListView, toolDialog.TemplateTypeMapPanel, this.mouseToolTip, this.plugin, this.url);
-                this.activeToolForm = toolDialog;
-                this.activeToolForm.Show(this);
+                this.toolTabControl.SelectedTab = this.mapToolTabPage;
             }
             break;
             case ToolType.Smudge: {

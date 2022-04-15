@@ -133,6 +133,12 @@
     <Compile Include="Controls\TypeComboBox.Designer.cs">
       <DependentUpon>TypeComboBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TemplateToolControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TemplateToolControl.Designer.cs">
+      <DependentUpon>TemplateToolControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\ErrorMessageBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -436,6 +442,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MapPanel.resx">
       <DependentUpon>MapPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TemplateToolControl.resx">
+      <DependentUpon>TemplateToolControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\TerrainProperties.resx">
       <DependentUpon>TerrainProperties.cs</DependentUpon>

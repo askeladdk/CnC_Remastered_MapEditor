@@ -137,11 +137,11 @@ namespace MobiusEditor.Tools {
 
             var imageList = new ImageList();
             imageList.Images.AddRange(templateTypeImages.ToArray());
-            imageList.ImageSize = new Size(maxWidth, maxHeight);
+            imageList.ImageSize = new Size(maxWidth / 8, maxHeight / 8);
             imageList.ColorDepth = ColorDepth.Depth24Bit;
 
             this.templateTypeListView.BeginUpdate();
-            this.templateTypeListView.LargeImageList = imageList;
+            this.templateTypeListView.SmallImageList = imageList;
 
             var imageIndex = 0;
             foreach(var templateTypeGroup in templateTypes) {
