@@ -796,11 +796,10 @@ namespace MobiusEditor {
             }
             break;
             case ToolType.Resources: {
-                var toolDialog = new ResourcesToolDialog();
+                var toolDialog = this.resourceToolControl;
 
                 this.activeTool = new ResourcesTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.TotalResourcesLbl, toolDialog.ResourceBrushSizeNud, toolDialog.GemsCheckBox, this.plugin, this.url);
-                this.activeToolForm = toolDialog;
-                this.activeToolForm.Show(this);
+                this.toolTabControl.SelectedTab = this.resourcesToolTabPage;
             }
             break;
             case ToolType.Terrain: {

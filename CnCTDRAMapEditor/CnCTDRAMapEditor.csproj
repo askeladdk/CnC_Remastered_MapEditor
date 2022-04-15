@@ -139,6 +139,12 @@
     <Compile Include="Controls\TypeComboBox.Designer.cs">
       <DependentUpon>TypeComboBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\Controls\ResourceToolControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\Controls\ResourceToolControl.Designer.cs">
+      <DependentUpon>ResourceToolControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\Controls\TemplateToolControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -457,6 +463,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MapPanel.resx">
       <DependentUpon>MapPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\Controls\ResourceToolControl.resx">
+      <DependentUpon>ResourceToolControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\Controls\TemplateToolControl.resx">
       <DependentUpon>TemplateToolControl.cs</DependentUpon>
