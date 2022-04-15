@@ -106,6 +106,8 @@ namespace MobiusEditor
             this.smudgeToolControl = new MobiusEditor.Controls.GenericToolControl();
             this.overlayToolTabPage = new System.Windows.Forms.TabPage();
             this.overlayToolControl = new MobiusEditor.Controls.GenericToolControl();
+            this.terrainToolTabPage = new System.Windows.Forms.TabPage();
+            this.terrainToolControl = new MobiusEditor.Controls.TerrainToolControl();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -117,6 +119,7 @@ namespace MobiusEditor
             this.mapToolTabPage.SuspendLayout();
             this.smudgeToolTabPage.SuspendLayout();
             this.overlayToolTabPage.SuspendLayout();
+            this.terrainToolTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenuStrip
@@ -608,6 +611,7 @@ namespace MobiusEditor
             this.toolTabControl.Controls.Add(this.mapToolTabPage);
             this.toolTabControl.Controls.Add(this.smudgeToolTabPage);
             this.toolTabControl.Controls.Add(this.overlayToolTabPage);
+            this.toolTabControl.Controls.Add(this.terrainToolTabPage);
             this.toolTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolTabControl.Location = new System.Drawing.Point(0, 0);
             this.toolTabControl.Name = "toolTabControl";
@@ -670,6 +674,25 @@ namespace MobiusEditor
             this.overlayToolControl.Size = new System.Drawing.Size(229, 446);
             this.overlayToolControl.TabIndex = 0;
             // 
+            // terrainToolTabPage
+            // 
+            this.terrainToolTabPage.Controls.Add(this.terrainToolControl);
+            this.terrainToolTabPage.Location = new System.Drawing.Point(4, 22);
+            this.terrainToolTabPage.Name = "terrainToolTabPage";
+            this.terrainToolTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.terrainToolTabPage.Size = new System.Drawing.Size(229, 446);
+            this.terrainToolTabPage.TabIndex = 3;
+            this.terrainToolTabPage.Text = "Terrain";
+            this.terrainToolTabPage.UseVisualStyleBackColor = true;
+            // 
+            // terrainToolControl
+            // 
+            this.terrainToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.terrainToolControl.Location = new System.Drawing.Point(3, 3);
+            this.terrainToolControl.Name = "terrainToolControl";
+            this.terrainToolControl.Size = new System.Drawing.Size(223, 440);
+            this.terrainToolControl.TabIndex = 0;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -700,6 +723,7 @@ namespace MobiusEditor
             this.mapToolTabPage.ResumeLayout(false);
             this.smudgeToolTabPage.ResumeLayout(false);
             this.overlayToolTabPage.ResumeLayout(false);
+            this.terrainToolTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -767,6 +791,8 @@ namespace MobiusEditor
         private Controls.GenericToolControl smudgeToolControl;
         private System.Windows.Forms.TabPage overlayToolTabPage;
         private Controls.GenericToolControl overlayToolControl;
+        private System.Windows.Forms.TabPage terrainToolTabPage;
+        private Controls.TerrainToolControl terrainToolControl;
     }
 }
 

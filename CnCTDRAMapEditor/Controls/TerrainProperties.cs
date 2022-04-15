@@ -40,7 +40,9 @@ namespace MobiusEditor.Controls {
             }
         }
 
-        public TerrainProperties() => this.InitializeComponent();
+        public TerrainProperties() {
+            this.InitializeComponent();
+        }
 
         public void Initialize(IGamePlugin plugin, bool isMockObject) {
             this.isMockObject = isMockObject;
@@ -56,9 +58,13 @@ namespace MobiusEditor.Controls {
             };
         }
 
-        private void Triggers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => this.UpdateDataSource();
+        private void Triggers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+            this.UpdateDataSource();
+        }
 
-        private void UpdateDataSource() => this.triggerComboBox.DataSource = Trigger.None.Yield().Concat(this.Plugin.Map.Triggers.Select(t => t.Name).Distinct()).ToArray();
+        private void UpdateDataSource() {
+            this.triggerComboBox.DataSource = Trigger.None.Yield().Concat(this.Plugin.Map.Triggers.Select(t => t.Name).Distinct()).ToArray();
+        }
 
         private void Rebind() {
             this.triggerComboBox.DataBindings.Clear();

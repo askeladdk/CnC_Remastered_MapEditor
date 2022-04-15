@@ -804,13 +804,10 @@ namespace MobiusEditor {
             }
             break;
             case ToolType.Terrain: {
-                var toolDialog = new TerrainToolDialog(this.plugin);
-
-                toolDialog.TerrainTypeComboBox.Types = this.plugin.Map.TerrainTypes.Where(t => t.Theaters.Contains(this.plugin.Map.Theater)).OrderBy(t => t.Name);
-
-                this.activeTool = new TerrainTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.TerrainTypeComboBox, toolDialog.TerrainTypeMapPanel, toolDialog.TerrainProperties, this.plugin, this.url);
-                this.activeToolForm = toolDialog;
-                this.activeToolForm.Show(this);
+                var toolDialog = this.terrainToolControl;
+                toolDialog.Initialize(this.plugin);
+                this.activeTool = new TerrainTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.TerrainTypeListView, toolDialog.TerrainTypeMapPanel, toolDialog.TerrainProperties, this.plugin, this.url);
+                this.toolTabControl.SelectedTab = this.terrainToolTabPage;
             }
             break;
             case ToolType.Infantry: {

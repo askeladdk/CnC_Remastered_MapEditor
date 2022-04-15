@@ -368,6 +368,12 @@
     <Compile Include="TiberianDawn\InfantryTypes.cs" />
     <Compile Include="TiberianDawn\UnitTypes.cs" />
     <Compile Include="Tools\BuildingTool.cs" />
+    <Compile Include="Tools\Controls\TerrainToolControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\Controls\TerrainToolControl.Designer.cs">
+      <DependentUpon>TerrainToolControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\Dialogs\ResourcesToolDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -498,6 +504,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Tools\Controls\TerrainToolControl.resx">
+      <DependentUpon>TerrainToolControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tools\Dialogs\ResourcesToolDialog.resx">
       <DependentUpon>ResourcesToolDialog.cs</DependentUpon>
     </EmbeddedResource>

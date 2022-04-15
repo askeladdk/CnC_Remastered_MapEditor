@@ -26,7 +26,7 @@ using System.Windows.Forms;
 
 namespace MobiusEditor.Tools {
     public class TerrainTool : ViewTool {
-        private readonly TypeComboBox terrainTypeComboBox;
+        private readonly ListView terrainTypeListView;
         private readonly MapPanel terrainTypeMapPanel;
         private readonly TerrainProperties terrainProperties;
 
@@ -51,21 +51,33 @@ namespace MobiusEditor.Tools {
                     }
 
                     this.selectedTerrainType = value;
-                    this.terrainTypeComboBox.SelectedValue = this.selectedTerrainType;
+
+                    this.terrainTypeListView.BeginUpdate();
+                    this.terrainTypeListView.SelectedIndexChanged -= this.TerrainTypeCombo_SelectedIndexChanged;
+                    foreach(ListViewItem item in this.terrainTypeListView.Items) {
+                        item.Selected = item.Tag == this.selectedTerrainType;
+                    }
+                    if(this.terrainTypeListView.SelectedIndices.Count > 0) {
+                        this.terrainTypeListView.EnsureVisible(this.terrainTypeListView.SelectedIndices[0]);
+                    }
+                    this.terrainTypeListView.SelectedIndexChanged += this.TerrainTypeCombo_SelectedIndexChanged;
+                    this.terrainTypeListView.EndUpdate();
 
                     if(this.placementMode && (this.selectedTerrainType != null)) {
                         this.mapPanel.Invalidate(this.map, new Rectangle(this.navigationWidget.MouseCell, this.selectedTerrainType.OverlapBounds.Size));
                     }
 
                     this.mockTerrain.Type = this.selectedTerrainType;
-                    this.mockTerrain.Icon = this.selectedTerrainType.IsTransformable ? 22 : 0;
+                    if(this.selectedTerrainType != null) {
+                        this.mockTerrain.Icon = this.selectedTerrainType.IsTransformable ? 22 : 0;
+                    }
 
                     this.RefreshMapPanel();
                 }
             }
         }
 
-        public TerrainTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, TypeComboBox terrainTypeComboBox, MapPanel terrainTypeMapPanel, TerrainProperties terrainProperties, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
+        public TerrainTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView terrainTypeListView, MapPanel terrainTypeMapPanel, TerrainProperties terrainProperties, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
             : base(mapPanel, layers, statusLbl, plugin, url) {
             this.previewMap = this.map;
 
@@ -79,8 +91,32 @@ namespace MobiusEditor.Tools {
             (this.mapPanel as Control).KeyDown += this.TerrainTool_KeyDown;
             (this.mapPanel as Control).KeyUp += this.TerrainTool_KeyUp;
 
-            this.terrainTypeComboBox = terrainTypeComboBox;
-            this.terrainTypeComboBox.SelectedIndexChanged += this.TerrainTypeCombo_SelectedIndexChanged;
+            this.terrainTypeListView = terrainTypeListView;
+            this.terrainTypeListView.SelectedIndexChanged += this.TerrainTypeCombo_SelectedIndexChanged;
+
+            var terrainTypes = plugin.Map.TerrainTypes.Where(t => t.Theaters.Contains(plugin.Map.Theater)).OrderBy(t => t.Name);
+            var terrainTypeImages = terrainTypes.Select(t => t.Thumbnail);
+
+            var maxWidth = terrainTypeImages.Max(t => t.Width);
+            var maxHeight = terrainTypeImages.Max(t => t.Height);
+
+            var imageList = new ImageList();
+            imageList.Images.AddRange(terrainTypeImages.ToArray());
+            imageList.ImageSize = new Size(maxWidth / 2, maxHeight / 2);
+            imageList.ColorDepth = ColorDepth.Depth24Bit;
+
+            this.terrainTypeListView.BeginUpdate();
+            this.terrainTypeListView.Items.Clear();
+            this.terrainTypeListView.SmallImageList = imageList;
+
+            var imageIndex = 0;
+            foreach(var templateType in terrainTypes) {
+                var item = new ListViewItem(templateType.DisplayName, imageIndex++) {
+                    Tag = templateType
+                };
+                this.terrainTypeListView.Items.Add(item);
+            }
+            this.terrainTypeListView.EndUpdate();
 
             this.terrainTypeMapPanel = terrainTypeMapPanel;
             this.terrainTypeMapPanel.BackColor = Color.White;
@@ -92,7 +128,7 @@ namespace MobiusEditor.Tools {
 
             this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
 
-            this.SelectedTerrainType = terrainTypeComboBox.Types.First() as TerrainType;
+            this.SelectedTerrainType = terrainTypes.First();
 
             this.UpdateStatus();
         }
@@ -119,9 +155,13 @@ namespace MobiusEditor.Tools {
             }
         }
 
-        private void MockTerrain_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.RefreshMapPanel();
+        private void MockTerrain_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            this.RefreshMapPanel();
+        }
 
-        private void TerrainTypeCombo_SelectedIndexChanged(object sender, EventArgs e) => this.SelectedTerrainType = this.terrainTypeComboBox.SelectedValue as TerrainType;
+        private void TerrainTypeCombo_SelectedIndexChanged(object sender, EventArgs e) {
+            this.SelectedTerrainType = (this.terrainTypeListView.SelectedItems.Count > 0) ? (this.terrainTypeListView.SelectedItems[0].Tag as TerrainType) : null;
+        }
 
         private void TerrainTool_KeyDown(object sender, KeyEventArgs e) {
             if(e.KeyCode == Keys.ShiftKey) {
@@ -283,7 +323,9 @@ namespace MobiusEditor.Tools {
             this.UpdateStatus();
         }
 
-        private void RefreshMapPanel() => this.terrainTypeMapPanel.MapImage = this.mockTerrain.Type.Thumbnail;
+        private void RefreshMapPanel() {
+            this.terrainTypeMapPanel.MapImage = this.mockTerrain.Type?.Thumbnail;
+        }
 
         private void UpdateStatus() {
             if(this.placementMode) {
@@ -352,7 +394,7 @@ namespace MobiusEditor.Tools {
                     (this.mapPanel as Control).KeyDown -= this.TerrainTool_KeyDown;
                     (this.mapPanel as Control).KeyUp -= this.TerrainTool_KeyUp;
 
-                    this.terrainTypeComboBox.SelectedIndexChanged -= this.TerrainTypeCombo_SelectedIndexChanged;
+                    this.terrainTypeListView.SelectedIndexChanged -= this.TerrainTypeCombo_SelectedIndexChanged;
 
                     this.navigationWidget.MouseCellChanged -= this.MouseoverWidget_MouseCellChanged;
                 }
