@@ -12,6 +12,8 @@
 // distributed with this program. You should have received a copy of the
 // GNU General Public License along with permitted additional restrictions
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
+using MobiusEditor.Controls;
+
 namespace MobiusEditor.Tools.Dialogs
 {
     partial class TerrainToolDialog
@@ -140,8 +142,8 @@ namespace MobiusEditor.Tools.Dialogs
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private Controls.TypeComboBox terrainTypeComboBox;
-        private Controls.MapPanel terrainTypeMapPanel;
-        private Controls.TerrainProperties terrainProperties;
+        private TypeComboBox terrainTypeComboBox;
+        private MapPanel terrainTypeMapPanel;
+        private TerrainProperties terrainProperties;
     }
 }

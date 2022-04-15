@@ -12,6 +12,8 @@
 // distributed with this program. You should have received a copy of the
 // GNU General Public License along with permitted additional restrictions
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
+using MobiusEditor.Controls;
+
 namespace MobiusEditor.Tools.Dialogs
 {
     partial class GenericToolDialog
@@ -115,7 +117,7 @@ namespace MobiusEditor.Tools.Dialogs
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private Controls.TypeComboBox genericTypeComboBox;
-        private Controls.MapPanel genericTypeMapPanel;
+        private TypeComboBox genericTypeComboBox;
+        private MapPanel genericTypeMapPanel;
     }
 }
