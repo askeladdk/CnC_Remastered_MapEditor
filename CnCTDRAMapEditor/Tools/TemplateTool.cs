@@ -117,6 +117,7 @@ namespace MobiusEditor.Tools {
             (this.mapPanel as Control).KeyUp += this.TemplateTool_KeyUp;
 
             this.templateTypeListView = templateTypeListView;
+            this.templateTypeListView.Items.Clear();
             this.templateTypeListView.SelectedIndexChanged += this.TemplateTypeListView_SelectedIndexChanged;
 
             string templateCategory(TemplateType template) {
