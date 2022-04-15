@@ -25,7 +25,7 @@ using System.Windows.Forms;
 
 namespace MobiusEditor.Tools {
     public class SmudgeTool : ViewTool {
-        private readonly TypeComboBox smudgeTypeComboBox;
+        private readonly ListView smudgeTypeListView;
         private readonly MapPanel smudgeTypeMapPanel;
 
         private Map previewMap;
@@ -36,6 +36,7 @@ namespace MobiusEditor.Tools {
         private SmudgeType selectedSmudgeType;
         private SmudgeType SelectedSmudgeType {
             get => this.selectedSmudgeType;
+
             set {
                 if(this.selectedSmudgeType != value) {
                     if(this.placementMode && (this.selectedSmudgeType != null)) {
@@ -43,7 +44,17 @@ namespace MobiusEditor.Tools {
                     }
 
                     this.selectedSmudgeType = value;
-                    this.smudgeTypeComboBox.SelectedValue = this.selectedSmudgeType;
+
+                    this.smudgeTypeListView.BeginUpdate();
+                    this.smudgeTypeListView.SelectedIndexChanged -= this.SmudgeTypeComboBox_SelectedIndexChanged;
+                    foreach(ListViewItem item in this.smudgeTypeListView.Items) {
+                        item.Selected = item.Tag == this.selectedSmudgeType;
+                    }
+                    if(this.smudgeTypeListView.SelectedIndices.Count > 0) {
+                        this.smudgeTypeListView.EnsureVisible(this.smudgeTypeListView.SelectedIndices[0]);
+                    }
+                    this.smudgeTypeListView.SelectedIndexChanged += this.SmudgeTypeComboBox_SelectedIndexChanged;
+                    this.smudgeTypeListView.EndUpdate();
 
                     if(this.placementMode && (this.selectedSmudgeType != null)) {
                         this.mapPanel.Invalidate(this.map, this.navigationWidget.MouseCell);
@@ -54,7 +65,7 @@ namespace MobiusEditor.Tools {
             }
         }
 
-        public SmudgeTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, TypeComboBox smudgeTypeComboBox, MapPanel smudgeTypeMapPanel, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
+        public SmudgeTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView smudgeTypeListView, MapPanel smudgeTypeMapPanel, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
             : base(mapPanel, layers, statusLbl, plugin, url) {
             this.previewMap = this.map;
 
@@ -63,8 +74,32 @@ namespace MobiusEditor.Tools {
             (this.mapPanel as Control).KeyDown += this.SmudgeTool_KeyDown;
             (this.mapPanel as Control).KeyUp += this.SmudgeTool_KeyUp;
 
-            this.smudgeTypeComboBox = smudgeTypeComboBox;
-            this.smudgeTypeComboBox.SelectedIndexChanged += this.SmudgeTypeComboBox_SelectedIndexChanged;
+            this.smudgeTypeListView = smudgeTypeListView;
+            this.smudgeTypeListView.SelectedIndexChanged += this.SmudgeTypeComboBox_SelectedIndexChanged;
+
+            var smudgeTypes = plugin.Map.SmudgeTypes.Where(t => (t.Flag & SmudgeTypeFlag.Bib) == SmudgeTypeFlag.None).OrderBy(t => t.Name);
+            var smudgeTypeImages = smudgeTypes.Select(t => t.Thumbnail);
+
+            var maxWidth = smudgeTypeImages.Max(t => t.Width);
+            var maxHeight = smudgeTypeImages.Max(t => t.Height);
+
+            var imageList = new ImageList();
+            imageList.Images.AddRange(smudgeTypeImages.ToArray());
+            imageList.ImageSize = new Size(maxWidth / 2, maxHeight / 2);
+            imageList.ColorDepth = ColorDepth.Depth24Bit;
+
+            this.smudgeTypeListView.BeginUpdate();
+            this.smudgeTypeListView.Items.Clear();
+            this.smudgeTypeListView.SmallImageList = imageList;
+
+            var imageIndex = 0;
+            foreach(var templateType in smudgeTypes) {
+                var item = new ListViewItem(templateType.DisplayName, imageIndex++) {
+                    Tag = templateType
+                };
+                this.smudgeTypeListView.Items.Add(item);
+            }
+            this.smudgeTypeListView.EndUpdate();
 
             this.smudgeTypeMapPanel = smudgeTypeMapPanel;
             this.smudgeTypeMapPanel.BackColor = Color.White;
@@ -72,12 +107,14 @@ namespace MobiusEditor.Tools {
 
             this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
 
-            this.SelectedSmudgeType = smudgeTypeComboBox.Types.First() as SmudgeType;
+            this.SelectedSmudgeType = smudgeTypes.First();
 
             this.UpdateStatus();
         }
 
-        private void SmudgeTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) => this.SelectedSmudgeType = this.smudgeTypeComboBox.SelectedValue as SmudgeType;
+        private void SmudgeTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.SelectedSmudgeType = (this.smudgeTypeListView.SelectedItems.Count > 0) ? (this.smudgeTypeListView.SelectedItems[0].Tag as SmudgeType) : null;
+        }
 
         private void SmudgeTool_KeyDown(object sender, KeyEventArgs e) {
             if(e.KeyCode == Keys.ShiftKey) {
@@ -210,7 +247,9 @@ namespace MobiusEditor.Tools {
             }
         }
 
-        private void RefreshMapPanel() => this.smudgeTypeMapPanel.MapImage = this.SelectedSmudgeType?.Thumbnail;
+        private void RefreshMapPanel() {
+            this.smudgeTypeMapPanel.MapImage = this.SelectedSmudgeType?.Thumbnail;
+        }
 
         private void UpdateStatus() {
             if(this.placementMode) {
@@ -253,7 +292,7 @@ namespace MobiusEditor.Tools {
         protected override void Dispose(bool disposing) {
             if(!this.disposedValue) {
                 if(disposing) {
-                    this.smudgeTypeComboBox.SelectedIndexChanged -= this.SmudgeTypeComboBox_SelectedIndexChanged;
+                    this.smudgeTypeListView.SelectedIndexChanged -= this.SmudgeTypeComboBox_SelectedIndexChanged;
 
                     this.mapPanel.MouseDown -= this.MapPanel_MouseDown;
                     this.mapPanel.MouseMove -= this.MapPanel_MouseMove;

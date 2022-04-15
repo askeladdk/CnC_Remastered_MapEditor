@@ -95,7 +95,9 @@ namespace MobiusEditor {
 
         private readonly Timer steamUpdateTimer = new Timer();
 
-        static MainForm() => toolTypes = ((IEnumerable<ToolType>)Enum.GetValues(typeof(ToolType))).Where(t => t != ToolType.None).ToArray();
+        static MainForm() {
+            toolTypes = ((IEnumerable<ToolType>)Enum.GetValues(typeof(ToolType))).Where(t => t != ToolType.None).ToArray();
+        }
 
         public MainForm() {
             this.InitializeComponent();
@@ -199,7 +201,9 @@ namespace MobiusEditor {
             this.editRedoMenuItem.Enabled = this.url.CanRedo;
         }
 
-        private void UndoRedo_Updated(object sender, EventArgs e) => this.UpdateUndoRedo();
+        private void UndoRedo_Updated(object sender, EventArgs e) {
+            this.UpdateUndoRedo();
+        }
 
         private void fileNewMenuItem_Click(object sender, EventArgs e) {
             if(!this.PromptSaveMap()) {
@@ -360,7 +364,9 @@ namespace MobiusEditor {
             }
         }
 
-        private void fileExitMenuItem_Click(object sender, EventArgs e) => this.Close();
+        private void fileExitMenuItem_Click(object sender, EventArgs e) {
+            this.Close();
+        }
 
         private void editUndoMenuItem_Click(object sender, EventArgs e) {
             if(this.url.CanUndo) {
@@ -776,15 +782,10 @@ namespace MobiusEditor {
             }
             break;
             case ToolType.Smudge: {
-                var toolDialog = new GenericToolDialog {
-                    Text = "Smudge"
-                };
+                var toolDialog = this.smudgeToolControl;
 
-                toolDialog.GenericTypeComboBox.Types = this.plugin.Map.SmudgeTypes.Where(t => (t.Flag & SmudgeTypeFlag.Bib) == SmudgeTypeFlag.None).OrderBy(t => t.Name);
-
-                this.activeTool = new SmudgeTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.GenericTypeComboBox, toolDialog.GenericTypeMapPanel, this.plugin, this.url);
-                this.activeToolForm = toolDialog;
-                this.activeToolForm.Show(this);
+                this.activeTool = new SmudgeTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.GenericTypeListView, toolDialog.GenericTypeMapPanel, this.plugin, this.url);
+                this.toolTabControl.SelectedTab = this.smudgeToolTabPage;
             }
             break;
             case ToolType.Overlay: {
@@ -948,9 +949,13 @@ namespace MobiusEditor {
             this.activeToolForm.DesktopBounds = bounds;
         }
 
-        private void ActiveToolForm_ResizeEnd(object sender, EventArgs e) => this.clampActiveToolForm();
+        private void ActiveToolForm_ResizeEnd(object sender, EventArgs e) {
+            this.clampActiveToolForm();
+        }
 
-        private void Triggers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => this.RefreshAvailableTools();
+        private void Triggers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+            this.RefreshAvailableTools();
+        }
 
         private void mainToolStripButton_Click(object sender, EventArgs e) {
             if(this.plugin == null) {
@@ -1005,7 +1010,9 @@ namespace MobiusEditor {
             this.ActiveLayers = layers;
         }
 
-        private void viewLayersMenuItem_CheckedChanged(object sender, EventArgs e) => this.UpdateVisibleLayers();
+        private void viewLayersMenuItem_CheckedChanged(object sender, EventArgs e) {
+            this.UpdateVisibleLayers();
+        }
 
         private void toolTabControl_Selected(object sender, TabControlEventArgs e) {
             if(this.plugin == null) {
@@ -1112,9 +1119,13 @@ namespace MobiusEditor {
             this.fileSaveMenuItem.PerformClick();
         }
 
-        private void mainToolStrip_MouseMove(object sender, MouseEventArgs e) => this.mainToolStrip.Focus();
+        private void mainToolStrip_MouseMove(object sender, MouseEventArgs e) {
+            this.mainToolStrip.Focus();
+        }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e) => e.Cancel = !this.PromptSaveMap();
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
+            e.Cancel = !this.PromptSaveMap();
+        }
 
         private bool PromptSaveMap() {
             var cancel = false;

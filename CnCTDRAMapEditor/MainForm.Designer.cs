@@ -102,6 +102,8 @@ namespace MobiusEditor
             this.toolTabControl = new System.Windows.Forms.TabControl();
             this.mapToolTabPage = new System.Windows.Forms.TabPage();
             this.templateToolControl = new MobiusEditor.Controls.TemplateToolControl();
+            this.smudgeToolTabPage = new System.Windows.Forms.TabPage();
+            this.smudgeToolControl = new MobiusEditor.Controls.GenericToolControl();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -111,6 +113,7 @@ namespace MobiusEditor
             this.splitContainer1.SuspendLayout();
             this.toolTabControl.SuspendLayout();
             this.mapToolTabPage.SuspendLayout();
+            this.smudgeToolTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenuStrip
@@ -600,6 +603,7 @@ namespace MobiusEditor
             // toolTabControl
             // 
             this.toolTabControl.Controls.Add(this.mapToolTabPage);
+            this.toolTabControl.Controls.Add(this.smudgeToolTabPage);
             this.toolTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolTabControl.Location = new System.Drawing.Point(0, 0);
             this.toolTabControl.Name = "toolTabControl";
@@ -625,6 +629,24 @@ namespace MobiusEditor
             this.templateToolControl.Name = "templateToolControl";
             this.templateToolControl.Size = new System.Drawing.Size(223, 440);
             this.templateToolControl.TabIndex = 1;
+            // 
+            // smudgeToolTabPage
+            // 
+            this.smudgeToolTabPage.Controls.Add(this.smudgeToolControl);
+            this.smudgeToolTabPage.Location = new System.Drawing.Point(4, 22);
+            this.smudgeToolTabPage.Name = "smudgeToolTabPage";
+            this.smudgeToolTabPage.Size = new System.Drawing.Size(229, 446);
+            this.smudgeToolTabPage.TabIndex = 1;
+            this.smudgeToolTabPage.Text = "Smudge";
+            this.smudgeToolTabPage.UseVisualStyleBackColor = true;
+            // 
+            // smudgeToolControl
+            // 
+            this.smudgeToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.smudgeToolControl.Location = new System.Drawing.Point(0, 0);
+            this.smudgeToolControl.Name = "smudgeToolControl";
+            this.smudgeToolControl.Size = new System.Drawing.Size(229, 446);
+            this.smudgeToolControl.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -654,6 +676,7 @@ namespace MobiusEditor
             this.splitContainer1.ResumeLayout(false);
             this.toolTabControl.ResumeLayout(false);
             this.mapToolTabPage.ResumeLayout(false);
+            this.smudgeToolTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -717,6 +740,8 @@ namespace MobiusEditor
         private System.Windows.Forms.TabControl toolTabControl;
         private System.Windows.Forms.TabPage mapToolTabPage;
         private Controls.TemplateToolControl templateToolControl;
+        private System.Windows.Forms.TabPage smudgeToolTabPage;
+        private Controls.GenericToolControl smudgeToolControl;
     }
 }
 

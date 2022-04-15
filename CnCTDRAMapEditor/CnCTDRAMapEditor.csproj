@@ -85,6 +85,12 @@
     <Compile Include="Controls\BriefingSettings.Designer.cs">
       <DependentUpon>BriefingSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\GenericToolControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GenericToolControl.Designer.cs">
+      <DependentUpon>GenericToolControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ImageTooltip.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -439,6 +445,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\BriefingSettings.resx">
       <DependentUpon>BriefingSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GenericToolControl.resx">
+      <DependentUpon>GenericToolControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MapPanel.resx">
       <DependentUpon>MapPanel.cs</DependentUpon>
