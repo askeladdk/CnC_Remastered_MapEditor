@@ -97,7 +97,7 @@ namespace MobiusEditor.Model {
         public override string ToString() => this.Name;
 
         public void Init(TheaterType theater) {
-            var size = new Size(Globals.OriginalTileWidth / 4, Globals.OriginalTileWidth / 4);
+            var size = new Size(Globals.OriginalTileWidth / 4, Globals.OriginalTileHeight / 4);
             var iconSize = Math.Max(this.IconWidth, this.IconHeight);
             var thumbnail = new Bitmap(iconSize * size.Width, iconSize * size.Height);
             var mask = new bool[this.IconWidth, this.IconHeight];
