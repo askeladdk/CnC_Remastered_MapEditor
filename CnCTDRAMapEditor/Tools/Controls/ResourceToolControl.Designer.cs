@@ -78,9 +78,19 @@ namespace MobiusEditor.Tools.Controls {
             // 
             this.resourceBrushSizeNud.Dock = System.Windows.Forms.DockStyle.Fill;
             this.resourceBrushSizeNud.Location = new System.Drawing.Point(99, 42);
+            this.resourceBrushSizeNud.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.resourceBrushSizeNud.Name = "resourceBrushSizeNud";
             this.resourceBrushSizeNud.Size = new System.Drawing.Size(90, 20);
             this.resourceBrushSizeNud.TabIndex = 2;
+            this.resourceBrushSizeNud.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // label2
             // 

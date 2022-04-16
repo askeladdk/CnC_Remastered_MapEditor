@@ -16,7 +16,6 @@ using MobiusEditor.Controls;
 using MobiusEditor.Event;
 using MobiusEditor.Interface;
 using MobiusEditor.Model;
-using MobiusEditor.Render;
 using MobiusEditor.Utility;
 using MobiusEditor.Widgets;
 using System;
@@ -27,8 +26,7 @@ using System.Windows.Forms;
 
 namespace MobiusEditor.Tools {
     public class InfantryTool : ViewTool {
-        private readonly TypeComboBox infantryTypeComboBox;
-        private readonly MapPanel infantryTypeMapPanel;
+        private readonly ListView infantryTypeListView;
         private readonly ObjectProperties objectProperties;
 
         private Map previewMap;
@@ -51,31 +49,30 @@ namespace MobiusEditor.Tools {
                     }
 
                     this.selectedInfantryType = value;
-                    this.infantryTypeComboBox.SelectedValue = this.selectedInfantryType;
+
+                    this.infantryTypeListView.BeginUpdate();
+                    this.infantryTypeListView.SelectedIndexChanged -= this.InfantryTypeComboBox_SelectedIndexChanged;
+                    foreach(ListViewItem item in this.infantryTypeListView.Items) {
+                        item.Selected = item.Tag == this.selectedInfantryType;
+                    }
+                    if(this.infantryTypeListView.SelectedIndices.Count > 0) {
+                        this.infantryTypeListView.EnsureVisible(this.infantryTypeListView.SelectedIndices[0]);
+                    }
+                    this.infantryTypeListView.SelectedIndexChanged += this.InfantryTypeComboBox_SelectedIndexChanged;
+                    this.infantryTypeListView.EndUpdate();
 
                     if(this.placementMode && (this.selectedInfantryType != null)) {
                         this.mapPanel.Invalidate(this.map, this.navigationWidget.MouseCell);
                     }
 
                     this.mockInfantry.Type = this.selectedInfantryType;
-
-                    this.RefreshMapPanel();
                 }
             }
         }
 
-        public InfantryTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, TypeComboBox infantryTypeComboBox, MapPanel infantryTypeMapPanel, ObjectProperties objectProperties, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
+        public InfantryTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView infantryTypeListView, ObjectProperties objectProperties, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
             : base(mapPanel, layers, statusLbl, plugin, url) {
             this.previewMap = this.map;
-
-            this.mockInfantry = new Infantry(null) {
-                Type = infantryTypeComboBox.Types.First() as InfantryType,
-                House = this.map.Houses.First().Type,
-                Strength = 256,
-                Direction = this.map.DirectionTypes.Where(d => d.Equals(FacingType.South)).First(),
-                Mission = this.map.MissionTypes.Where(m => m.Equals("Guard")).FirstOrDefault() ?? this.map.MissionTypes.First()
-            };
-            this.mockInfantry.PropertyChanged += this.MockInfantry_PropertyChanged;
 
             this.mapPanel.MouseDown += this.MapPanel_MouseDown;
             this.mapPanel.MouseUp += this.MapPanel_MouseUp;
@@ -84,19 +81,48 @@ namespace MobiusEditor.Tools {
             (this.mapPanel as Control).KeyDown += this.InfantryTool_KeyDown;
             (this.mapPanel as Control).KeyUp += this.InfantryTool_KeyUp;
 
-            this.infantryTypeComboBox = infantryTypeComboBox;
-            this.infantryTypeComboBox.SelectedIndexChanged += this.InfantryTypeComboBox_SelectedIndexChanged;
+            var infantryTypes = plugin.Map.InfantryTypes.OrderBy(t => t.Name);
+            var infantryTypesImages = infantryTypes.Select(t => t.Thumbnail);
 
-            this.infantryTypeMapPanel = infantryTypeMapPanel;
-            this.infantryTypeMapPanel.BackColor = Color.White;
-            this.infantryTypeMapPanel.MaxZoom = 1;
+            var maxWidth = infantryTypesImages.Max(t => t.Width);
+            var maxHeight = infantryTypesImages.Max(t => t.Height);
+
+            var imageList = new ImageList();
+            imageList.Images.AddRange(infantryTypesImages.ToArray());
+            imageList.ImageSize = new Size(maxWidth, maxHeight);
+            imageList.ColorDepth = ColorDepth.Depth24Bit;
+
+            this.mockInfantry = new Infantry(null) {
+                Type = infantryTypes.First(),
+                House = this.map.Houses.First().Type,
+                Strength = 256,
+                Direction = this.map.DirectionTypes.First(d => d.Equals(FacingType.South)),
+                Mission = this.map.MissionTypes.FirstOrDefault(m => m.Equals("Guard")) ?? this.map.MissionTypes.First(),
+            };
+
+            this.infantryTypeListView = infantryTypeListView;
+            this.infantryTypeListView.SelectedIndexChanged += this.InfantryTypeComboBox_SelectedIndexChanged;
+
+            this.infantryTypeListView.BeginUpdate();
+            this.infantryTypeListView.Items.Clear();
+            this.infantryTypeListView.SmallImageList = imageList;
+
+            var imageIndex = 0;
+            foreach(var infantryType in infantryTypes) {
+                var item = new ListViewItem(infantryType.DisplayName, imageIndex++) {
+                    Tag = infantryType
+                };
+                this.infantryTypeListView.Items.Add(item);
+            }
+            this.infantryTypeListView.EndUpdate();
 
             this.objectProperties = objectProperties;
+            this.objectProperties.Initialize(plugin, true);
             this.objectProperties.Object = this.mockInfantry;
 
             this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
 
-            this.SelectedInfantryType = this.infantryTypeComboBox.Types.First() as InfantryType;
+            this.SelectedInfantryType = infantryTypes.First();
 
             this.UpdateStatus();
         }
@@ -128,11 +154,13 @@ namespace MobiusEditor.Tools {
             }
         }
 
-        private void MockInfantry_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.RefreshMapPanel();
+        private void SelectedInfantry_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            this.mapPanel.Invalidate(this.map, (sender as Infantry).InfantryGroup);
+        }
 
-        private void SelectedInfantry_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.mapPanel.Invalidate(this.map, (sender as Infantry).InfantryGroup);
-
-        private void InfantryTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) => this.SelectedInfantryType = this.infantryTypeComboBox.SelectedValue as InfantryType;
+        private void InfantryTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.SelectedInfantryType = (this.infantryTypeListView.SelectedItems.Count > 0) ? (this.infantryTypeListView.SelectedItems[0].Tag as InfantryType) : null;
+        }
 
         private void InfantryTool_KeyDown(object sender, KeyEventArgs e) {
             if(e.KeyCode == Keys.ShiftKey) {
@@ -156,7 +184,6 @@ namespace MobiusEditor.Tools {
             if(this.placementMode) {
                 this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(this.navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
             } else if(this.selectedInfantry != null) {
-                var oldLocation = this.map.Technos[this.selectedInfantry.InfantryGroup].Value;
                 var oldStop = Array.IndexOf(this.selectedInfantry.InfantryGroup.Infantry, this.selectedInfantry);
 
                 InfantryGroup infantryGroup = null;
@@ -334,18 +361,6 @@ namespace MobiusEditor.Tools {
             this.UpdateStatus();
         }
 
-        private void RefreshMapPanel() {
-            if(this.mockInfantry.Type != null) {
-                var infantryPreview = new Bitmap(Globals.TileWidth, Globals.TileHeight);
-                using(var g = Graphics.FromImage(infantryPreview)) {
-                    MapRenderer.Render(this.map.Theater, Point.Empty, Globals.TileSize, this.mockInfantry, InfantryStoppingType.Center).Item2(g);
-                }
-                this.infantryTypeMapPanel.MapImage = infantryPreview;
-            } else {
-                this.infantryTypeMapPanel.MapImage = null;
-            }
-        }
-
         private void UpdateStatus() {
             if(this.placementMode) {
                 this.statusLbl.Text = "Left-Click to place infantry, Right-Click to remove infantry";
@@ -412,7 +427,7 @@ namespace MobiusEditor.Tools {
                     (this.mapPanel as Control).KeyDown -= this.InfantryTool_KeyDown;
                     (this.mapPanel as Control).KeyUp -= this.InfantryTool_KeyUp;
 
-                    this.infantryTypeComboBox.SelectedIndexChanged -= this.InfantryTypeComboBox_SelectedIndexChanged;
+                    this.infantryTypeListView.SelectedIndexChanged -= this.InfantryTypeComboBox_SelectedIndexChanged;
 
                     this.navigationWidget.MouseCellChanged -= this.MouseoverWidget_MouseCellChanged;
                 }

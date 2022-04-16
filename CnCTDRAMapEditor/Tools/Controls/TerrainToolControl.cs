@@ -1,5 +1,4 @@
-﻿using MobiusEditor.Interface;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace MobiusEditor.Controls {
     public partial class TerrainToolControl : UserControl {
@@ -11,10 +10,6 @@ namespace MobiusEditor.Controls {
 
         public TerrainToolControl() {
             this.InitializeComponent();
-        }
-
-        public void Initialize(IGamePlugin plugin) {
-            this.terrainProperties.Initialize(plugin, true);
         }
     }
 }

@@ -804,21 +804,16 @@ namespace MobiusEditor {
             break;
             case ToolType.Terrain: {
                 var toolDialog = this.terrainToolControl;
-                toolDialog.Initialize(this.plugin);
+
                 this.activeTool = new TerrainTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.TerrainTypeListView, toolDialog.TerrainTypeMapPanel, toolDialog.TerrainProperties, this.plugin, this.url);
                 this.toolTabControl.SelectedTab = this.terrainToolTabPage;
             }
             break;
             case ToolType.Infantry: {
-                var toolDialog = new ObjectToolDialog(this.plugin) {
-                    Text = "Infantry"
-                };
+                var toolDialog = this.infantryToolControl;
 
-                toolDialog.ObjectTypeComboBox.Types = this.plugin.Map.InfantryTypes.OrderBy(t => t.Name);
-
-                this.activeTool = new InfantryTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.ObjectTypeComboBox, toolDialog.ObjectTypeMapPanel, toolDialog.ObjectProperties, this.plugin, this.url);
-                this.activeToolForm = toolDialog;
-                this.activeToolForm.Show(this);
+                this.activeTool = new InfantryTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.ObjectTypeListView, toolDialog.ObjectProperties, this.plugin, this.url);
+                this.toolTabControl.SelectedTab = this.infantryToolTabPage;
             }
             break;
             case ToolType.Unit: {
