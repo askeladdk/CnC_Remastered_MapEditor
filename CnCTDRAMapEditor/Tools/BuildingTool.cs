@@ -16,7 +16,6 @@ using MobiusEditor.Controls;
 using MobiusEditor.Event;
 using MobiusEditor.Interface;
 using MobiusEditor.Model;
-using MobiusEditor.Render;
 using MobiusEditor.Utility;
 using MobiusEditor.Widgets;
 using System;
@@ -27,8 +26,7 @@ using System.Windows.Forms;
 
 namespace MobiusEditor.Tools {
     public class BuildingTool : ViewTool {
-        private readonly TypeComboBox buildingTypeComboBox;
-        private readonly MapPanel buildingTypeMapPanel;
+        private readonly ListView buildingTypeListView;
         private readonly ObjectProperties objectProperties;
 
         private Map previewMap;
@@ -52,30 +50,30 @@ namespace MobiusEditor.Tools {
                     }
 
                     this.selectedBuildingType = value;
-                    this.buildingTypeComboBox.SelectedValue = this.selectedBuildingType;
+
+                    this.buildingTypeListView.BeginUpdate();
+                    this.buildingTypeListView.SelectedIndexChanged -= this.UnitTypeComboBox_SelectedIndexChanged;
+                    foreach(ListViewItem item in this.buildingTypeListView.Items) {
+                        item.Selected = item.Tag == this.selectedBuildingType;
+                    }
+                    if(this.buildingTypeListView.SelectedIndices.Count > 0) {
+                        this.buildingTypeListView.EnsureVisible(this.buildingTypeListView.SelectedIndices[0]);
+                    }
+                    this.buildingTypeListView.SelectedIndexChanged += this.UnitTypeComboBox_SelectedIndexChanged;
+                    this.buildingTypeListView.EndUpdate();
 
                     if(this.placementMode && (this.selectedBuildingType != null)) {
                         this.mapPanel.Invalidate(this.map, new Rectangle(this.navigationWidget.MouseCell, this.selectedBuildingType.OverlapBounds.Size));
                     }
 
                     this.mockBuilding.Type = this.selectedBuildingType;
-
-                    this.RefreshMapPanel();
                 }
             }
         }
 
-        public BuildingTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, TypeComboBox buildingTypeComboBox, MapPanel buildingTypeMapPanel, ObjectProperties objectProperties, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
+        public BuildingTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView buildingTypeListView, ObjectProperties objectProperties, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
             : base(mapPanel, layers, statusLbl, plugin, url) {
             this.previewMap = this.map;
-
-            this.mockBuilding = new Building() {
-                Type = buildingTypeComboBox.Types.First() as BuildingType,
-                House = this.map.Houses.First().Type,
-                Strength = 256,
-                Direction = this.map.DirectionTypes.Where(d => d.Equals(FacingType.North)).First()
-            };
-            this.mockBuilding.PropertyChanged += this.MockBuilding_PropertyChanged;
 
             this.mapPanel.MouseDown += this.MapPanel_MouseDown;
             this.mapPanel.MouseUp += this.MapPanel_MouseUp;
@@ -84,14 +82,46 @@ namespace MobiusEditor.Tools {
             (this.mapPanel as Control).KeyDown += this.UnitTool_KeyDown;
             (this.mapPanel as Control).KeyUp += this.UnitTool_KeyUp;
 
-            this.buildingTypeComboBox = buildingTypeComboBox;
-            this.buildingTypeComboBox.SelectedIndexChanged += this.UnitTypeComboBox_SelectedIndexChanged;
+            var buildingTypes = plugin.Map.BuildingTypes
+                    .Where(t => (t.Theaters == null) || t.Theaters.Contains(this.plugin.Map.Theater))
+                    .OrderBy(t => t.IsFake)
+                    .ThenBy(t => t.Name);
+            var buildingTypesImages = buildingTypes.Select(t => t.Thumbnail);
 
-            this.buildingTypeMapPanel = buildingTypeMapPanel;
-            this.buildingTypeMapPanel.BackColor = Color.White;
-            this.buildingTypeMapPanel.MaxZoom = 1;
+            var maxWidth = buildingTypesImages.Max(t => t.Width);
+            var maxHeight = buildingTypesImages.Max(t => t.Height);
+
+            var imageList = new ImageList();
+            imageList.Images.AddRange(buildingTypesImages.ToArray());
+            imageList.ImageSize = new Size(maxWidth / 4, maxHeight / 4);
+            imageList.ColorDepth = ColorDepth.Depth24Bit;
+
+            this.mockBuilding = new Building() {
+                Type = buildingTypes.First(),
+                House = this.map.Houses.First().Type,
+                Strength = 256,
+                Direction = this.map.DirectionTypes.First(d => d.Equals(FacingType.North)),
+            };
+            this.mockBuilding.PropertyChanged += this.MockBuilding_PropertyChanged;
+
+            this.buildingTypeListView = buildingTypeListView;
+            this.buildingTypeListView.SelectedIndexChanged += this.UnitTypeComboBox_SelectedIndexChanged;
+
+            this.buildingTypeListView.BeginUpdate();
+            this.buildingTypeListView.Items.Clear();
+            this.buildingTypeListView.SmallImageList = imageList;
+
+            var imageIndex = 0;
+            foreach(var buildingType in buildingTypes) {
+                var item = new ListViewItem(buildingType.DisplayName, imageIndex++) {
+                    Tag = buildingType
+                };
+                this.buildingTypeListView.Items.Add(item);
+            }
+            this.buildingTypeListView.EndUpdate();
 
             this.objectProperties = objectProperties;
+            this.objectProperties.Initialize(plugin, true);
             this.objectProperties.Object = this.mockBuilding;
 
             this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
@@ -128,15 +158,17 @@ namespace MobiusEditor.Tools {
 
         private void MockBuilding_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if((this.mockBuilding.Type == null) || !this.mockBuilding.Type.HasTurret) {
-                this.mockBuilding.Direction = this.map.DirectionTypes.Where(d => d.Equals(FacingType.North)).First();
+                this.mockBuilding.Direction = this.map.DirectionTypes.First(d => d.Equals(FacingType.North));
             }
-
-            this.RefreshMapPanel();
         }
 
-        private void SelectedBuilding_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.mapPanel.Invalidate(this.map, sender as Building);
+        private void SelectedBuilding_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            this.mapPanel.Invalidate(this.map, sender as Building);
+        }
 
-        private void UnitTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) => this.SelectedBuildingType = this.buildingTypeComboBox.SelectedValue as BuildingType;
+        private void UnitTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.SelectedBuildingType = (this.buildingTypeListView.SelectedItems.Count > 0) ? (this.buildingTypeListView.SelectedItems[0].Tag as BuildingType) : null;
+        }
 
         private void UnitTool_KeyDown(object sender, KeyEventArgs e) {
             if(e.KeyCode == Keys.ShiftKey) {
@@ -307,23 +339,6 @@ namespace MobiusEditor.Tools {
             this.UpdateStatus();
         }
 
-        private void RefreshMapPanel() {
-            if(this.mockBuilding.Type != null) {
-                var render = MapRenderer.Render(this.plugin.GameType, this.map.Theater, new Point(0, 0), Globals.TileSize, Globals.TileScale, this.mockBuilding);
-                if(!render.Item1.IsEmpty) {
-                    var buildingPreview = new Bitmap(render.Item1.Width, render.Item1.Height);
-                    using(var g = Graphics.FromImage(buildingPreview)) {
-                        render.Item2(g);
-                    }
-                    this.buildingTypeMapPanel.MapImage = buildingPreview;
-                } else {
-                    this.buildingTypeMapPanel.MapImage = null;
-                }
-            } else {
-                this.buildingTypeMapPanel.MapImage = null;
-            }
-        }
-
         private void UpdateStatus() {
             if(this.placementMode) {
                 this.statusLbl.Text = "Left-Click to place building, Right-Click to remove building";
@@ -389,7 +404,7 @@ namespace MobiusEditor.Tools {
                     (this.mapPanel as Control).KeyDown -= this.UnitTool_KeyDown;
                     (this.mapPanel as Control).KeyUp -= this.UnitTool_KeyUp;
 
-                    this.buildingTypeComboBox.SelectedIndexChanged -= this.UnitTypeComboBox_SelectedIndexChanged;
+                    this.buildingTypeListView.SelectedIndexChanged -= this.UnitTypeComboBox_SelectedIndexChanged;
 
                     this.navigationWidget.MouseCellChanged -= this.MouseoverWidget_MouseCellChanged;
                 }

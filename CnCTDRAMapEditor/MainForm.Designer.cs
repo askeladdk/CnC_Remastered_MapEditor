@@ -114,6 +114,8 @@ namespace MobiusEditor
             this.infantryToolControl = new MobiusEditor.Tools.Controls.ObjectToolControl();
             this.unitsToolTabPage = new System.Windows.Forms.TabPage();
             this.unitsToolControl = new MobiusEditor.Tools.Controls.ObjectToolControl();
+            this.buildingToolTabPage = new System.Windows.Forms.TabPage();
+            this.buildingToolControl = new MobiusEditor.Tools.Controls.ObjectToolControl();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -129,6 +131,7 @@ namespace MobiusEditor
             this.resourcesToolTabPage.SuspendLayout();
             this.infantryToolTabPage.SuspendLayout();
             this.unitsToolTabPage.SuspendLayout();
+            this.buildingToolTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenuStrip
@@ -624,6 +627,7 @@ namespace MobiusEditor
             this.toolTabControl.Controls.Add(this.resourcesToolTabPage);
             this.toolTabControl.Controls.Add(this.infantryToolTabPage);
             this.toolTabControl.Controls.Add(this.unitsToolTabPage);
+            this.toolTabControl.Controls.Add(this.buildingToolTabPage);
             this.toolTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolTabControl.Location = new System.Drawing.Point(0, 0);
             this.toolTabControl.Name = "toolTabControl";
@@ -760,6 +764,24 @@ namespace MobiusEditor
             this.unitsToolControl.Size = new System.Drawing.Size(229, 446);
             this.unitsToolControl.TabIndex = 0;
             // 
+            // buildingToolTabPage
+            // 
+            this.buildingToolTabPage.Controls.Add(this.buildingToolControl);
+            this.buildingToolTabPage.Location = new System.Drawing.Point(4, 22);
+            this.buildingToolTabPage.Name = "buildingToolTabPage";
+            this.buildingToolTabPage.Size = new System.Drawing.Size(229, 446);
+            this.buildingToolTabPage.TabIndex = 7;
+            this.buildingToolTabPage.Text = "Structures";
+            this.buildingToolTabPage.UseVisualStyleBackColor = true;
+            // 
+            // buildingToolControl
+            // 
+            this.buildingToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.buildingToolControl.Location = new System.Drawing.Point(0, 0);
+            this.buildingToolControl.Name = "buildingToolControl";
+            this.buildingToolControl.Size = new System.Drawing.Size(229, 446);
+            this.buildingToolControl.TabIndex = 0;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -794,6 +816,7 @@ namespace MobiusEditor
             this.resourcesToolTabPage.ResumeLayout(false);
             this.infantryToolTabPage.ResumeLayout(false);
             this.unitsToolTabPage.ResumeLayout(false);
+            this.buildingToolTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -869,6 +892,8 @@ namespace MobiusEditor
         private Tools.Controls.ObjectToolControl infantryToolControl;
         private System.Windows.Forms.TabPage unitsToolTabPage;
         private Tools.Controls.ObjectToolControl unitsToolControl;
+        private System.Windows.Forms.TabPage buildingToolTabPage;
+        private Tools.Controls.ObjectToolControl buildingToolControl;
     }
 }
 

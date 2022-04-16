@@ -824,18 +824,10 @@ namespace MobiusEditor {
             }
             break;
             case ToolType.Building: {
-                var toolDialog = new ObjectToolDialog(this.plugin) {
-                    Text = "Structures"
-                };
+                var toolDialog = this.buildingToolControl;
 
-                toolDialog.ObjectTypeComboBox.Types = this.plugin.Map.BuildingTypes
-                    .Where(t => (t.Theaters == null) || t.Theaters.Contains(this.plugin.Map.Theater))
-                    .OrderBy(t => t.IsFake)
-                    .ThenBy(t => t.Name);
-
-                this.activeTool = new BuildingTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.ObjectTypeComboBox, toolDialog.ObjectTypeMapPanel, toolDialog.ObjectProperties, this.plugin, this.url);
-                this.activeToolForm = toolDialog;
-                this.activeToolForm.Show(this);
+                this.activeTool = new BuildingTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.ObjectTypeListView, toolDialog.ObjectProperties, this.plugin, this.url);
+                this.toolTabControl.SelectedTab = this.buildingToolTabPage;
             }
             break;
             case ToolType.Wall: {
