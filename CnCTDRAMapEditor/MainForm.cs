@@ -838,13 +838,10 @@ namespace MobiusEditor {
             }
             break;
             case ToolType.Waypoint: {
-                var toolDialog = new WaypointsToolDialog();
+                var toolDialog = this.waypointsToolControl;
 
-                toolDialog.WaypointCombo.DataSource = this.plugin.Map.Waypoints.Select(w => w.Name).ToArray();
-
-                this.activeTool = new WaypointsTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.WaypointCombo, this.plugin, this.url);
-                this.activeToolForm = toolDialog;
-                this.activeToolForm.Show(this);
+                this.activeTool = new WaypointsTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.WaypointListView, this.plugin, this.url);
+                this.toolTabControl.SelectedTab = this.waypointsToolTabPage;
             }
             break;
             case ToolType.CellTrigger: {

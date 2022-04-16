@@ -386,6 +386,12 @@
     <Compile Include="Tools\Controls\TerrainToolControl.Designer.cs">
       <DependentUpon>TerrainToolControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\Controls\WaypointsToolControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\Controls\WaypointsToolControl.Designer.cs">
+      <DependentUpon>WaypointsToolControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\Dialogs\ResourcesToolDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -524,6 +530,9 @@
     </Compile>
     <EmbeddedResource Include="Tools\Controls\TerrainToolControl.resx">
       <DependentUpon>TerrainToolControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\Controls\WaypointsToolControl.resx">
+      <DependentUpon>WaypointsToolControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\Dialogs\ResourcesToolDialog.resx">
       <DependentUpon>ResourcesToolDialog.cs</DependentUpon>

@@ -23,21 +23,33 @@ using System.Windows.Forms;
 
 namespace MobiusEditor.Tools {
     public class WaypointsTool : ViewTool {
-        private readonly ComboBox waypointCombo;
+        private readonly ListView waypointListView;
 
         private (Waypoint waypoint, int? cell)? undoWaypoint;
         private (Waypoint waypoint, int? cell)? redoWaypoint;
 
         private bool placementMode;
 
-        public WaypointsTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ComboBox waypointCombo, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
+        public WaypointsTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView waypointListView, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
             : base(mapPanel, layers, statusLbl, plugin, url) {
             this.mapPanel.MouseDown += this.MapPanel_MouseDown;
             this.mapPanel.MouseMove += this.MapPanel_MouseMove;
             (this.mapPanel as Control).KeyDown += this.WaypointsTool_KeyDown;
             (this.mapPanel as Control).KeyUp += this.WaypointsTool_KeyUp;
 
-            this.waypointCombo = waypointCombo;
+            var waypoints = plugin.Map.Waypoints.Select(w => w.Name).ToArray();
+
+            this.waypointListView = waypointListView;
+
+            this.waypointListView.BeginUpdate();
+            this.waypointListView.Items.Clear();
+
+            var imageIndex = 0;
+            foreach(var waypoint in waypoints) {
+                var item = new ListViewItem(waypoint, imageIndex++);
+                this.waypointListView.Items.Add(item);
+            }
+            this.waypointListView.EndUpdate();
 
             this.UpdateStatus();
         }
@@ -76,7 +88,11 @@ namespace MobiusEditor.Tools {
 
         private void SetWaypoint(Point location) {
             if(this.map.Metrics.GetCell(location, out var cell)) {
-                var waypoint = this.map.Waypoints[this.waypointCombo.SelectedIndex];
+                if(this.waypointListView.SelectedItems.Count == 0) {
+                    return;
+                }
+                var selectedIndex = this.waypointListView.SelectedItems[0].Index;
+                var waypoint = this.map.Waypoints[selectedIndex];
                 if(waypoint.Cell != cell) {
                     if(this.undoWaypoint == null) {
                         this.undoWaypoint = (waypoint, waypoint.Cell);
@@ -139,10 +155,7 @@ namespace MobiusEditor.Tools {
         private void PickWaypoint(Point location) {
             if(this.map.Metrics.GetCell(location, out var cell)) {
                 for(var i = 0; i < this.map.Waypoints.Length; ++i) {
-                    if(this.map.Waypoints[i].Cell == cell) {
-                        this.waypointCombo.SelectedIndex = i;
-                        break;
-                    }
+                    this.waypointListView.Items[i].Selected = this.map.Waypoints[i].Cell == cell;
                 }
             }
         }

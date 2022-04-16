@@ -98,26 +98,28 @@ namespace MobiusEditor
             this.waypointsToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.cellTriggersToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.mapPanel = new MobiusEditor.Controls.MapPanel();
             this.toolTabControl = new System.Windows.Forms.TabControl();
             this.mapToolTabPage = new System.Windows.Forms.TabPage();
-            this.templateToolControl = new MobiusEditor.Controls.TemplateToolControl();
             this.smudgeToolTabPage = new System.Windows.Forms.TabPage();
-            this.smudgeToolControl = new MobiusEditor.Controls.GenericToolControl();
             this.overlayToolTabPage = new System.Windows.Forms.TabPage();
-            this.overlayToolControl = new MobiusEditor.Controls.GenericToolControl();
             this.terrainToolTabPage = new System.Windows.Forms.TabPage();
-            this.terrainToolControl = new MobiusEditor.Controls.TerrainToolControl();
             this.resourcesToolTabPage = new System.Windows.Forms.TabPage();
-            this.resourceToolControl = new MobiusEditor.Tools.Controls.ResourceToolControl();
             this.infantryToolTabPage = new System.Windows.Forms.TabPage();
-            this.infantryToolControl = new MobiusEditor.Tools.Controls.ObjectToolControl();
             this.unitsToolTabPage = new System.Windows.Forms.TabPage();
-            this.unitsToolControl = new MobiusEditor.Tools.Controls.ObjectToolControl();
             this.buildingToolTabPage = new System.Windows.Forms.TabPage();
-            this.buildingToolControl = new MobiusEditor.Tools.Controls.ObjectToolControl();
             this.wallsToolTabPage = new System.Windows.Forms.TabPage();
+            this.mapPanel = new MobiusEditor.Controls.MapPanel();
+            this.templateToolControl = new MobiusEditor.Controls.TemplateToolControl();
+            this.smudgeToolControl = new MobiusEditor.Controls.GenericToolControl();
+            this.overlayToolControl = new MobiusEditor.Controls.GenericToolControl();
+            this.terrainToolControl = new MobiusEditor.Controls.TerrainToolControl();
+            this.resourceToolControl = new MobiusEditor.Tools.Controls.ResourceToolControl();
+            this.infantryToolControl = new MobiusEditor.Tools.Controls.ObjectToolControl();
+            this.unitsToolControl = new MobiusEditor.Tools.Controls.ObjectToolControl();
+            this.buildingToolControl = new MobiusEditor.Tools.Controls.ObjectToolControl();
             this.wallsToolControl = new MobiusEditor.Controls.GenericToolControl();
+            this.waypointsToolTabPage = new System.Windows.Forms.TabPage();
+            this.waypointsToolControl = new MobiusEditor.Tools.Controls.WaypointsToolControl();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -135,6 +137,7 @@ namespace MobiusEditor
             this.unitsToolTabPage.SuspendLayout();
             this.buildingToolTabPage.SuspendLayout();
             this.wallsToolTabPage.SuspendLayout();
+            this.waypointsToolTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenuStrip
@@ -605,22 +608,6 @@ namespace MobiusEditor
             this.splitContainer1.SplitterDistance = 786;
             this.splitContainer1.TabIndex = 5;
             // 
-            // mapPanel
-            // 
-            this.mapPanel.BackColor = System.Drawing.Color.Black;
-            this.mapPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mapPanel.FocusOnMouseEnter = true;
-            this.mapPanel.Location = new System.Drawing.Point(0, 0);
-            this.mapPanel.MapImage = null;
-            this.mapPanel.MaxZoom = 8;
-            this.mapPanel.MinZoom = 1;
-            this.mapPanel.Name = "mapPanel";
-            this.mapPanel.Quality = 2;
-            this.mapPanel.Size = new System.Drawing.Size(786, 472);
-            this.mapPanel.TabIndex = 5;
-            this.mapPanel.Zoom = 1;
-            this.mapPanel.ZoomStep = 1;
-            // 
             // toolTabControl
             // 
             this.toolTabControl.Controls.Add(this.mapToolTabPage);
@@ -632,6 +619,7 @@ namespace MobiusEditor
             this.toolTabControl.Controls.Add(this.unitsToolTabPage);
             this.toolTabControl.Controls.Add(this.buildingToolTabPage);
             this.toolTabControl.Controls.Add(this.wallsToolTabPage);
+            this.toolTabControl.Controls.Add(this.waypointsToolTabPage);
             this.toolTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolTabControl.Location = new System.Drawing.Point(0, 0);
             this.toolTabControl.Name = "toolTabControl";
@@ -650,14 +638,6 @@ namespace MobiusEditor
             this.mapToolTabPage.Text = "Map";
             this.mapToolTabPage.UseVisualStyleBackColor = true;
             // 
-            // templateToolControl
-            // 
-            this.templateToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.templateToolControl.Location = new System.Drawing.Point(3, 3);
-            this.templateToolControl.Name = "templateToolControl";
-            this.templateToolControl.Size = new System.Drawing.Size(223, 440);
-            this.templateToolControl.TabIndex = 1;
-            // 
             // smudgeToolTabPage
             // 
             this.smudgeToolTabPage.Controls.Add(this.smudgeToolControl);
@@ -668,14 +648,6 @@ namespace MobiusEditor
             this.smudgeToolTabPage.Text = "Smudge";
             this.smudgeToolTabPage.UseVisualStyleBackColor = true;
             // 
-            // smudgeToolControl
-            // 
-            this.smudgeToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.smudgeToolControl.Location = new System.Drawing.Point(0, 0);
-            this.smudgeToolControl.Name = "smudgeToolControl";
-            this.smudgeToolControl.Size = new System.Drawing.Size(229, 446);
-            this.smudgeToolControl.TabIndex = 0;
-            // 
             // overlayToolTabPage
             // 
             this.overlayToolTabPage.Controls.Add(this.overlayToolControl);
@@ -685,14 +657,6 @@ namespace MobiusEditor
             this.overlayToolTabPage.TabIndex = 2;
             this.overlayToolTabPage.Text = "Overlay";
             this.overlayToolTabPage.UseVisualStyleBackColor = true;
-            // 
-            // overlayToolControl
-            // 
-            this.overlayToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.overlayToolControl.Location = new System.Drawing.Point(0, 0);
-            this.overlayToolControl.Name = "overlayToolControl";
-            this.overlayToolControl.Size = new System.Drawing.Size(229, 446);
-            this.overlayToolControl.TabIndex = 0;
             // 
             // terrainToolTabPage
             // 
@@ -705,14 +669,6 @@ namespace MobiusEditor
             this.terrainToolTabPage.Text = "Terrain";
             this.terrainToolTabPage.UseVisualStyleBackColor = true;
             // 
-            // terrainToolControl
-            // 
-            this.terrainToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.terrainToolControl.Location = new System.Drawing.Point(3, 3);
-            this.terrainToolControl.Name = "terrainToolControl";
-            this.terrainToolControl.Size = new System.Drawing.Size(223, 440);
-            this.terrainToolControl.TabIndex = 0;
-            // 
             // resourcesToolTabPage
             // 
             this.resourcesToolTabPage.Controls.Add(this.resourceToolControl);
@@ -722,15 +678,6 @@ namespace MobiusEditor
             this.resourcesToolTabPage.TabIndex = 4;
             this.resourcesToolTabPage.Text = "Resources";
             this.resourcesToolTabPage.UseVisualStyleBackColor = true;
-            // 
-            // resourceToolControl
-            // 
-            this.resourceToolControl.Dock = System.Windows.Forms.DockStyle.Top;
-            this.resourceToolControl.Location = new System.Drawing.Point(0, 0);
-            this.resourceToolControl.Name = "resourceToolControl";
-            this.resourceToolControl.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
-            this.resourceToolControl.Size = new System.Drawing.Size(229, 118);
-            this.resourceToolControl.TabIndex = 0;
             // 
             // infantryToolTabPage
             // 
@@ -742,14 +689,6 @@ namespace MobiusEditor
             this.infantryToolTabPage.Text = "Infantry";
             this.infantryToolTabPage.UseVisualStyleBackColor = true;
             // 
-            // infantryToolControl
-            // 
-            this.infantryToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.infantryToolControl.Location = new System.Drawing.Point(0, 0);
-            this.infantryToolControl.Name = "infantryToolControl";
-            this.infantryToolControl.Size = new System.Drawing.Size(229, 446);
-            this.infantryToolControl.TabIndex = 0;
-            // 
             // unitsToolTabPage
             // 
             this.unitsToolTabPage.Controls.Add(this.unitsToolControl);
@@ -759,14 +698,6 @@ namespace MobiusEditor
             this.unitsToolTabPage.TabIndex = 6;
             this.unitsToolTabPage.Text = "Units";
             this.unitsToolTabPage.UseVisualStyleBackColor = true;
-            // 
-            // unitsToolControl
-            // 
-            this.unitsToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.unitsToolControl.Location = new System.Drawing.Point(0, 0);
-            this.unitsToolControl.Name = "unitsToolControl";
-            this.unitsToolControl.Size = new System.Drawing.Size(229, 446);
-            this.unitsToolControl.TabIndex = 0;
             // 
             // buildingToolTabPage
             // 
@@ -778,14 +709,6 @@ namespace MobiusEditor
             this.buildingToolTabPage.Text = "Structures";
             this.buildingToolTabPage.UseVisualStyleBackColor = true;
             // 
-            // buildingToolControl
-            // 
-            this.buildingToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.buildingToolControl.Location = new System.Drawing.Point(0, 0);
-            this.buildingToolControl.Name = "buildingToolControl";
-            this.buildingToolControl.Size = new System.Drawing.Size(229, 446);
-            this.buildingToolControl.TabIndex = 0;
-            // 
             // wallsToolTabPage
             // 
             this.wallsToolTabPage.Controls.Add(this.wallsToolControl);
@@ -796,6 +719,87 @@ namespace MobiusEditor
             this.wallsToolTabPage.Text = "Walls";
             this.wallsToolTabPage.UseVisualStyleBackColor = true;
             // 
+            // mapPanel
+            // 
+            this.mapPanel.BackColor = System.Drawing.Color.Black;
+            this.mapPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mapPanel.FocusOnMouseEnter = true;
+            this.mapPanel.Location = new System.Drawing.Point(0, 0);
+            this.mapPanel.MapImage = null;
+            this.mapPanel.MaxZoom = 8;
+            this.mapPanel.MinZoom = 1;
+            this.mapPanel.Name = "mapPanel";
+            this.mapPanel.Quality = 2;
+            this.mapPanel.Size = new System.Drawing.Size(786, 472);
+            this.mapPanel.TabIndex = 5;
+            this.mapPanel.Zoom = 1;
+            this.mapPanel.ZoomStep = 1;
+            // 
+            // templateToolControl
+            // 
+            this.templateToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.templateToolControl.Location = new System.Drawing.Point(3, 3);
+            this.templateToolControl.Name = "templateToolControl";
+            this.templateToolControl.Size = new System.Drawing.Size(223, 440);
+            this.templateToolControl.TabIndex = 1;
+            // 
+            // smudgeToolControl
+            // 
+            this.smudgeToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.smudgeToolControl.Location = new System.Drawing.Point(0, 0);
+            this.smudgeToolControl.Name = "smudgeToolControl";
+            this.smudgeToolControl.Size = new System.Drawing.Size(229, 446);
+            this.smudgeToolControl.TabIndex = 0;
+            // 
+            // overlayToolControl
+            // 
+            this.overlayToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.overlayToolControl.Location = new System.Drawing.Point(0, 0);
+            this.overlayToolControl.Name = "overlayToolControl";
+            this.overlayToolControl.Size = new System.Drawing.Size(229, 446);
+            this.overlayToolControl.TabIndex = 0;
+            // 
+            // terrainToolControl
+            // 
+            this.terrainToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.terrainToolControl.Location = new System.Drawing.Point(3, 3);
+            this.terrainToolControl.Name = "terrainToolControl";
+            this.terrainToolControl.Size = new System.Drawing.Size(223, 440);
+            this.terrainToolControl.TabIndex = 0;
+            // 
+            // resourceToolControl
+            // 
+            this.resourceToolControl.Dock = System.Windows.Forms.DockStyle.Top;
+            this.resourceToolControl.Location = new System.Drawing.Point(0, 0);
+            this.resourceToolControl.Name = "resourceToolControl";
+            this.resourceToolControl.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
+            this.resourceToolControl.Size = new System.Drawing.Size(229, 118);
+            this.resourceToolControl.TabIndex = 0;
+            // 
+            // infantryToolControl
+            // 
+            this.infantryToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.infantryToolControl.Location = new System.Drawing.Point(0, 0);
+            this.infantryToolControl.Name = "infantryToolControl";
+            this.infantryToolControl.Size = new System.Drawing.Size(229, 446);
+            this.infantryToolControl.TabIndex = 0;
+            // 
+            // unitsToolControl
+            // 
+            this.unitsToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.unitsToolControl.Location = new System.Drawing.Point(0, 0);
+            this.unitsToolControl.Name = "unitsToolControl";
+            this.unitsToolControl.Size = new System.Drawing.Size(229, 446);
+            this.unitsToolControl.TabIndex = 0;
+            // 
+            // buildingToolControl
+            // 
+            this.buildingToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.buildingToolControl.Location = new System.Drawing.Point(0, 0);
+            this.buildingToolControl.Name = "buildingToolControl";
+            this.buildingToolControl.Size = new System.Drawing.Size(229, 446);
+            this.buildingToolControl.TabIndex = 0;
+            // 
             // wallsToolControl
             // 
             this.wallsToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -803,6 +807,24 @@ namespace MobiusEditor
             this.wallsToolControl.Name = "wallsToolControl";
             this.wallsToolControl.Size = new System.Drawing.Size(229, 446);
             this.wallsToolControl.TabIndex = 0;
+            // 
+            // waypointsToolTabPage
+            // 
+            this.waypointsToolTabPage.Controls.Add(this.waypointsToolControl);
+            this.waypointsToolTabPage.Location = new System.Drawing.Point(4, 22);
+            this.waypointsToolTabPage.Name = "waypointsToolTabPage";
+            this.waypointsToolTabPage.Size = new System.Drawing.Size(229, 446);
+            this.waypointsToolTabPage.TabIndex = 9;
+            this.waypointsToolTabPage.Text = "Waypoints";
+            this.waypointsToolTabPage.UseVisualStyleBackColor = true;
+            // 
+            // waypointsToolControl
+            // 
+            this.waypointsToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.waypointsToolControl.Location = new System.Drawing.Point(0, 0);
+            this.waypointsToolControl.Name = "waypointsToolControl";
+            this.waypointsToolControl.Size = new System.Drawing.Size(229, 446);
+            this.waypointsToolControl.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -840,6 +862,7 @@ namespace MobiusEditor
             this.unitsToolTabPage.ResumeLayout(false);
             this.buildingToolTabPage.ResumeLayout(false);
             this.wallsToolTabPage.ResumeLayout(false);
+            this.waypointsToolTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -919,6 +942,8 @@ namespace MobiusEditor
         private Tools.Controls.ObjectToolControl buildingToolControl;
         private System.Windows.Forms.TabPage wallsToolTabPage;
         private Controls.GenericToolControl wallsToolControl;
+        private System.Windows.Forms.TabPage waypointsToolTabPage;
+        private Tools.Controls.WaypointsToolControl waypointsToolControl;
     }
 }
 
