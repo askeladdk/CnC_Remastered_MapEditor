@@ -16,7 +16,6 @@ using MobiusEditor.Controls;
 using MobiusEditor.Event;
 using MobiusEditor.Interface;
 using MobiusEditor.Model;
-using MobiusEditor.Render;
 using MobiusEditor.Utility;
 using MobiusEditor.Widgets;
 using System;
@@ -27,8 +26,7 @@ using System.Windows.Forms;
 
 namespace MobiusEditor.Tools {
     public class UnitTool : ViewTool {
-        private readonly TypeComboBox unitTypeComboBox;
-        private readonly MapPanel unitTypeMapPanel;
+        private readonly ListView unitTypeListView;
         private readonly ObjectProperties objectProperties;
 
         private Map previewMap;
@@ -51,31 +49,30 @@ namespace MobiusEditor.Tools {
                     }
 
                     this.selectedUnitType = value;
-                    this.unitTypeComboBox.SelectedValue = this.selectedUnitType;
+
+                    this.unitTypeListView.BeginUpdate();
+                    this.unitTypeListView.SelectedIndexChanged -= this.UnitTypeComboBox_SelectedIndexChanged;
+                    foreach(ListViewItem item in this.unitTypeListView.Items) {
+                        item.Selected = item.Tag == this.selectedUnitType;
+                    }
+                    if(this.unitTypeListView.SelectedIndices.Count > 0) {
+                        this.unitTypeListView.EnsureVisible(this.unitTypeListView.SelectedIndices[0]);
+                    }
+                    this.unitTypeListView.SelectedIndexChanged += this.UnitTypeComboBox_SelectedIndexChanged;
+                    this.unitTypeListView.EndUpdate();
 
                     if(this.placementMode && (this.selectedUnitType != null)) {
                         this.mapPanel.Invalidate(this.map, Rectangle.Inflate(new Rectangle(this.navigationWidget.MouseCell, new Size(1, 1)), 1, 1));
                     }
 
                     this.mockUnit.Type = this.selectedUnitType;
-
-                    this.RefreshMapPanel();
                 }
             }
         }
 
-        public UnitTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, TypeComboBox unitTypeComboBox, MapPanel unitTypeMapPanel, ObjectProperties objectProperties, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
+        public UnitTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView unitTypeListView, ObjectProperties objectProperties, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
             : base(mapPanel, layers, statusLbl, plugin, url) {
             this.previewMap = this.map;
-
-            this.mockUnit = new Unit() {
-                Type = unitTypeComboBox.Types.First() as UnitType,
-                House = this.map.Houses.First().Type,
-                Strength = 256,
-                Direction = this.map.DirectionTypes.Where(d => d.Equals(FacingType.North)).First(),
-                Mission = this.map.MissionTypes.Where(m => m.Equals("Guard")).FirstOrDefault() ?? this.map.MissionTypes.First()
-            };
-            this.mockUnit.PropertyChanged += this.MockUnit_PropertyChanged;
 
             this.mapPanel.MouseDown += this.MapPanel_MouseDown;
             this.mapPanel.MouseUp += this.MapPanel_MouseUp;
@@ -84,14 +81,43 @@ namespace MobiusEditor.Tools {
             (this.mapPanel as Control).KeyDown += this.UnitTool_KeyDown;
             (this.mapPanel as Control).KeyUp += this.UnitTool_KeyUp;
 
-            this.unitTypeComboBox = unitTypeComboBox;
-            this.unitTypeComboBox.SelectedIndexChanged += this.UnitTypeComboBox_SelectedIndexChanged;
+            var unitTypes = plugin.Map.UnitTypes.Where(t => !t.IsFixedWing).OrderBy(t => t.Name);
+            var unitTypesImages = unitTypes.Select(t => t.Thumbnail);
 
-            this.unitTypeMapPanel = unitTypeMapPanel;
-            this.unitTypeMapPanel.BackColor = Color.White;
-            this.unitTypeMapPanel.MaxZoom = 1;
+            var maxWidth = unitTypesImages.Max(t => t.Width);
+            var maxHeight = unitTypesImages.Max(t => t.Height);
+
+            var imageList = new ImageList();
+            imageList.Images.AddRange(unitTypesImages.ToArray());
+            imageList.ImageSize = new Size(maxWidth / 2, maxHeight / 2);
+            imageList.ColorDepth = ColorDepth.Depth24Bit;
+
+            this.mockUnit = new Unit() {
+                Type = unitTypes.First(),
+                House = this.map.Houses.First().Type,
+                Strength = 256,
+                Direction = this.map.DirectionTypes.First(d => d.Equals(FacingType.North)),
+                Mission = this.map.MissionTypes.FirstOrDefault(m => m.Equals("Guard")) ?? this.map.MissionTypes.First(),
+            };
+
+            this.unitTypeListView = unitTypeListView;
+            this.unitTypeListView.SelectedIndexChanged += this.UnitTypeComboBox_SelectedIndexChanged;
+
+            this.unitTypeListView.BeginUpdate();
+            this.unitTypeListView.Items.Clear();
+            this.unitTypeListView.SmallImageList = imageList;
+
+            var imageIndex = 0;
+            foreach(var unitType in unitTypes) {
+                var item = new ListViewItem(unitType.DisplayName, imageIndex++) {
+                    Tag = unitType
+                };
+                this.unitTypeListView.Items.Add(item);
+            }
+            this.unitTypeListView.EndUpdate();
 
             this.objectProperties = objectProperties;
+            this.objectProperties.Initialize(plugin, true);
             this.objectProperties.Object = this.mockUnit;
 
             this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
@@ -125,11 +151,13 @@ namespace MobiusEditor.Tools {
             }
         }
 
-        private void MockUnit_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.RefreshMapPanel();
+        private void SelectedUnit_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            this.mapPanel.Invalidate(this.map, sender as Unit);
+        }
 
-        private void SelectedUnit_PropertyChanged(object sender, PropertyChangedEventArgs e) => this.mapPanel.Invalidate(this.map, sender as Unit);
-
-        private void UnitTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) => this.SelectedUnitType = this.unitTypeComboBox.SelectedValue as UnitType;
+        private void UnitTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.SelectedUnitType = (this.unitTypeListView.SelectedItems.Count > 0) ? (this.unitTypeListView.SelectedItems[0].Tag as UnitType) : null;
+        }
 
         private void UnitTool_KeyDown(object sender, KeyEventArgs e) {
             if(e.KeyCode == Keys.ShiftKey) {
@@ -263,18 +291,6 @@ namespace MobiusEditor.Tools {
             this.UpdateStatus();
         }
 
-        private void RefreshMapPanel() {
-            if(this.mockUnit.Type != null) {
-                var unitPreview = new Bitmap(Globals.TileWidth * 3, Globals.TileHeight * 3);
-                using(var g = Graphics.FromImage(unitPreview)) {
-                    MapRenderer.Render(this.plugin.GameType, this.map.Theater, new Point(1, 1), Globals.TileSize, this.mockUnit).Item2(g);
-                }
-                this.unitTypeMapPanel.MapImage = unitPreview;
-            } else {
-                this.unitTypeMapPanel.MapImage = null;
-            }
-        }
-
         private void UpdateStatus() {
             if(this.placementMode) {
                 this.statusLbl.Text = "Left-Click to place unit, Right-Click to remove unit";
@@ -326,7 +342,7 @@ namespace MobiusEditor.Tools {
                     (this.mapPanel as Control).KeyDown -= this.UnitTool_KeyDown;
                     (this.mapPanel as Control).KeyUp -= this.UnitTool_KeyUp;
 
-                    this.unitTypeComboBox.SelectedIndexChanged -= this.UnitTypeComboBox_SelectedIndexChanged;
+                    this.unitTypeListView.SelectedIndexChanged -= this.UnitTypeComboBox_SelectedIndexChanged;
 
                     this.navigationWidget.MouseCellChanged -= this.MouseoverWidget_MouseCellChanged;
                 }

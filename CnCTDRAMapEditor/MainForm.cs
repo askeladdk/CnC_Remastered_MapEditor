@@ -817,17 +817,10 @@ namespace MobiusEditor {
             }
             break;
             case ToolType.Unit: {
-                var toolDialog = new ObjectToolDialog(this.plugin) {
-                    Text = "Units"
-                };
+                var toolDialog = this.unitsToolControl;
 
-                toolDialog.ObjectTypeComboBox.Types = this.plugin.Map.UnitTypes
-                    .Where(t => !t.IsFixedWing)
-                    .OrderBy(t => t.Name);
-
-                this.activeTool = new UnitTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.ObjectTypeComboBox, toolDialog.ObjectTypeMapPanel, toolDialog.ObjectProperties, this.plugin, this.url);
-                this.activeToolForm = toolDialog;
-                this.activeToolForm.Show(this);
+                this.activeTool = new UnitTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.ObjectTypeListView, toolDialog.ObjectProperties, this.plugin, this.url);
+                this.toolTabControl.SelectedTab = this.unitsToolTabPage;
             }
             break;
             case ToolType.Building: {

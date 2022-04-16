@@ -112,6 +112,8 @@ namespace MobiusEditor
             this.resourceToolControl = new MobiusEditor.Tools.Controls.ResourceToolControl();
             this.infantryToolTabPage = new System.Windows.Forms.TabPage();
             this.infantryToolControl = new MobiusEditor.Tools.Controls.ObjectToolControl();
+            this.unitsToolTabPage = new System.Windows.Forms.TabPage();
+            this.unitsToolControl = new MobiusEditor.Tools.Controls.ObjectToolControl();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -126,6 +128,7 @@ namespace MobiusEditor
             this.terrainToolTabPage.SuspendLayout();
             this.resourcesToolTabPage.SuspendLayout();
             this.infantryToolTabPage.SuspendLayout();
+            this.unitsToolTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenuStrip
@@ -620,6 +623,7 @@ namespace MobiusEditor
             this.toolTabControl.Controls.Add(this.terrainToolTabPage);
             this.toolTabControl.Controls.Add(this.resourcesToolTabPage);
             this.toolTabControl.Controls.Add(this.infantryToolTabPage);
+            this.toolTabControl.Controls.Add(this.unitsToolTabPage);
             this.toolTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolTabControl.Location = new System.Drawing.Point(0, 0);
             this.toolTabControl.Name = "toolTabControl";
@@ -738,6 +742,24 @@ namespace MobiusEditor
             this.infantryToolControl.Size = new System.Drawing.Size(229, 446);
             this.infantryToolControl.TabIndex = 0;
             // 
+            // unitsToolTabPage
+            // 
+            this.unitsToolTabPage.Controls.Add(this.unitsToolControl);
+            this.unitsToolTabPage.Location = new System.Drawing.Point(4, 22);
+            this.unitsToolTabPage.Name = "unitsToolTabPage";
+            this.unitsToolTabPage.Size = new System.Drawing.Size(229, 446);
+            this.unitsToolTabPage.TabIndex = 6;
+            this.unitsToolTabPage.Text = "Units";
+            this.unitsToolTabPage.UseVisualStyleBackColor = true;
+            // 
+            // unitsToolControl
+            // 
+            this.unitsToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.unitsToolControl.Location = new System.Drawing.Point(0, 0);
+            this.unitsToolControl.Name = "unitsToolControl";
+            this.unitsToolControl.Size = new System.Drawing.Size(229, 446);
+            this.unitsToolControl.TabIndex = 0;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -771,6 +793,7 @@ namespace MobiusEditor
             this.terrainToolTabPage.ResumeLayout(false);
             this.resourcesToolTabPage.ResumeLayout(false);
             this.infantryToolTabPage.ResumeLayout(false);
+            this.unitsToolTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -844,6 +867,8 @@ namespace MobiusEditor
         private Tools.Controls.ResourceToolControl resourceToolControl;
         private System.Windows.Forms.TabPage infantryToolTabPage;
         private Tools.Controls.ObjectToolControl infantryToolControl;
+        private System.Windows.Forms.TabPage unitsToolTabPage;
+        private Tools.Controls.ObjectToolControl unitsToolControl;
     }
 }
 
