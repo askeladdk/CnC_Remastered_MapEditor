@@ -108,6 +108,7 @@ namespace MobiusEditor
             this.unitsToolTabPage = new System.Windows.Forms.TabPage();
             this.buildingToolTabPage = new System.Windows.Forms.TabPage();
             this.wallsToolTabPage = new System.Windows.Forms.TabPage();
+            this.waypointsToolTabPage = new System.Windows.Forms.TabPage();
             this.mapPanel = new MobiusEditor.Controls.MapPanel();
             this.templateToolControl = new MobiusEditor.Controls.TemplateToolControl();
             this.smudgeToolControl = new MobiusEditor.Controls.GenericToolControl();
@@ -118,8 +119,9 @@ namespace MobiusEditor
             this.unitsToolControl = new MobiusEditor.Tools.Controls.ObjectToolControl();
             this.buildingToolControl = new MobiusEditor.Tools.Controls.ObjectToolControl();
             this.wallsToolControl = new MobiusEditor.Controls.GenericToolControl();
-            this.waypointsToolTabPage = new System.Windows.Forms.TabPage();
             this.waypointsToolControl = new MobiusEditor.Tools.Controls.WaypointsToolControl();
+            this.cellTriggersTabPage = new System.Windows.Forms.TabPage();
+            this.cellTriggersToolControl = new MobiusEditor.Tools.Controls.WaypointsToolControl();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -138,6 +140,7 @@ namespace MobiusEditor
             this.buildingToolTabPage.SuspendLayout();
             this.wallsToolTabPage.SuspendLayout();
             this.waypointsToolTabPage.SuspendLayout();
+            this.cellTriggersTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenuStrip
@@ -620,6 +623,7 @@ namespace MobiusEditor
             this.toolTabControl.Controls.Add(this.buildingToolTabPage);
             this.toolTabControl.Controls.Add(this.wallsToolTabPage);
             this.toolTabControl.Controls.Add(this.waypointsToolTabPage);
+            this.toolTabControl.Controls.Add(this.cellTriggersTabPage);
             this.toolTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolTabControl.Location = new System.Drawing.Point(0, 0);
             this.toolTabControl.Name = "toolTabControl";
@@ -719,6 +723,16 @@ namespace MobiusEditor
             this.wallsToolTabPage.Text = "Walls";
             this.wallsToolTabPage.UseVisualStyleBackColor = true;
             // 
+            // waypointsToolTabPage
+            // 
+            this.waypointsToolTabPage.Controls.Add(this.waypointsToolControl);
+            this.waypointsToolTabPage.Location = new System.Drawing.Point(4, 22);
+            this.waypointsToolTabPage.Name = "waypointsToolTabPage";
+            this.waypointsToolTabPage.Size = new System.Drawing.Size(229, 446);
+            this.waypointsToolTabPage.TabIndex = 9;
+            this.waypointsToolTabPage.Text = "Waypoints";
+            this.waypointsToolTabPage.UseVisualStyleBackColor = true;
+            // 
             // mapPanel
             // 
             this.mapPanel.BackColor = System.Drawing.Color.Black;
@@ -808,16 +822,6 @@ namespace MobiusEditor
             this.wallsToolControl.Size = new System.Drawing.Size(229, 446);
             this.wallsToolControl.TabIndex = 0;
             // 
-            // waypointsToolTabPage
-            // 
-            this.waypointsToolTabPage.Controls.Add(this.waypointsToolControl);
-            this.waypointsToolTabPage.Location = new System.Drawing.Point(4, 22);
-            this.waypointsToolTabPage.Name = "waypointsToolTabPage";
-            this.waypointsToolTabPage.Size = new System.Drawing.Size(229, 446);
-            this.waypointsToolTabPage.TabIndex = 9;
-            this.waypointsToolTabPage.Text = "Waypoints";
-            this.waypointsToolTabPage.UseVisualStyleBackColor = true;
-            // 
             // waypointsToolControl
             // 
             this.waypointsToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -825,6 +829,24 @@ namespace MobiusEditor
             this.waypointsToolControl.Name = "waypointsToolControl";
             this.waypointsToolControl.Size = new System.Drawing.Size(229, 446);
             this.waypointsToolControl.TabIndex = 0;
+            // 
+            // cellTriggersTabPage
+            // 
+            this.cellTriggersTabPage.Controls.Add(this.cellTriggersToolControl);
+            this.cellTriggersTabPage.Location = new System.Drawing.Point(4, 22);
+            this.cellTriggersTabPage.Name = "cellTriggersTabPage";
+            this.cellTriggersTabPage.Size = new System.Drawing.Size(229, 446);
+            this.cellTriggersTabPage.TabIndex = 10;
+            this.cellTriggersTabPage.Text = "Cell Triggers";
+            this.cellTriggersTabPage.UseVisualStyleBackColor = true;
+            // 
+            // cellTriggersToolControl
+            // 
+            this.cellTriggersToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cellTriggersToolControl.Location = new System.Drawing.Point(0, 0);
+            this.cellTriggersToolControl.Name = "cellTriggersToolControl";
+            this.cellTriggersToolControl.Size = new System.Drawing.Size(229, 446);
+            this.cellTriggersToolControl.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -863,6 +885,7 @@ namespace MobiusEditor
             this.buildingToolTabPage.ResumeLayout(false);
             this.wallsToolTabPage.ResumeLayout(false);
             this.waypointsToolTabPage.ResumeLayout(false);
+            this.cellTriggersTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -944,6 +967,8 @@ namespace MobiusEditor
         private Controls.GenericToolControl wallsToolControl;
         private System.Windows.Forms.TabPage waypointsToolTabPage;
         private Tools.Controls.WaypointsToolControl waypointsToolControl;
+        private System.Windows.Forms.TabPage cellTriggersTabPage;
+        private Tools.Controls.WaypointsToolControl cellTriggersToolControl;
     }
 }
 

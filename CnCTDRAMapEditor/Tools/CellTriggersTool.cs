@@ -20,18 +20,19 @@ using MobiusEditor.Utility;
 using MobiusEditor.Widgets;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace MobiusEditor.Tools {
     public class CellTriggersTool : ViewTool {
-        private readonly ComboBox triggerCombo;
+        private readonly ListView triggerListView;
 
         private readonly Dictionary<int, CellTrigger> undoCellTriggers = new Dictionary<int, CellTrigger>();
         private readonly Dictionary<int, CellTrigger> redoCellTriggers = new Dictionary<int, CellTrigger>();
 
         private bool placementMode;
 
-        public CellTriggersTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ComboBox triggerCombo, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
+        public CellTriggersTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView triggerListView, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
             : base(mapPanel, layers, statusLbl, plugin, url) {
             this.mapPanel.MouseDown += this.MapPanel_MouseDown;
             this.mapPanel.MouseUp += this.MapPanel_MouseUp;
@@ -39,7 +40,16 @@ namespace MobiusEditor.Tools {
             (this.mapPanel as Control).KeyDown += this.WaypointsTool_KeyDown;
             (this.mapPanel as Control).KeyUp += this.WaypointsTool_KeyUp;
 
-            this.triggerCombo = triggerCombo;
+            var cellTriggers = plugin.Map.Triggers.Select(t => t.Name).ToArray();
+
+            this.triggerListView = triggerListView;
+
+            this.triggerListView.BeginUpdate();
+            this.triggerListView.Items.Clear();
+            foreach(var trigger in cellTriggers) {
+                this.triggerListView.Items.Add(trigger);
+            }
+            this.triggerListView.EndUpdate();
 
             this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
 
@@ -102,7 +112,11 @@ namespace MobiusEditor.Tools {
                         this.undoCellTriggers[cell] = this.map.CellTriggers[cell];
                     }
 
-                    var cellTrigger = new CellTrigger { Trigger = this.triggerCombo.SelectedItem as string };
+                    if(this.triggerListView.SelectedItems.Count == 0) {
+                        return;
+                    }
+
+                    var cellTrigger = new CellTrigger { Trigger = this.triggerListView.SelectedItems[0].Text };
                     this.map.CellTriggers[cell] = cellTrigger;
                     this.redoCellTriggers[cell] = cellTrigger;
 
@@ -155,7 +169,9 @@ namespace MobiusEditor.Tools {
             if(this.map.Metrics.GetCell(location, out var cell)) {
                 var cellTrigger = this.map.CellTriggers[cell];
                 if(cellTrigger != null) {
-                    this.triggerCombo.SelectedItem = cellTrigger.Trigger;
+                    foreach(ListViewItem item in this.triggerListView.Items) {
+                        item.Selected = item.Text == cellTrigger.Trigger;
+                    }
                 }
             }
         }

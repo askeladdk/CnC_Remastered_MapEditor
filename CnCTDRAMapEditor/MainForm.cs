@@ -17,7 +17,6 @@ using MobiusEditor.Event;
 using MobiusEditor.Interface;
 using MobiusEditor.Model;
 using MobiusEditor.Tools;
-using MobiusEditor.Tools.Dialogs;
 using MobiusEditor.Utility;
 using Steamworks;
 using System;
@@ -845,13 +844,10 @@ namespace MobiusEditor {
             }
             break;
             case ToolType.CellTrigger: {
-                var toolDialog = new CellTriggersToolDialog();
+                var toolDialog = this.cellTriggersToolControl;
 
-                toolDialog.TriggerCombo.DataSource = this.plugin.Map.Triggers.Select(t => t.Name).ToArray();
-
-                this.activeTool = new CellTriggersTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.TriggerCombo, this.plugin, this.url);
-                this.activeToolForm = toolDialog;
-                this.activeToolForm.Show(this);
+                this.activeTool = new CellTriggersTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.WaypointListView, this.plugin, this.url);
+                this.toolTabControl.SelectedTab = this.cellTriggersTabPage;
             }
             break;
             }
