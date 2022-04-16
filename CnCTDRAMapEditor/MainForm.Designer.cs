@@ -116,6 +116,8 @@ namespace MobiusEditor
             this.unitsToolControl = new MobiusEditor.Tools.Controls.ObjectToolControl();
             this.buildingToolTabPage = new System.Windows.Forms.TabPage();
             this.buildingToolControl = new MobiusEditor.Tools.Controls.ObjectToolControl();
+            this.wallsToolTabPage = new System.Windows.Forms.TabPage();
+            this.wallsToolControl = new MobiusEditor.Controls.GenericToolControl();
             this.mainMenuStrip.SuspendLayout();
             this.mainStatusStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
@@ -132,6 +134,7 @@ namespace MobiusEditor
             this.infantryToolTabPage.SuspendLayout();
             this.unitsToolTabPage.SuspendLayout();
             this.buildingToolTabPage.SuspendLayout();
+            this.wallsToolTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenuStrip
@@ -628,6 +631,7 @@ namespace MobiusEditor
             this.toolTabControl.Controls.Add(this.infantryToolTabPage);
             this.toolTabControl.Controls.Add(this.unitsToolTabPage);
             this.toolTabControl.Controls.Add(this.buildingToolTabPage);
+            this.toolTabControl.Controls.Add(this.wallsToolTabPage);
             this.toolTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolTabControl.Location = new System.Drawing.Point(0, 0);
             this.toolTabControl.Name = "toolTabControl";
@@ -782,6 +786,24 @@ namespace MobiusEditor
             this.buildingToolControl.Size = new System.Drawing.Size(229, 446);
             this.buildingToolControl.TabIndex = 0;
             // 
+            // wallsToolTabPage
+            // 
+            this.wallsToolTabPage.Controls.Add(this.wallsToolControl);
+            this.wallsToolTabPage.Location = new System.Drawing.Point(4, 22);
+            this.wallsToolTabPage.Name = "wallsToolTabPage";
+            this.wallsToolTabPage.Size = new System.Drawing.Size(229, 446);
+            this.wallsToolTabPage.TabIndex = 8;
+            this.wallsToolTabPage.Text = "Walls";
+            this.wallsToolTabPage.UseVisualStyleBackColor = true;
+            // 
+            // wallsToolControl
+            // 
+            this.wallsToolControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.wallsToolControl.Location = new System.Drawing.Point(0, 0);
+            this.wallsToolControl.Name = "wallsToolControl";
+            this.wallsToolControl.Size = new System.Drawing.Size(229, 446);
+            this.wallsToolControl.TabIndex = 0;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -817,6 +839,7 @@ namespace MobiusEditor
             this.infantryToolTabPage.ResumeLayout(false);
             this.unitsToolTabPage.ResumeLayout(false);
             this.buildingToolTabPage.ResumeLayout(false);
+            this.wallsToolTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -894,6 +917,8 @@ namespace MobiusEditor
         private Tools.Controls.ObjectToolControl unitsToolControl;
         private System.Windows.Forms.TabPage buildingToolTabPage;
         private Tools.Controls.ObjectToolControl buildingToolControl;
+        private System.Windows.Forms.TabPage wallsToolTabPage;
+        private Controls.GenericToolControl wallsToolControl;
     }
 }
 

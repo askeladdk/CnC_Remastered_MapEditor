@@ -26,8 +26,7 @@ using System.Windows.Forms;
 
 namespace MobiusEditor.Tools {
     public class WallsTool : ViewTool {
-        private readonly TypeComboBox wallTypeComboBox;
-        private readonly MapPanel wallTypeMapPanel;
+        private readonly ListView wallTypeListView;
 
         private readonly Dictionary<int, Overlay> undoOverlays = new Dictionary<int, Overlay>();
         private readonly Dictionary<int, Overlay> redoOverlays = new Dictionary<int, Overlay>();
@@ -47,14 +46,22 @@ namespace MobiusEditor.Tools {
                     }
 
                     this.selectedWallType = value;
-                    this.wallTypeComboBox.SelectedValue = this.selectedWallType;
 
-                    this.RefreshMapPanel();
+                    this.wallTypeListView.BeginUpdate();
+                    this.wallTypeListView.SelectedIndexChanged -= this.WallTypeComboBox_SelectedIndexChanged;
+                    foreach(ListViewItem item in this.wallTypeListView.Items) {
+                        item.Selected = item.Tag == this.selectedWallType;
+                    }
+                    if(this.wallTypeListView.SelectedIndices.Count > 0) {
+                        this.wallTypeListView.EnsureVisible(this.wallTypeListView.SelectedIndices[0]);
+                    }
+                    this.wallTypeListView.SelectedIndexChanged += this.WallTypeComboBox_SelectedIndexChanged;
+                    this.wallTypeListView.EndUpdate();
                 }
             }
         }
 
-        public WallsTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, TypeComboBox wallTypeComboBox, MapPanel wallTypeMapPanel, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
+        public WallsTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView wallTypeListView, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
             : base(mapPanel, layers, statusLbl, plugin, url) {
             this.previewMap = this.map;
 
@@ -64,21 +71,43 @@ namespace MobiusEditor.Tools {
             (this.mapPanel as Control).KeyDown += this.WallTool_KeyDown;
             (this.mapPanel as Control).KeyUp += this.WallTool_KeyUp;
 
-            this.wallTypeComboBox = wallTypeComboBox;
-            this.wallTypeComboBox.SelectedIndexChanged += this.WallTypeComboBox_SelectedIndexChanged;
+            this.wallTypeListView = wallTypeListView;
+            this.wallTypeListView.SelectedIndexChanged += this.WallTypeComboBox_SelectedIndexChanged;
 
-            this.wallTypeMapPanel = wallTypeMapPanel;
-            this.wallTypeMapPanel.BackColor = Color.White;
-            this.wallTypeMapPanel.MaxZoom = 1;
+            var wallTypes = plugin.Map.OverlayTypes.Where(t => t.IsWall).OrderBy(t => t.Name);
+            var wallTypeImages = wallTypes.Select(t => t.Thumbnail);
+
+            var maxWidth = wallTypeImages.Max(t => t.Width);
+            var maxHeight = wallTypeImages.Max(t => t.Height);
+
+            var imageList = new ImageList();
+            imageList.Images.AddRange(wallTypeImages.ToArray());
+            imageList.ImageSize = new Size(maxWidth / 2, maxHeight / 2);
+            imageList.ColorDepth = ColorDepth.Depth24Bit;
+
+            this.wallTypeListView.BeginUpdate();
+            this.wallTypeListView.Items.Clear();
+            this.wallTypeListView.SmallImageList = imageList;
+
+            var imageIndex = 0;
+            foreach(var wallType in wallTypes) {
+                var item = new ListViewItem(wallType.DisplayName, imageIndex++) {
+                    Tag = wallType
+                };
+                this.wallTypeListView.Items.Add(item);
+            }
+            this.wallTypeListView.EndUpdate();
 
             this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
 
-            this.SelectedWallType = this.wallTypeComboBox.Types.First() as OverlayType;
+            this.SelectedWallType = wallTypes.First();
 
             this.UpdateStatus();
         }
 
-        private void WallTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) => this.SelectedWallType = this.wallTypeComboBox.SelectedValue as OverlayType;
+        private void WallTypeComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.SelectedWallType = (this.wallTypeListView.SelectedItems.Count > 0) ? (this.wallTypeListView.SelectedItems[0].Tag as OverlayType) : null;
+        }
 
         private void WallTool_KeyDown(object sender, KeyEventArgs e) {
             if(e.KeyCode == Keys.ShiftKey) {
@@ -241,8 +270,6 @@ namespace MobiusEditor.Tools {
             }
         }
 
-        private void RefreshMapPanel() => this.wallTypeMapPanel.MapImage = this.SelectedWallType?.Thumbnail;
-
         private void UpdateStatus() {
             if(this.placementMode) {
                 this.statusLbl.Text = "Left-Click drag to add walls, Right-Click drag to remove walls";
@@ -294,7 +321,7 @@ namespace MobiusEditor.Tools {
                     (this.mapPanel as Control).KeyDown -= this.WallTool_KeyDown;
                     (this.mapPanel as Control).KeyUp -= this.WallTool_KeyUp;
 
-                    this.wallTypeComboBox.SelectedIndexChanged -= this.WallTypeComboBox_SelectedIndexChanged;
+                    this.wallTypeListView.SelectedIndexChanged -= this.WallTypeComboBox_SelectedIndexChanged;
 
                     this.navigationWidget.MouseCellChanged -= this.MouseoverWidget_MouseCellChanged;
                 }

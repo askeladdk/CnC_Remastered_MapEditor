@@ -831,15 +831,10 @@ namespace MobiusEditor {
             }
             break;
             case ToolType.Wall: {
-                var toolDialog = new GenericToolDialog {
-                    Text = "Walls"
-                };
+                var toolDialog = this.wallsToolControl;
 
-                toolDialog.GenericTypeComboBox.Types = this.plugin.Map.OverlayTypes.Where(t => t.IsWall).OrderBy(t => t.Name);
-
-                this.activeTool = new WallsTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.GenericTypeComboBox, toolDialog.GenericTypeMapPanel, this.plugin, this.url);
-                this.activeToolForm = toolDialog;
-                this.activeToolForm.Show(this);
+                this.activeTool = new WallsTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.GenericTypeListView, this.plugin, this.url);
+                this.toolTabControl.SelectedTab = this.wallsToolTabPage;
             }
             break;
             case ToolType.Waypoint: {
