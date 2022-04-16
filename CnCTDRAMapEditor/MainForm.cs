@@ -784,14 +784,14 @@ namespace MobiusEditor {
             case ToolType.Smudge: {
                 var toolDialog = this.smudgeToolControl;
 
-                this.activeTool = new SmudgeTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.GenericTypeListView, toolDialog.GenericTypeMapPanel, this.plugin, this.url);
+                this.activeTool = new SmudgeTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.GenericTypeListView, this.plugin, this.url);
                 this.toolTabControl.SelectedTab = this.smudgeToolTabPage;
             }
             break;
             case ToolType.Overlay: {
                 var toolDialog = this.overlayToolControl;
 
-                this.activeTool = new OverlaysTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.GenericTypeListView, toolDialog.GenericTypeMapPanel, this.plugin, this.url);
+                this.activeTool = new OverlaysTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.GenericTypeListView, this.plugin, this.url);
                 this.toolTabControl.SelectedTab = this.overlayToolTabPage;
             }
             break;
@@ -805,7 +805,7 @@ namespace MobiusEditor {
             case ToolType.Terrain: {
                 var toolDialog = this.terrainToolControl;
 
-                this.activeTool = new TerrainTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.TerrainTypeListView, toolDialog.TerrainTypeMapPanel, toolDialog.TerrainProperties, this.plugin, this.url);
+                this.activeTool = new TerrainTool(this.mapPanel, this.ActiveLayers, this.toolStatusLabel, toolDialog.TerrainTypeListView, toolDialog.TerrainProperties, this.plugin, this.url);
                 this.toolTabControl.SelectedTab = this.terrainToolTabPage;
             }
             break;

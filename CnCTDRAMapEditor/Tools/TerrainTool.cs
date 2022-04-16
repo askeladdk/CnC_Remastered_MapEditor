@@ -19,7 +19,6 @@ using MobiusEditor.Model;
 using MobiusEditor.Utility;
 using MobiusEditor.Widgets;
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -27,7 +26,6 @@ using System.Windows.Forms;
 namespace MobiusEditor.Tools {
     public class TerrainTool : ViewTool {
         private readonly ListView terrainTypeListView;
-        private readonly MapPanel terrainTypeMapPanel;
         private readonly TerrainProperties terrainProperties;
 
         private Map previewMap;
@@ -71,18 +69,15 @@ namespace MobiusEditor.Tools {
                     if(this.selectedTerrainType != null) {
                         this.mockTerrain.Icon = this.selectedTerrainType.IsTransformable ? 22 : 0;
                     }
-
-                    this.RefreshMapPanel();
                 }
             }
         }
 
-        public TerrainTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView terrainTypeListView, MapPanel terrainTypeMapPanel, TerrainProperties terrainProperties, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
+        public TerrainTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView terrainTypeListView, TerrainProperties terrainProperties, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
             : base(mapPanel, layers, statusLbl, plugin, url) {
             this.previewMap = this.map;
 
             this.mockTerrain = new Terrain();
-            this.mockTerrain.PropertyChanged += this.MockTerrain_PropertyChanged;
 
             this.mapPanel.MouseDown += this.MapPanel_MouseDown;
             this.mapPanel.MouseMove += this.MapPanel_MouseMove;
@@ -118,10 +113,6 @@ namespace MobiusEditor.Tools {
             }
             this.terrainTypeListView.EndUpdate();
 
-            this.terrainTypeMapPanel = terrainTypeMapPanel;
-            this.terrainTypeMapPanel.BackColor = Color.White;
-            this.terrainTypeMapPanel.MaxZoom = 1;
-
             this.terrainProperties = terrainProperties;
             this.terrainProperties.Terrain = this.mockTerrain;
             this.terrainProperties.Enabled = plugin.GameType == GameType.TiberianDawn;
@@ -154,10 +145,6 @@ namespace MobiusEditor.Tools {
                     this.UpdateStatus();
                 }
             }
-        }
-
-        private void MockTerrain_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            this.RefreshMapPanel();
         }
 
         private void TerrainTypeCombo_SelectedIndexChanged(object sender, EventArgs e) {
@@ -322,10 +309,6 @@ namespace MobiusEditor.Tools {
             }
 
             this.UpdateStatus();
-        }
-
-        private void RefreshMapPanel() {
-            this.terrainTypeMapPanel.MapImage = this.mockTerrain.Type?.Thumbnail;
         }
 
         private void UpdateStatus() {

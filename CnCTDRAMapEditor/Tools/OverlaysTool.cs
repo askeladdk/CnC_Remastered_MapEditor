@@ -26,7 +26,6 @@ using System.Windows.Forms;
 namespace MobiusEditor.Tools {
     public class OverlaysTool : ViewTool {
         private readonly ListView overlayTypeListView;
-        private readonly MapPanel overlayTypeMapPanel;
 
         private Map previewMap;
         protected override Map RenderMap => this.previewMap;
@@ -54,13 +53,11 @@ namespace MobiusEditor.Tools {
                     }
                     this.overlayTypeListView.SelectedIndexChanged += this.OverlayTypeComboBox_SelectedIndexChanged;
                     this.overlayTypeListView.EndUpdate();
-
-                    this.RefreshMapPanel();
                 }
             }
         }
 
-        public OverlaysTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView overlayTypeListView, MapPanel overlayTypeMapPanel, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
+        public OverlaysTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView overlayTypeListView, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
             : base(mapPanel, layers, statusLbl, plugin, url) {
             this.previewMap = this.map;
 
@@ -95,10 +92,6 @@ namespace MobiusEditor.Tools {
                 this.overlayTypeListView.Items.Add(item);
             }
             this.overlayTypeListView.EndUpdate();
-
-            this.overlayTypeMapPanel = overlayTypeMapPanel;
-            this.overlayTypeMapPanel.BackColor = Color.White;
-            this.overlayTypeMapPanel.MaxZoom = 1;
 
             this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
 
@@ -243,10 +236,6 @@ namespace MobiusEditor.Tools {
                     this.SelectedOverlayType = overlay.Type;
                 }
             }
-        }
-
-        private void RefreshMapPanel() {
-            this.overlayTypeMapPanel.MapImage = this.SelectedOverlayType?.Thumbnail;
         }
 
         private void UpdateStatus() {

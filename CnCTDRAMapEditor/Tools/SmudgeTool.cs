@@ -26,7 +26,6 @@ using System.Windows.Forms;
 namespace MobiusEditor.Tools {
     public class SmudgeTool : ViewTool {
         private readonly ListView smudgeTypeListView;
-        private readonly MapPanel smudgeTypeMapPanel;
 
         private Map previewMap;
         protected override Map RenderMap => this.previewMap;
@@ -59,13 +58,11 @@ namespace MobiusEditor.Tools {
                     if(this.placementMode && (this.selectedSmudgeType != null)) {
                         this.mapPanel.Invalidate(this.map, this.navigationWidget.MouseCell);
                     }
-
-                    this.RefreshMapPanel();
                 }
             }
         }
 
-        public SmudgeTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView smudgeTypeListView, MapPanel smudgeTypeMapPanel, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
+        public SmudgeTool(MapPanel mapPanel, MapLayerFlag layers, ToolStripStatusLabel statusLbl, ListView smudgeTypeListView, IGamePlugin plugin, UndoRedoList<UndoRedoEventArgs> url)
             : base(mapPanel, layers, statusLbl, plugin, url) {
             this.previewMap = this.map;
 
@@ -85,7 +82,7 @@ namespace MobiusEditor.Tools {
 
             var imageList = new ImageList();
             imageList.Images.AddRange(smudgeTypeImages.ToArray());
-            imageList.ImageSize = new Size(maxWidth / 2, maxHeight / 2);
+            imageList.ImageSize = new Size(maxWidth / 4, maxHeight / 4);
             imageList.ColorDepth = ColorDepth.Depth24Bit;
 
             this.smudgeTypeListView.BeginUpdate();
@@ -100,10 +97,6 @@ namespace MobiusEditor.Tools {
                 this.smudgeTypeListView.Items.Add(item);
             }
             this.smudgeTypeListView.EndUpdate();
-
-            this.smudgeTypeMapPanel = smudgeTypeMapPanel;
-            this.smudgeTypeMapPanel.BackColor = Color.White;
-            this.smudgeTypeMapPanel.MaxZoom = 1;
 
             this.navigationWidget.MouseCellChanged += this.MouseoverWidget_MouseCellChanged;
 
@@ -245,10 +238,6 @@ namespace MobiusEditor.Tools {
                     this.SelectedSmudgeType = smudge.Type;
                 }
             }
-        }
-
-        private void RefreshMapPanel() {
-            this.smudgeTypeMapPanel.MapImage = this.SelectedSmudgeType?.Thumbnail;
         }
 
         private void UpdateStatus() {

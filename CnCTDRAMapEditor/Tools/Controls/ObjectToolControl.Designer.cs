@@ -61,7 +61,7 @@ namespace MobiusEditor.Tools.Controls {
             this.objectTypeListView.Size = new System.Drawing.Size(292, 227);
             this.objectTypeListView.TabIndex = 0;
             this.objectTypeListView.UseCompatibleStateImageBehavior = false;
-            this.objectTypeListView.View = System.Windows.Forms.View.SmallIcon;
+            this.objectTypeListView.View = System.Windows.Forms.View.List;
             // 
             // objectProperties
             // 
